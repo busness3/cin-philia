@@ -45,11 +45,18 @@ besoin.
    sur la méthode standard de color analysis, PAS validé (voir
    `colorimetrie_saisons_brouillon.md`). La ligne "undertone neutre" est la
    plus incertaine.
-2. **Palette de couleurs par saison** (codes hex) — brouillon en place
-   (`palettes_saisons_brouillon.md` / `palettes.py`), basé sur les
-   palettes standard publiées, PAS validé. À comparer à la direction
-   visuelle de marque avant mise en prod.
-3. Confirmer la décision de périmètre ci-dessus (silhouette seule pour la
+2. **Palette de couleurs par saison** (codes hex) — brouillon en place,
+   basé sur les 2 images de référence fournies par Clea + la méthode
+   standard 12 saisons (`colorimetrie_palettes_12_saisons.md` /
+   `palettes.py`), PAS validé (estimation visuelle, pas une extraction
+   précise). À comparer aux vraies teintes et à la direction visuelle de
+   marque avant mise en prod.
+3. **Nouvelle question à valider pour passer aux 12 sous-saisons** :
+   il manque un 3e axe diagnostique (éclat/intensité des couleurs) — les
+   12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant
+   que cette question n'est pas validée. Proposition de wording dans
+   `colorimetrie_palettes_12_saisons.md`.
+4. Confirmer la décision de périmètre ci-dessus (silhouette seule pour la
    morphologie V1, yeux/sourcils/peau/cheveux hors scope).
-4. Documents formes de visage / formes des yeux — à fournir quand cette
+5. Documents formes de visage / formes des yeux — à fournir quand cette
    catégorie repasse dans le scope.
