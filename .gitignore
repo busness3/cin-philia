@@ -1,0 +1,26 @@
+# Secrets — jamais committés
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# DB locale de dev
+*.db
+*.sqlite3
+
+# Node / Expo (app mobile, à venir)
+node_modules/
+.expo/
+dist/
+
+# OS / éditeurs
+.DS_Store
+.vscode/
+.idea/

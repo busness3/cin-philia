@@ -1,0 +1,138 @@
+# Reveal You (alias : Reveal Glow) — Spécifications produit
+
+## 🎯 Vision & Philosophie
+
+**Reveal You** est une application de développement personnel dont la promesse centrale est de **révéler qui la personne est déjà**, plutôt que de la pousser à se transformer ou à s'améliorer.
+
+Cette philosophie est **structurante**, pas juste un argument marketing : elle conditionne le ton, les textes, le design et le cadrage de chaque fonctionnalité.
+
+### Règles de ton non-négociables
+- ❌ Jamais d'imagerie "avant/après"
+- ❌ Jamais de vocabulaire correctif ("corriger", "améliorer", "cacher un défaut")
+- ❌ Jamais de jugement implicite sur un type morphologique/coloriel par rapport à un autre
+- ✅ Ton chaleureux, bienveillant, non-jugeant — comme un coach qui accompagne, pas un juge qui évalue
+- ✅ Vocabulaire descriptif : on "révèle", on "met en lumière", on "explore" — jamais on ne "corrige"
+
+## 🏗️ Structure produit : les 4 piliers
+
+L'app est conçue autour de 4 piliers de développement personnel :
+1. **Physique** ← **SCOPE DE LA V1**
+2. Mental
+3. Organisation
+4. Finances / Carrière
+
+**Important pour le développement : la V1 se concentre exclusivement sur le pilier Physique.** L'architecture doit néanmoins être pensée pour accueillir les 3 autres piliers plus tard (navigation, modèle de données, structure de l'app extensible).
+
+## 📱 V1 — Pilier Physique : 2 fonctionnalités IA
+
+### 1. Diagnostic de colorimétrie
+Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons + 12 sous-saisons) à partir de :
+- Undertone (sous-ton de peau)
+- Niveau de contraste (clair/moyen/fort entre peau, yeux, cheveux)
+- Couleur des cheveux
+
+→ Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif).
+
+### 2. Analyse morphologique visage/corps + recommandations vestimentaires
+Basée sur la silhouette et la forme du visage, avec des recommandations de style vestimentaire cohérentes avec le type identifié.
+
+**Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 recommandée : hybride** — mesures déclarées par l'utilisateur·rice + analyse visuelle, plutôt que vision par ordinateur pure.
+
+## 🧬 Framework typologique complet (9 catégories)
+
+Ordre diagnostique défini :
+
+1. **Silhouette** — typologie H / A / V / O / X
+2. **Forme du visage** — 7 types
+3. **Forme des yeux** — 9+ types
+4. **Niveau de contraste** — (alimente la colorimétrie)
+5. **Sourcils**
+6. **Type de peau**
+7. **Saison colorielle** — système 4 saisons + 12 sous-saisons (résultat dérivé des catégories 4, 8, et couleur des cheveux)
+8. **Ton de peau / undertone** — (alimente la colorimétrie)
+9. **Texture des cheveux** — méthode André Walker, types 1A à 4C
+
+**Dépendances importantes pour la logique métier :**
+Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble le résultat de Saison colorielle. Ces 3 inputs doivent être capturés avant de pouvoir calculer la saison.
+
+**Documents de référence existants (à demander à l'utilisatrice si besoin de détail supplémentaire) :**
+Des documents Word/PDF détaillés en français existent déjà pour :
+- Les types de silhouette corporelle
+- Les caractéristiques des formes de visage
+- Les définitions des formes d'yeux
+
+Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
+
+⚠️ **Non résolu à date :** le document de référence sur les formes de visage n'a pas encore les caractéristiques des traits du visage par forme — à compléter avant l'implémentation complète de cette catégorie.
+
+## 🤖 Approche technique pour la classification IA
+
+### Constat général
+Il n'existe **pas de dataset unique** couvrant toutes les typologies définies. Une pipeline d'annotation custom sera probablement nécessaire pour plusieurs catégories.
+
+### Décision (mise à jour en session) : classification via Claude API plutôt que pipeline ML maison
+Plutôt que d'entraîner des classifieurs custom (bloqué par l'absence de dataset couvrant nos typologies), la V1 utilise l'API Claude (vision multimodale + structured outputs) contrainte aux catégories exactes définies dans les documents de référence de Clea. Ceci évite le chantier d'annotation de dataset pour la V1. L'entraînement d'un modèle custom (via des datasets publics remappés à notre taxonomie, ou nos propres données collectées avec consentement) reste une optimisation V2+ envisageable si le volume/coût le justifie — voir `backend/app/domain/physique/morphologie/README.md`.
+
+### Datasets identifiés (pour référence future, V2+ uniquement)
+- Style4BodyShape, CAESAR — silhouette
+- CelebA, FFHQ — visages non-annotés (base pour landmarks)
+- Roboflow Eye Shape dataset — yeux (couverture partielle)
+- Kaggle Face Shape Dataset — visage
+- MPIIGaze — regard (à évaluer pertinence)
+
+## 💰 Modèle économique
+
+**Freemium, prix bas** (~2–5€/mois).
+
+**Différenciateur clé — non négociable produit :** le tier gratuit doit être **réellement utile**, pas juste un teaser. Concrètement : **un diagnostic complet gratuit** (pas une version tronquée).
+
+C'est une décision de valeurs autant qu'une décision de croissance — à respecter dans toute logique de paywall/limitation qu'on implémente.
+
+### Concurrents étudiés (positionnement différenciant)
+- Glam Up
+- Beautify / Glow Up
+- LookSky
+
+Ces apps ont des tiers gratuits qui fonctionnent surtout comme des teasers → c'est précisément ce que Reveal You ne fait pas.
+
+## 🎨 Direction visuelle / design
+
+- Palettes de couleurs chaudes et lumineuses
+- Typographie arrondie, humaniste
+- Formes organiques, douces
+- Ambiance générale : **coach bienveillant qui prend soin**, PAS une app beauté générique ou wellness générique
+- Éviter absolument les codes visuels "avant/après" ou les esthétiques cliniques/correctives
+
+## 🔒 Principes de confidentialité des données (ajouté en session)
+
+- **Minimisation stricte** : les photos ne sont **jamais persistées**. Traitement en mémoire uniquement, le temps de l'appel à l'API de classification, puis suppression immédiate.
+- **Seuls les résultats dérivés** (saison colorielle, type de silhouette, etc. — jamais l'image brute) sont stockés en base.
+- **Finalité limitée** : les données ne servent qu'à fournir le diagnostic demandé — pas de réutilisation pour entraînement, marketing ou revente à des tiers.
+- **Sous-traitant IA déclaré** : l'API Claude (Anthropic) traite les photos pour la classification (sous-traitant RGPD) — à documenter explicitement dans la politique de confidentialité. Vérifier les conditions de rétention/usage actuelles de l'API avant rédaction finale de la politique.
+- Si un usage futur des données pour entraîner un modèle custom est envisagé (V2+), il nécessitera un **opt-in explicite et distinct**, jamais implicite.
+
+## 🗺️ Roadmap au-delà de la V1 (pour information — pas à développer maintenant)
+
+- Widget quotidien "mindset" avec phrases courtes originales (nécessite développement natif)
+- Quiz de chronotype
+- Guidance nutrition/sport basée sur le cycle menstruel (cadrée comme exploratoire, jamais comme un avis médical)
+- Piliers Mental, Organisation, Finances/Carrière
+- Évaluation d'un modèle de classification custom entraîné (si le volume utilisateur justifie le coût vs l'API Claude)
+
+## 👥 Équipe & fonctionnement
+
+- Clea : produit, contenu, direction design
+- Un développeur ami spécialisé IA/app : implémentation technique
+- Travail en français sur toute la documentation et le contenu produit
+
+## ⚙️ Principes de développement à respecter
+
+1. **Discipline MVP** : construire de façon incrémentale, un V1 focalisé plutôt que tout attaquer en même temps. Ne pas sur-engineerer les 3 autres piliers avant que le pilier Physique fonctionne.
+2. **Ne jamais halluciner de critères typologiques** : si un détail de classification manque (ex. traits du visage par forme), le signaler et demander le contenu de référence plutôt que d'inventer.
+3. **Cohérence de ton systématique** : tout texte généré par l'app (résultats de diagnostic, micro-copy, notifications) doit respecter la philosophie "reveal, not transform".
+4. **Architecture extensible** : penser le modèle de données et la navigation pour accueillir les 3 piliers futurs, même si seul Physique est implémenté en V1.
+5. **Privacy by design** : aucune photo utilisateur n'est jamais persistée sur disque, en base, ou dans les logs — traitement en mémoire uniquement.
+
+---
+
+*Ce fichier sert de contexte produit pour le développement avec Claude Code.*
