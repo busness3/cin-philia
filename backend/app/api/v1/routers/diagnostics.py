@@ -28,10 +28,7 @@ def diagnostic_colorimetrie(
     user_id: str,
     db: Session = Depends(get_db),
 ) -> ColorimetrieResult:
-    try:
-        result = determine_season(payload)
-    except NotImplementedError as exc:
-        raise HTTPException(status_code=501, detail=str(exc)) from exc
+    result = determine_season(payload)
 
     db.add(
         DiagnosticResult(

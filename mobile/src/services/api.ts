@@ -11,7 +11,7 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
 export type Undertone = "chaud" | "froid" | "neutre";
-export type NiveauContraste = "clair" | "moyen" | "fort";
+export type NiveauContraste = "faible" | "moyen" | "fort";
 
 export interface ColorimetrieInput {
   undertone: Undertone;
@@ -23,6 +23,7 @@ export interface ColorimetrieResult {
   saison: string;
   sous_saison: string | null;
   palette: string[];
+  confiance: string;
 }
 
 export interface MorphologieResult {

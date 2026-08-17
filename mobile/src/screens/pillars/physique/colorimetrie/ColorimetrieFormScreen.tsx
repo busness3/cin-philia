@@ -12,7 +12,7 @@ import type { PhysiqueStackParamList } from "../../../../navigation/RootNavigato
 type Props = NativeStackScreenProps<PhysiqueStackParamList, "ColorimetrieForm">;
 
 const UNDERTONES: Undertone[] = ["chaud", "froid", "neutre"];
-const CONTRASTES: NiveauContraste[] = ["clair", "moyen", "fort"];
+const CONTRASTES: NiveauContraste[] = ["faible", "moyen", "fort"];
 
 function ChoiceRow<T extends string>({
   options,

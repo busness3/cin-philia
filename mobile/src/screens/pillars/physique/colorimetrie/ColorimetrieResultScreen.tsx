@@ -20,6 +20,9 @@ export function ColorimetrieResultScreen() {
       <Text style={styles.title}>{microcopy.colorimetrie.resultTitle}</Text>
       <Text style={styles.season}>{result.saison}</Text>
       {result.sous_saison ? <Text style={styles.subSeason}>{result.sous_saison}</Text> : null}
+      {result.confiance === "faible" ? (
+        <Text style={styles.note}>{microcopy.colorimetrie.lowConfidenceNote}</Text>
+      ) : null}
 
       <View style={styles.palette}>
         {result.palette.map((hex) => (
@@ -35,6 +38,7 @@ const styles = StyleSheet.create({
   title: { ...typography.subtitle, color: colors.textMuted },
   season: { ...typography.title, color: colors.text },
   subSeason: { ...typography.body, color: colors.textMuted },
+  note: { ...typography.caption, color: colors.textMuted, marginTop: spacing.xs },
   body: { ...typography.body, color: colors.textMuted },
   palette: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.lg },
   swatch: { width: 48, height: 48, borderRadius: radii.sm },

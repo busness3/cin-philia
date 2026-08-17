@@ -25,16 +25,26 @@ L'app est conçue autour de 4 piliers de développement personnel :
 
 ## 📱 V1 — Pilier Physique : 2 fonctionnalités IA
 
+⚠️ **Décision de périmètre (prise en session, à valider avec Clea)** — pour
+livrer une V1 complète et testable plutôt que bloquée sur des documents
+manquants, le périmètre a été resserré à ce qui est classifiable dès
+aujourd'hui. Détail complet et raisons dans
+`backend/app/content/README.md` § Décision de périmètre V1. Résumé :
+- Morphologie V1 = **silhouette uniquement** (forme du visage différée)
+- Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
+- Yeux / sourcils / type de peau / texture cheveux : hors scope V1
+- Une seule photo nécessaire en V1 (corps entier)
+
 ### 1. Diagnostic de colorimétrie
-Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons + 12 sous-saisons) à partir de :
+Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus) à partir de :
 - Undertone (sous-ton de peau)
-- Niveau de contraste (clair/moyen/fort entre peau, yeux, cheveux)
+- Niveau de contraste (faible/moyen/fort entre peau, yeux, cheveux)
 - Couleur des cheveux
 
-→ Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif).
+→ Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif). **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
-### 2. Analyse morphologique visage/corps + recommandations vestimentaires
-Basée sur la silhouette et la forme du visage, avec des recommandations de style vestimentaire cohérentes avec le type identifié.
+### 2. Analyse morphologique (silhouette) + recommandations vestimentaires
+En V1, basée sur la silhouette uniquement (forme du visage différée — voir décision de périmètre), avec des recommandations de style vestimentaire cohérentes avec le type identifié.
 
 **Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 recommandée : hybride** — mesures déclarées par l'utilisateur·rice + analyse visuelle, plutôt que vision par ordinateur pure.
 

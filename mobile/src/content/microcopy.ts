@@ -26,6 +26,10 @@ export const microcopy = {
   colorimetrie: {
     intro: "Quelques questions pour révéler ta palette de couleurs.",
     resultTitle: "Ta saison colorielle",
+    // Affiché quand confiance === "faible" (undertone neutre — voir
+    // backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md).
+    // Ton "reveal not transform" : jamais présenté comme un doute négatif.
+    lowConfidenceNote: "Une première approche à affiner avec toi — on continue de la préciser.",
   },
   morphologie: {
     captureIntro: "Une photo et quelques mesures pour révéler ta silhouette.",

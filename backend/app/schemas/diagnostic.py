@@ -17,7 +17,9 @@ class Undertone(str, Enum):
 
 
 class NiveauContraste(str, Enum):
-    CLAIR = "clair"
+    # Vocabulaire aligné sur le document de référence de Clea
+    # (typologie_pilier_physique.md § Contraste) : "faible", pas "clair".
+    FAIBLE = "faible"
     MOYEN = "moyen"
     FORT = "fort"
 
@@ -32,6 +34,14 @@ class ColorimetrieResult(BaseModel):
     saison: str
     sous_saison: str | None = None
     palette: list[str] = Field(default_factory=list, description="Codes hex de la palette révélée")
+    confiance: str = Field(
+        default="forte",
+        description=(
+            "'faible' pour les combinaisons undertone neutre — la table de "
+            "correspondance est un brouillon non validé pour ces cas, voir "
+            "content/reference_docs/colorimetrie_saisons_brouillon.md"
+        ),
+    )
 
 
 class MorphologieResult(BaseModel):
