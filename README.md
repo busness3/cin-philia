@@ -8,18 +8,22 @@ Voir [`docs/CLAUDE.md`](docs/CLAUDE.md) pour les spécifications produit complè
 ```
 reveal-you/
 ├── backend/     # API FastAPI — diagnostic colorimétrie + morphologie
-├── docs/        # Spécifications produit
-└── app/         # App mobile (à venir)
+├── mobile/      # App mobile Expo (React Native + TypeScript)
+└── docs/        # Spécifications produit
 ```
 
 ## Statut : prototype
 
-Le backend est scaffoldé et fonctionnel (santé de l'API, pipeline de
-diagnostic en bout en bout), mais **la logique de classification réelle est
-en attente des documents de référence de Clea** (types de silhouette,
-formes de visage, formes d'yeux, table saison colorielle). Voir
+Le backend et l'app mobile sont scaffoldés et fonctionnels de bout en bout
+(santé de l'API, navigation, formulaires, appel réseau), mais **la logique
+de classification réelle est en attente des documents de référence de
+Clea** (types de silhouette, formes de visage, formes d'yeux, table saison
+colorielle) — les écrans de résultat affichent une erreur "pas encore
+disponible" tant que ces documents ne sont pas intégrés. Voir
 [`backend/app/content/README.md`](backend/app/content/README.md) pour le
 détail de ce qui manque.
+
+Voir [`mobile/README.md`](mobile/README.md) pour démarrer l'app.
 
 ## Confidentialité — principe non négociable
 
