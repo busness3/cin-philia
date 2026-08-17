@@ -55,15 +55,18 @@ Ordre diagnostique défini :
 **Dépendances importantes pour la logique métier :**
 Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble le résultat de Saison colorielle. Ces 3 inputs doivent être capturés avant de pouvoir calculer la saison.
 
-**Documents de référence existants (à demander à l'utilisatrice si besoin de détail supplémentaire) :**
-Des documents Word/PDF détaillés en français existent déjà pour :
-- Les types de silhouette corporelle
-- Les caractéristiques des formes de visage
-- Les définitions des formes d'yeux
+**Documents de référence (reçus et intégrés dans `backend/app/content/reference_docs/`) :**
+- ✅ `typologie_pilier_physique.md` — définitions et typologies des 9 catégories (source : `Reveal_You_Pilier_Physique.pdf`)
+- ✅ `silhouettes_guide_reference.md` — critères complets de repérage par type de silhouette (source : `Morphologies_Reveal_You.docx`) — **classification silhouette fonctionnelle en V1**
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 
-⚠️ **Non résolu à date :** le document de référence sur les formes de visage n'a pas encore les caractéristiques des traits du visage par forme — à compléter avant l'implémentation complète de cette catégorie.
+⚠️ **Non résolu à date :**
+- Formes de visage : noms reçus, caractéristiques des traits par forme toujours manquantes.
+- Formes des yeux : noms + clarifications partielles reçus, critères de repérage complets manquants.
+- Table de correspondance saison colorielle (undertone + contraste + cheveux → saison/sous-saison) — le framework est reçu, pas la table elle-même.
+
+Voir `backend/app/content/README.md` pour le détail à jour de ce qui bloque quoi.
 
 ## 🤖 Approche technique pour la classification IA
 
