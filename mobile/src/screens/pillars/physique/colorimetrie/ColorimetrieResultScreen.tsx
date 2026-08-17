@@ -41,5 +41,7 @@ const styles = StyleSheet.create({
   note: { ...typography.caption, color: colors.textMuted, marginTop: spacing.xs },
   body: { ...typography.body, color: colors.textMuted },
   palette: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.lg },
-  swatch: { width: 48, height: 48, borderRadius: radii.sm },
+  // Bordure défensive : certaines couleurs de palette (ex. blanc/glacier)
+  // se fondraient sinon dans le fond clair de l'app.
+  swatch: { width: 48, height: 48, borderRadius: radii.sm, borderWidth: 1, borderColor: colors.border },
 });

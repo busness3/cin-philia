@@ -12,9 +12,13 @@ Portée V1 : 4 saisons de base uniquement (pas de 12 sous-saisons — les
 inputs déclaratifs qu'on collecte ne suffisent pas à les distinguer
 fiablement). `sous_saison` reste `None` pour l'instant.
 
+La palette de couleurs par saison (voir `palettes.py`) est elle aussi un
+brouillon non validé — même statut que la table ci-dessous.
+
 100% déterministe (pas d'appel IA) : le résultat doit être reproductible.
 """
 
+from app.domain.physique.colorimetrie.palettes import PALETTES
 from app.schemas.diagnostic import ColorimetrieInput, ColorimetrieResult, NiveauContraste, Undertone
 
 # (undertone, niveau_contraste) -> saison
@@ -42,5 +46,6 @@ def determine_season(diagnostic_input: ColorimetrieInput) -> ColorimetrieResult:
     saison = SEASON_RULES[key]  # table complète sur les 9 combinaisons — pas de trou possible
 
     confiance = "faible" if diagnostic_input.undertone in _LOWER_CONFIDENCE_UNDERTONES else "forte"
+    palette = PALETTES.get(saison, [])  # brouillon — voir palettes_saisons_brouillon.md
 
-    return ColorimetrieResult(saison=saison, sous_saison=None, palette=[], confiance=confiance)
+    return ColorimetrieResult(saison=saison, sous_saison=None, palette=palette, confiance=confiance)

@@ -45,8 +45,10 @@ besoin.
    sur la méthode standard de color analysis, PAS validé (voir
    `colorimetrie_saisons_brouillon.md`). La ligne "undertone neutre" est la
    plus incertaine.
-2. **Palette de couleurs par saison** (codes hex) — pas encore fournie, le
-   résultat colorimétrie renvoie une palette vide pour l'instant.
+2. **Palette de couleurs par saison** (codes hex) — brouillon en place
+   (`palettes_saisons_brouillon.md` / `palettes.py`), basé sur les
+   palettes standard publiées, PAS validé. À comparer à la direction
+   visuelle de marque avant mise en prod.
 3. Confirmer la décision de périmètre ci-dessus (silhouette seule pour la
    morphologie V1, yeux/sourcils/peau/cheveux hors scope).
 4. Documents formes de visage / formes des yeux — à fournir quand cette
