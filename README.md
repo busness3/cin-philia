@@ -14,16 +14,18 @@ reveal-you/
 
 ## Statut : prototype
 
-Le backend et l'app mobile sont scaffoldés et fonctionnels de bout en bout
-(santé de l'API, navigation, formulaires, appel réseau), mais **la logique
-de classification réelle est en attente des documents de référence de
-Clea** (types de silhouette, formes de visage, formes d'yeux, table saison
-colorielle) — les écrans de résultat affichent une erreur "pas encore
-disponible" tant que ces documents ne sont pas intégrés. Voir
+Le backend et l'app mobile fonctionnent de bout en bout pour les 2
+fonctionnalités V1 : **colorimétrie** (formulaire ou 2 photos) et
+**silhouette** (2 photos, face + profil). La classification réelle est
+en place, basée sur les documents de référence de Clea. Certains éléments
+restent des brouillons à valider par Clea avant mise en prod (table de
+correspondance saison colorielle, palettes de couleurs) — voir
 [`backend/app/content/README.md`](backend/app/content/README.md) pour le
-détail de ce qui manque.
+détail à jour.
 
-Voir [`mobile/README.md`](mobile/README.md) pour démarrer l'app.
+Voir [`mobile/README.md`](mobile/README.md) pour démarrer l'app en local,
+et [`DEPLOY.md`](DEPLOY.md) pour la mettre en ligne (backend hébergé +
+build mobile installable sur téléphone).
 
 ## Confidentialité — principe non négociable
 
