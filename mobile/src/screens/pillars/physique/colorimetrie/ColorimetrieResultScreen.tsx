@@ -29,6 +29,8 @@ export function ColorimetrieResultScreen() {
           <View key={hex} style={[styles.swatch, { backgroundColor: hex }]} />
         ))}
       </View>
+
+      {result.justification ? <Text style={styles.justification}>{result.justification}</Text> : null}
     </View>
   );
 }
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
   note: { ...typography.caption, color: colors.textMuted, marginTop: spacing.xs },
   body: { ...typography.body, color: colors.textMuted },
   palette: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.lg },
+  justification: { ...typography.body, color: colors.textMuted, marginTop: spacing.lg, fontStyle: "italic" },
   // Bordure défensive : certaines couleurs de palette (ex. blanc/glacier)
   // se fondraient sinon dans le fond clair de l'app.
   swatch: { width: 48, height: 48, borderRadius: radii.sm, borderWidth: 1, borderColor: colors.border },

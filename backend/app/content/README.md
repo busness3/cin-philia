@@ -8,7 +8,7 @@ l'exécution par le code de classification plutôt que dupliqués en dur.
 ## Statut par catégorie
 
 - [x] **Silhouette (H/A/V/O/X)** — critères complets reçus et intégrés (`silhouettes_guide_reference.md`). Classification fonctionnelle.
-- [x] **Colorimétrie (4 saisons)** — fonctionnelle, mais via une table **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table de correspondance fournie. À faire relire par Clea en priorité.
+- [x] **Colorimétrie (4 saisons)** — fonctionnelle, **2 parcours** : formulaire déclaratif ou photo de visage (Claude vision lit undertone/contraste, voir `photo_classification.py`). Table de correspondance **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table fournie. À faire relire par Clea en priorité.
 - [ ] **Forme du visage (7 types)** — hors scope V1 (voir décision de périmètre ci-dessous). Noms reçus, critères distinctifs toujours non fournis.
 - [ ] **Forme des yeux (9+ types)** — hors scope V1. Noms + quelques clarifications partielles reçus, critères de repérage complets manquants.
 - [ ] **Sourcils, type de peau, texture des cheveux** — hors scope V1 (voir décision de périmètre ci-dessous).
@@ -31,9 +31,11 @@ le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
   scope V1.** Aucun des 2 features V1 déclarées n'en a besoin — ce sont
   des catégories du framework typologique complet, probablement destinées
   à des fonctionnalités futures (maquillage, soins...) non encore cadrées.
-- **Conséquence sur la capture photo :** 1 seule photo nécessaire en V1
-  (corps entier, pour la silhouette) — pas de photo visage tant que la
-  forme du visage n'est pas implémentée.
+- **Capture photo :** 1 photo corps entier (silhouette, obligatoire) +
+  1 photo visage **optionnelle** (colorimétrie — alternative au
+  formulaire, pas encore utilisée pour la forme du visage puisqu'elle
+  reste hors scope). L'utilisatrice choisit formulaire ou photo pour la
+  colorimétrie ; jamais l'un ou l'autre imposé.
 
 Rien n'est perdu : tout le contenu reçu est conservé dans
 `reference_docs/` pour reprendre ces catégories dès que le produit en a

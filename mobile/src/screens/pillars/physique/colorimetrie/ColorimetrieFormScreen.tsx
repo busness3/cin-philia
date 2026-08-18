@@ -98,6 +98,10 @@ export function ColorimetrieFormScreen({ navigation }: Props) {
       >
         <Text style={styles.ctaText}>{loading ? "Analyse en cours…" : "Révéler ma palette"}</Text>
       </Pressable>
+
+      <Pressable style={styles.photoLink} onPress={() => navigation.navigate("ColorimetriePhoto")}>
+        <Text style={styles.photoLinkText}>{microcopy.colorimetrie.photoLinkLabel}</Text>
+      </Pressable>
     </View>
   );
 }
@@ -134,4 +138,6 @@ const styles = StyleSheet.create({
   },
   ctaDisabled: { opacity: 0.5 },
   ctaText: { ...typography.subtitle, color: colors.surface },
+  photoLink: { marginTop: spacing.md, alignItems: "center" },
+  photoLinkText: { ...typography.caption, color: colors.primaryDark, textDecorationLine: "underline" },
 });

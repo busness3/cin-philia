@@ -7,6 +7,7 @@ import { microcopy } from "../content/microcopy";
 import { WelcomeScreen } from "../screens/onboarding/WelcomeScreen";
 import { PhysiqueHomeScreen } from "../screens/pillars/physique/PhysiqueHomeScreen";
 import { ColorimetrieFormScreen } from "../screens/pillars/physique/colorimetrie/ColorimetrieFormScreen";
+import { ColorimetriePhotoScreen } from "../screens/pillars/physique/colorimetrie/ColorimetriePhotoScreen";
 import { ColorimetrieResultScreen } from "../screens/pillars/physique/colorimetrie/ColorimetrieResultScreen";
 import { SilhouetteCaptureScreen } from "../screens/pillars/physique/morphologie/SilhouetteCaptureScreen";
 import { SilhouetteResultScreen } from "../screens/pillars/physique/morphologie/SilhouetteResultScreen";
@@ -27,6 +28,7 @@ export type RootStackParamList = {
 export type PhysiqueStackParamList = {
   PhysiqueHome: undefined;
   ColorimetrieForm: undefined;
+  ColorimetriePhoto: undefined;
   ColorimetrieResult: undefined;
   SilhouetteCapture: undefined;
   SilhouetteResult: undefined;
@@ -51,6 +53,11 @@ function PhysiqueNavigator() {
         name="ColorimetrieForm"
         component={ColorimetrieFormScreen}
         options={{ headerShown: true, title: "Colorimétrie" }}
+      />
+      <PhysiqueStack.Screen
+        name="ColorimetriePhoto"
+        component={ColorimetriePhotoScreen}
+        options={{ headerShown: true, title: "Colorimétrie par photo" }}
       />
       <PhysiqueStack.Screen
         name="ColorimetrieResult"

@@ -27,7 +27,11 @@ class NiveauContraste(str, Enum):
 class ColorimetrieInput(BaseModel):
     undertone: Undertone
     niveau_contraste: NiveauContraste
-    couleur_cheveux: str = Field(..., description="Description libre, ex: 'châtain foncé'")
+    # Optionnel : collecté par le formulaire déclaratif, absent du parcours
+    # photo (voir photo_classification.py). Note : n'est pas encore utilisé
+    # par determine_season() — collecté pour un usage futur (ex. affiner
+    # les sous-saisons), pas exploité dans la V1 4-saisons actuelle.
+    couleur_cheveux: str | None = Field(default=None, description="Description libre, ex: 'châtain foncé'")
 
 
 class ColorimetrieResult(BaseModel):
@@ -37,10 +41,15 @@ class ColorimetrieResult(BaseModel):
     confiance: str = Field(
         default="forte",
         description=(
-            "'faible' pour les combinaisons undertone neutre — la table de "
-            "correspondance est un brouillon non validé pour ces cas, voir "
-            "content/reference_docs/colorimetrie_saisons_brouillon.md"
+            "'faible' pour les combinaisons undertone neutre, ou pour une "
+            "lecture photo jugée incertaine par Claude (éclairage, "
+            "maquillage...) — voir content/reference_docs/"
+            "colorimetrie_saisons_brouillon.md"
         ),
+    )
+    justification: str | None = Field(
+        default=None,
+        description="Explication de la lecture undertone/contraste, uniquement sur le parcours photo.",
     )
 
 

@@ -33,13 +33,12 @@ aujourd'hui. Détail complet et raisons dans
 - Morphologie V1 = **silhouette uniquement** (forme du visage différée)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
 - Yeux / sourcils / type de peau / texture cheveux : hors scope V1
-- Une seule photo nécessaire en V1 (corps entier)
+- Photo corps entier obligatoire (silhouette) + photo visage **optionnelle** (colorimétrie, alternative au formulaire — voir ci-dessous)
 
 ### 1. Diagnostic de colorimétrie
-Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus) à partir de :
-- Undertone (sous-ton de peau)
-- Niveau de contraste (faible/moyen/fort entre peau, yeux, cheveux)
-- Couleur des cheveux
+Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
+- **Formulaire déclaratif** : undertone, niveau de contraste (faible/moyen/fort), couleur des cheveux
+- **Photo de visage** : Claude vision lit l'undertone et le contraste directement sur la photo (mêmes définitions, même moteur de règles ensuite) — plus précis pour qui ne sait pas s'auto-évaluer, avec une consigne de capture (lumière naturelle, sans maquillage/filtre) pour limiter les biais d'éclairage. Voir `backend/app/domain/physique/colorimetrie/photo_classification.py`.
 
 → Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif). **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
