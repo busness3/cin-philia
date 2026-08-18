@@ -52,11 +52,12 @@ besoin.
    `colorimetrie_saisons_brouillon.md`). La ligne "undertone neutre" est la
    plus incertaine.
 2. **Palette de couleurs par saison** (codes hex) — brouillon en place,
-   basé sur les 2 images de référence fournies par Clea + la méthode
-   standard 12 saisons (`colorimetrie_palettes_12_saisons.md` /
-   `palettes.py`), PAS validé (estimation visuelle, pas une extraction
-   précise). À comparer aux vraies teintes et à la direction visuelle de
-   marque avant mise en prod.
+   basé sur les 8 chartes de référence fournies par Clea
+   (`colorimetrie_palettes_12_saisons.md` / `palettes.py`). Codes hex
+   **échantillonnés par pixel** sur une des chartes (pas à l'œil), donc
+   fidèles à cette image précise, mais PAS validé côté produit — une seule
+   charte choisie parmi les 8, à confirmer avec Clea, et à comparer à la
+   direction visuelle de marque avant mise en prod.
 3. **Nouvelle question à valider pour passer aux 12 sous-saisons** :
    il manque un 3e axe diagnostique (éclat/intensité des couleurs) — les
    12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant

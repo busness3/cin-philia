@@ -1,11 +1,12 @@
 """Palettes de couleurs révélées par saison colorielle.
 
 ⚠️ BROUILLON — voir `backend/app/content/reference_docs/
-colorimetrie_palettes_12_saisons.md` pour la méthode, les images de
-référence utilisées, et ce qui reste à valider avec Clea. Codes hex
-estimés visuellement à partir des images fournies + la méthode standard
-12 saisons publiée dans le secteur (pas inventés de zéro), mais pas
-encore relus/validés côté produit.
+colorimetrie_palettes_12_saisons.md` pour la méthode, la source, et ce
+qui reste à valider avec Clea. Codes hex extraits par échantillonnage de
+pixels (pas à l'œil) depuis la charte de référence « THE 12 SEASONS OF
+COLOR » fournie par Clea — beaucoup plus fiables que la première version
+de ce fichier (estimation visuelle), mais toujours une seule source, pas
+encore comparée à un vrai nuancier ni validée côté produit.
 
 `PALETTES` (4 saisons de base) est ce qu'utilise la V1 actuelle — chaque
 entrée correspond à la sous-saison "pure" de `SUBSEASON_PALETTES`
@@ -18,21 +19,45 @@ intensité, pas encore collecté).
 
 SUBSEASON_PALETTES: dict[str, list[str]] = {
     # Printemps (chaud, clair, éclatant)
-    "Light Spring": ["#F6D9B0", "#F4B896", "#A9D8B8", "#C9E4A8", "#A8D4D8", "#B8CDE8"],
-    "Warm Spring": ["#E8895C", "#E0A030", "#C8AA3C", "#4E9E88", "#E86868", "#70A8A0"],
-    "Bright Spring": ["#FF6B4A", "#FFC72C", "#2FA88C", "#3D7DD8", "#E8447A", "#7ED321"],
+    "Light Spring": [
+        "#B294C6", "#BADEB8", "#F3B785", "#B5D7F2", "#FEF2C0", "#F4ABA5", "#FBF4E1", "#D7C5AD", "#A6835B",
+    ],
+    "Warm Spring": [
+        "#357A7F", "#42875A", "#89B053", "#51B09C", "#FAE274", "#EC665B", "#FBFAE8", "#CB954F", "#99633F",
+    ],
+    "Bright Spring": [
+        "#7F53A2", "#C8D464", "#F9CD54", "#4B73B9", "#45925C", "#EA3627", "#D7C5AF", "#838383", "#5E3B28",
+    ],
     # Été (froid, clair, doux)
-    "Light Summer": ["#F0D9DC", "#E5CFE0", "#C8D8C0", "#B8CEDE", "#C7C4E0", "#A8B8C8"],
-    "Cool Summer": ["#9A4E6E", "#B85A8A", "#E0357A", "#4472A8", "#2C5C9E", "#5C90C8"],
-    "Soft Summer": ["#B08890", "#9C8080", "#90A090", "#6E9E96", "#4E8C88", "#78889C"],
+    "Light Summer": [
+        "#4470B7", "#5CBFAA", "#DB448B", "#A999CA", "#D6EDDD", "#F2B7D3", "#FBF7C7", "#708AC7", "#A2A6A9",
+    ],
+    "Cool Summer": [
+        "#4496BB", "#44958C", "#C34B71", "#8BBDE0", "#6EC1A7", "#D072A4", "#ADB9DF", "#FEFBDC", "#376098",
+    ],
+    "Soft Summer": [
+        "#566991", "#658385", "#955F6F", "#877A8C", "#54756A", "#DEA8B6", "#FBEFC5", "#D2CAC8", "#979B9E",
+    ],
     # Automne (chaud, profond, mat)
-    "Soft Autumn": ["#B89878", "#A8A078", "#8CA084", "#6E9088", "#A87868", "#8C7868"],
-    "Warm Autumn": ["#C1652F", "#D4A017", "#6B7A3A", "#B85C20", "#8C5A2C", "#A03828"],
-    "Deep Autumn": ["#6F2C1C", "#7A3A10", "#2C4A2C", "#1C3C4A", "#4A1C3C", "#2C2418"],
+    "Soft Autumn": [
+        "#985542", "#D4A39E", "#ECC288", "#646176", "#7C99AB", "#99C8C2", "#656F54", "#706F50", "#969674",
+    ],
+    "Warm Autumn": [
+        "#B54A28", "#E48833", "#FBAE54", "#764524", "#C83B29", "#D05627", "#505831", "#4A7C41", "#617434",
+    ],
+    "Dark Autumn": [
+        "#49140E", "#913921", "#C97D4C", "#1F3C2A", "#4A7152", "#616229", "#15313F", "#285D6F", "#306FA4",
+    ],
     # Hiver (froid, profond, éclatant)
-    "Cool Winter": ["#7B2FA0", "#C8106E", "#1C4C9C", "#14807A", "#4C4C9C", "#E4E8EC"],
-    "Deep Winter": ["#4A0E28", "#2C0A3C", "#0C2C4A", "#0C3C2C", "#1A1A1A", "#3C0A1A"],
-    "Bright Winter": ["#E0146E", "#C8102E", "#0028A0", "#7B10A0", "#00A088", "#1A1A1A"],
+    "Cool Winter": [
+        "#31398E", "#6C3590", "#CC2C38", "#42926B", "#C54A78", "#F1C5DC", "#3859AA", "#878E94", "#1C2A4F",
+    ],
+    "Dark Winter": [
+        "#421E4A", "#7D162B", "#AC2D4B", "#112C27", "#317163", "#B44D82", "#1D4356", "#408DC1", "#296170",
+    ],
+    "Bright Winter": [
+        "#2F3492", "#4C9F75", "#DA4040", "#74C3EE", "#E9E858", "#E53892", "#E1F2FC", "#656366", "#000000",
+    ],
 }
 
 # Saison de base -> sous-saison "pure" correspondante (température seule,
