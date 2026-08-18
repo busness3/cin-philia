@@ -1,12 +1,11 @@
 """Palettes de couleurs révélées par saison colorielle.
 
-⚠️ BROUILLON — voir `backend/app/content/reference_docs/
-colorimetrie_palettes_12_saisons.md` pour la méthode, la source, et ce
-qui reste à valider avec Clea. Codes hex extraits par échantillonnage de
-pixels (pas à l'œil) depuis la charte de référence « THE 12 SEASONS OF
-COLOR » fournie par Clea — beaucoup plus fiables que la première version
-de ce fichier (estimation visuelle), mais toujours une seule source, pas
-encore comparée à un vrai nuancier ni validée côté produit.
+✅ Validée par Clea pour la V1 (« Pour une première version c'est bien »).
+Codes hex extraits par échantillonnage de pixels (pas à l'œil) depuis la
+charte de référence « THE 12 SEASONS OF COLOR » fournie par Clea. Voir
+`backend/app/content/reference_docs/colorimetrie_palettes_12_saisons.md`
+pour la méthode et les alternatives (chartes colorislab) restées ouvertes
+pour une itération future, non bloquantes pour la V1.
 
 `PALETTES` (4 saisons de base) est ce qu'utilise la V1 actuelle — chaque
 entrée correspond à la sous-saison "pure" de `SUBSEASON_PALETTES`

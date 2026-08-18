@@ -51,13 +51,14 @@ besoin.
    sur la méthode standard de color analysis, PAS validé (voir
    `colorimetrie_saisons_brouillon.md`). La ligne "undertone neutre" est la
    plus incertaine.
-2. **Palette de couleurs par saison** (codes hex) — brouillon en place,
-   basé sur les 8 chartes de référence fournies par Clea
-   (`colorimetrie_palettes_12_saisons.md` / `palettes.py`). Codes hex
-   **échantillonnés par pixel** sur une des chartes (pas à l'œil), donc
-   fidèles à cette image précise, mais PAS validé côté produit — une seule
-   charte choisie parmi les 8, à confirmer avec Clea, et à comparer à la
-   direction visuelle de marque avant mise en prod.
+2. ✅ **Palette de couleurs par saison** (codes hex) — **validée par Clea
+   pour une V1** (« Pour une première version c'est bien »). Basée sur les
+   8 chartes de référence fournies par Clea, échantillonnée **par pixel**
+   (pas à l'œil) sur une seule d'entre elles (`colorimetrie_palettes_12_saisons.md`
+   / `palettes.py`). Reste ouvert pour plus tard, si besoin : les chartes
+   colorislab proposent un rendu plus proche de l'identité de marque mais
+   distinguent "True Autumn" / "Warm Autumn" comme 2 palettes différentes
+   (notre modèle n'en a qu'une) — non tranché, pas bloquant pour la V1.
 3. **Nouvelle question à valider pour passer aux 12 sous-saisons** :
    il manque un 3e axe diagnostique (éclat/intensité des couleurs) — les
    12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant

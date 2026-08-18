@@ -1,15 +1,18 @@
-# Colorimétrie — palettes des 12 sous-saisons (BROUILLON — à valider par Clea)
+# Colorimétrie — palettes des 12 sous-saisons (✅ validée par Clea pour la V1)
 
-⚠️ **Statut : brouillon, une seule source, pas encore validé.** Les codes
-hex ci-dessous ne sont plus une estimation à l'œil — ils ont été
-**échantillonnés directement sur les pixels** de la charte de référence
-« THE 12 SEASONS OF COLOR » que Clea a fournie (9 couleurs par
-sous-saison, disposées en cercles). C'est donc fidèle à *cette image
-précise*, mais ça reste **une seule source parmi plusieurs styles
-possibles** — Clea a aussi fourni 7 autres chartes (inventyourimage,
-Hello Hue, colorislab...) qui donnent des interprétations un peu
-différentes de chaque sous-saison. Rien n'est validé tant que Clea n'a
-pas comparé et tranché.
+✅ **Statut : validée par Clea pour la V1** (« Pour une première version
+c'est bien »). Les codes hex ci-dessous ne sont pas une estimation à
+l'œil — ils ont été **échantillonnés directement sur les pixels** de la
+charte de référence « THE 12 SEASONS OF COLOR » que Clea a fournie (9
+couleurs par sous-saison, disposées en cercles).
+
+Reste ouvert pour une itération future, **non bloquant pour la V1** :
+Clea a aussi fourni 7 autres chartes (inventyourimage, Hello Hue,
+colorislab...) avec des rendus plus proches de l'identité de marque pour
+certaines sous-saisons (voir la section "Autres sources explorées"
+ci-dessous), mais colorislab distingue "True Autumn" / "Warm Autumn"
+comme 2 palettes différentes alors que notre modèle n'en a qu'une — pas
+tranché, à reprendre si Clea veut affiner la palette plus tard.
 
 ## Pourquoi ce document existe
 
@@ -105,14 +108,36 @@ valider une fois la question confirmée — pas implémentée maintenant.**
 - La logique de classification à 12 sous-saisons attend toujours la
   validation de la question du 3e axe ci-dessus — **pas branchée**.
 
-## Ce qui reste à valider avec Clea
+## Autres sources explorées (non retenues pour la V1)
 
-1. **Choisir la bonne source** — Clea a fourni 8 chartes différentes au
-   total (dont 4 très détaillées : inventyourimage, Hello Hue, colorislab
-   x2). Ce document n'utilise qu'une seule d'entre elles (« THE 12 SEASONS
-   OF COLOR », la plus simple et régulière à échantillonner). Si Clea
-   préfère le rendu d'une autre charte, ou veut un mélange, il faut le dire.
-2. **Les codes hex ci-dessus** — fidèles à l'image choisie, mais à
-   comparer à un vrai nuancier professionnel si Clea en a un.
-3. **La question proposée pour le 3e axe** (éclat/intensité) — wording et pertinence.
-4. **La logique de mapping complète** vers les 12 sous-saisons, une fois la question validée.
+Clea a fourni 4 chartes supplémentaires dans un style plus élégant, plus
+proche de l'identité de marque (colorislab × 3, Hello Hue × 1),
+échantillonnées par pixel elles aussi, à titre de référence pour une
+itération future :
+
+| Sous-saison | Source | Couleurs (échantillon) |
+|---|---|---|
+| True Autumn | colorislab (54 couleurs) | `#F4DCB0` `#F5A923` `#EF8D04` `#D46F03` `#9D4B03` `#7A6315` `#3B3006` `#CC110E` `#093534` |
+| Warm Autumn | colorislab (54 couleurs) | `#3E1302` `#AB5115` `#F8D28E` `#ED480F` `#EBA603` `#4A8A16` `#0B5652` `#07527C` `#703860` |
+| True Summer | colorislab, Sister Seasons (36 couleurs) | `#605F65` `#A6747F` `#D87391` `#F3CFD3` `#72A6BE` `#A5BAD2` `#707EA1` `#8A7A9E` `#D2A3BC` |
+| Soft Summer | colorislab, Sister Seasons (36 couleurs) | `#554045` `#B6606F` `#D69EA7` `#72A1AB` `#7CA1B1` `#6A89A5` `#817599` `#965B6F` |
+| Soft Autumn (alt.) | colorislab, Sister Seasons (36 couleurs) | `#51342B` `#E5CBB4` `#B6505D` `#6B8A87` `#316976` `#507184` `#566481` `#8B5764` |
+
+**Point non tranché, non bloquant pour la V1 :** colorislab distingue
+« True Autumn » et « Warm Autumn » comme 2 palettes différentes, alors
+que notre modèle n'a qu'un seul nœud "pure" pour l'Automne. Si Clea veut
+utiliser une de ces couleurs plus tard, il faudra d'abord clarifier
+laquelle correspond à ce que l'app appelle "Automne".
+
+## Statut
+
+✅ **Validé par Clea pour la V1** (« Pour une première version c'est
+bien ») — les palettes de `palettes.py` (issues de « THE 12 SEASONS OF
+COLOR ») sont la version de production. Reste ouvert, non bloquant, pour
+une itération future :
+
+1. Comparer les sources colorislab/Hello Hue ci-dessus si Clea veut
+   affiner la palette plus tard, en tranchant d'abord le point
+   True/Warm Autumn.
+2. **La question proposée pour le 3e axe** (éclat/intensité) — wording et pertinence.
+3. **La logique de mapping complète** vers les 12 sous-saisons, une fois la question validée.
