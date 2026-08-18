@@ -12,6 +12,7 @@ Règles de confidentialité appliquées ici :
 import base64
 import json
 import logging
+from dataclasses import dataclass
 
 import anthropic
 
@@ -24,24 +25,53 @@ _client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 DEFAULT_MODEL = "claude-opus-5"
 
 
+@dataclass(frozen=True)
+class ImageInput:
+    """Une photo à envoyer à Claude, avec un libellé pour qu'il sache la
+    distinguer des autres quand plusieurs photos sont fournies (ex. "vue
+    de face" vs "vue de profil")."""
+
+    image_bytes: bytes
+    media_type: str
+    label: str
+
+
 def classify_image(
     *,
-    image_bytes: bytes,
-    media_type: str,
+    images: list[ImageInput],
     system_prompt: str,
     user_context: str,
     json_schema: dict,
     model: str = DEFAULT_MODEL,
 ) -> dict:
-    """Envoie une image + un contexte texte à Claude, contraint la réponse
-    au schéma JSON fourni (structured outputs) et retourne le dict décodé.
+    """Envoie une ou plusieurs images + un contexte texte à Claude, contraint
+    la réponse au schéma JSON fourni (structured outputs) et retourne le
+    dict décodé.
 
     `system_prompt` doit contenir les critères de classification exacts
     (verbatim depuis les documents de référence produit) — ne jamais
     improviser de critères ici. Voir docs/CLAUDE.md § Ne jamais halluciner
     de critères typologiques.
     """
-    image_b64 = base64.standard_b64encode(image_bytes).decode("utf-8")
+    if not images:
+        raise ValueError("Au moins une image est requise.")
+
+    content: list[dict] = []
+    for image in images:
+        # Un bloc texte juste avant chaque image l'identifie sans ambiguïté
+        # (utile dès qu'il y a plus d'une photo — l'ordre seul est fragile).
+        content.append({"type": "text", "text": f"Photo : {image.label}"})
+        content.append(
+            {
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": image.media_type,
+                    "data": base64.standard_b64encode(image.image_bytes).decode("utf-8"),
+                },
+            }
+        )
+    content.append({"type": "text", "text": user_context})
 
     try:
         response = _client.messages.create(
@@ -56,25 +86,8 @@ def classify_image(
                     "cache_control": {"type": "ephemeral"},
                 }
             ],
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": media_type,
-                                "data": image_b64,
-                            },
-                        },
-                        {"type": "text", "text": user_context},
-                    ],
-                }
-            ],
-            output_config={
-                "format": {"type": "json_schema", "schema": json_schema}
-            },
+            messages=[{"role": "user", "content": content}],
+            output_config={"format": {"type": "json_schema", "schema": json_schema}},
         )
     except anthropic.APIStatusError as exc:
         # On logue le statut/type d'erreur, jamais le contenu de la requête.

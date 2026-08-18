@@ -31,11 +31,15 @@ le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
   scope V1.** Aucun des 2 features V1 déclarées n'en a besoin — ce sont
   des catégories du framework typologique complet, probablement destinées
   à des fonctionnalités futures (maquillage, soins...) non encore cadrées.
-- **Capture photo :** 1 photo corps entier (silhouette, obligatoire) +
-  1 photo visage **optionnelle** (colorimétrie — alternative au
-  formulaire, pas encore utilisée pour la forme du visage puisqu'elle
-  reste hors scope). L'utilisatrice choisit formulaire ou photo pour la
-  colorimétrie ; jamais l'un ou l'autre imposé.
+- **Capture photo :** silhouette = **2 photos obligatoires** (face + profil
+  — la vue de profil comble la limite de précision (~50%) d'une seule
+  photo, déjà signalée dans le doc produit). Colorimétrie = **2 photos
+  visage optionnelles** (alternative au formulaire ; 2 photos pour croiser
+  la lecture undertone/contraste et fiabiliser la confiance, voir
+  `photo_classification.py`). L'utilisatrice choisit formulaire ou photo
+  pour la colorimétrie ; jamais l'un ou l'autre imposé. Total possible en
+  V1 : jusqu'à 4 photos (2 silhouette + 2 colorimétrie), aucune jamais
+  persistée.
 
 Rien n'est perdu : tout le contenu reçu est conservé dans
 `reference_docs/` pour reprendre ces catégories dès que le produit en a

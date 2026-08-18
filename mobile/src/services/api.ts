@@ -47,10 +47,18 @@ async function parseOrThrow<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-async function postPhoto<T>(path: string, params: Record<string, string>, photo: PhotoUpload): Promise<T> {
+// `photos` associe le nom du champ multipart attendu par le backend (ex.
+// "photo_face", "photo_profil") à la photo à envoyer sous ce champ.
+async function postPhotos<T>(
+  path: string,
+  params: Record<string, string>,
+  photos: Record<string, PhotoUpload>,
+): Promise<T> {
   const formData = new FormData();
   // React Native FormData accepte cette forme (uri/name/type) pour un fichier.
-  formData.append("photo", { uri: photo.uri, name: photo.name, type: photo.type } as unknown as Blob);
+  for (const [field, photo] of Object.entries(photos)) {
+    formData.append(field, { uri: photo.uri, name: photo.name, type: photo.type } as unknown as Blob);
+  }
 
   const response = await fetch(`${API_BASE_URL}${path}?${new URLSearchParams(params).toString()}`, {
     method: "POST",
@@ -74,18 +82,27 @@ export async function submitColorimetrie(
   return parseOrThrow<ColorimetrieResult>(response);
 }
 
-export async function submitColorimetriePhoto(userId: string, photo: PhotoUpload): Promise<ColorimetrieResult> {
-  return postPhoto<ColorimetrieResult>("/api/v1/diagnostics/colorimetrie/photo", { user_id: userId }, photo);
+export async function submitColorimetriePhoto(
+  userId: string,
+  photo1: PhotoUpload,
+  photo2: PhotoUpload,
+): Promise<ColorimetrieResult> {
+  return postPhotos<ColorimetrieResult>(
+    "/api/v1/diagnostics/colorimetrie/photo",
+    { user_id: userId },
+    { photo_1: photo1, photo_2: photo2 },
+  );
 }
 
 export async function submitSilhouette(
   userId: string,
   mesuresDeclarees: string,
-  photo: PhotoUpload,
+  photoFace: PhotoUpload,
+  photoProfil: PhotoUpload,
 ): Promise<MorphologieResult> {
-  return postPhoto<MorphologieResult>(
+  return postPhotos<MorphologieResult>(
     "/api/v1/diagnostics/morphologie/silhouette",
     { user_id: userId, mesures_declarees: mesuresDeclarees },
-    photo,
+    { photo_face: photoFace, photo_profil: photoProfil },
   );
 }

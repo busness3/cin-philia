@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+import { PhotoPickerTile } from "../../../../components/PhotoPickerTile";
 import { microcopy } from "../../../../content/microcopy";
 import { submitSilhouette } from "../../../../services/api";
 import { useDiagnosticStore } from "../../../../store/useDiagnosticStore";
@@ -16,14 +17,19 @@ type Props = NativeStackScreenProps<PhysiqueStackParamList, "SilhouetteCapture">
  * par le sélecteur d'image côté OS. On ne le copie/persiste jamais dans un
  * stockage applicatif — on le lit une seule fois pour l'upload, voir
  * services/api.ts::submitSilhouette.
+ *
+ * 2 photos (face + profil) : une seule photo donne ~50% de précision sur
+ * la silhouette (limite documentée du produit) — la vue de profil montre
+ * des volumes que la vue de face seule ne montre pas.
  */
 export function SilhouetteCaptureScreen({ navigation }: Props) {
-  const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [photoFace, setPhotoFace] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [photoProfil, setPhotoProfil] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [mesures, setMesures] = useState("");
   const [loading, setLoading] = useState(false);
   const { userId, setMorphologie } = useDiagnosticStore();
 
-  async function pickPhoto() {
+  async function pickPhoto(onPicked: (asset: ImagePicker.ImagePickerAsset) => void) {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert("Permission requise", "Autorise l'accès aux photos pour continuer.");
@@ -34,19 +40,24 @@ export function SilhouetteCaptureScreen({ navigation }: Props) {
       quality: 0.8,
     });
     if (!result.canceled && result.assets.length > 0) {
-      setPhoto(result.assets[0]);
+      onPicked(result.assets[0]);
     }
   }
 
   async function handleSubmit() {
-    if (!photo || mesures.trim().length === 0) return;
+    if (!photoFace || !photoProfil || mesures.trim().length === 0) return;
     setLoading(true);
     try {
-      const result = await submitSilhouette(userId, mesures.trim(), {
-        uri: photo.uri,
-        name: photo.fileName ?? "photo.jpg",
-        type: photo.mimeType ?? "image/jpeg",
-      });
+      const result = await submitSilhouette(
+        userId,
+        mesures.trim(),
+        { uri: photoFace.uri, name: photoFace.fileName ?? "face.jpg", type: photoFace.mimeType ?? "image/jpeg" },
+        {
+          uri: photoProfil.uri,
+          name: photoProfil.fileName ?? "profil.jpg",
+          type: photoProfil.mimeType ?? "image/jpeg",
+        },
+      );
       setMorphologie(result);
       navigation.navigate("SilhouetteResult");
     } catch (error) {
@@ -61,19 +72,14 @@ export function SilhouetteCaptureScreen({ navigation }: Props) {
     }
   }
 
-  const canSubmit = photo !== null && mesures.trim().length > 0 && !loading;
+  const canSubmit = photoFace !== null && photoProfil !== null && mesures.trim().length > 0 && !loading;
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{microcopy.morphologie.captureIntro}</Text>
 
-      <Pressable style={styles.photoPicker} onPress={pickPhoto}>
-        {photo ? (
-          <Image source={{ uri: photo.uri }} style={styles.photoPreview} />
-        ) : (
-          <Text style={styles.photoPlaceholder}>Choisir une photo</Text>
-        )}
-      </Pressable>
+      <PhotoPickerTile label="Vue de face" photo={photoFace} onPress={() => pickPhoto(setPhotoFace)} />
+      <PhotoPickerTile label="Vue de profil" photo={photoProfil} onPress={() => pickPhoto(setPhotoProfil)} />
 
       <Text style={styles.label}>Mesures déclarées (tour de poitrine / taille / hanches)</Text>
       <TextInput
@@ -98,18 +104,6 @@ export function SilhouetteCaptureScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background, padding: spacing.lg, gap: spacing.sm },
   title: { ...typography.subtitle, color: colors.text, marginBottom: spacing.sm },
-  photoPicker: {
-    height: 220,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  photoPreview: { width: "100%", height: "100%" },
-  photoPlaceholder: { ...typography.body, color: colors.textMuted },
   label: { ...typography.body, color: colors.text, marginTop: spacing.md },
   input: {
     borderWidth: 1,

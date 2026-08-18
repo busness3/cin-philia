@@ -16,7 +16,7 @@ ne pas les utiliser.
 from pathlib import Path
 
 from app.schemas.diagnostic import MorphologieResult
-from app.services.claude_client import classify_image
+from app.services.claude_client import ImageInput, classify_image
 
 _REFERENCE_DOC = (
     Path(__file__).resolve().parents[3]
@@ -47,7 +47,10 @@ Consignes de ton (non négociables, cohérentes avec la marque) :
 - Jamais de vocabulaire "avant/après", "corriger", "cacher un défaut"
 - On révèle une silhouette, on ne la juge jamais
 
-Utilise les mesures déclarées par l'utilisatrice (si fournies) en
+Tu reçois 2 photos : une vue de face et une vue de profil. Utilise les
+deux — la vue de profil montre des volumes (bassin, dos, buste de côté)
+invisibles de face, et améliore nettement la fiabilité par rapport à une
+seule photo. Utilise aussi les mesures déclarées par l'utilisatrice en
 complément de l'analyse visuelle — approche hybride recommandée par le
 produit, la classification à partir d'une seule image ayant une précision
 limitée.
@@ -71,10 +74,19 @@ SILHOUETTE_SCHEMA = {
 }
 
 
-def classify_silhouette(*, image_bytes: bytes, media_type: str, mesures_declarees: str) -> MorphologieResult:
+def classify_silhouette(
+    *,
+    image_face_bytes: bytes,
+    media_type_face: str,
+    image_profil_bytes: bytes,
+    media_type_profil: str,
+    mesures_declarees: str,
+) -> MorphologieResult:
     result = classify_image(
-        image_bytes=image_bytes,
-        media_type=media_type,
+        images=[
+            ImageInput(image_bytes=image_face_bytes, media_type=media_type_face, label="vue de face"),
+            ImageInput(image_bytes=image_profil_bytes, media_type=media_type_profil, label="vue de profil"),
+        ],
         system_prompt=SILHOUETTE_CRITERIA,
         user_context=f"Mesures déclarées par l'utilisatrice : {mesures_declarees}",
         json_schema=SILHOUETTE_SCHEMA,

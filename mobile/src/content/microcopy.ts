@@ -31,10 +31,10 @@ export const microcopy = {
     // colorimetrie_saisons_brouillon.md). Ton "reveal not transform" :
     // jamais présenté comme un doute négatif.
     lowConfidenceNote: "Une première approche à affiner avec toi — on continue de la préciser.",
-    photoLinkLabel: "Ou prends une photo pour un résultat plus précis",
-    photoIntro: "Une photo de ton visage pour lire directement tes teintes naturelles.",
+    photoLinkLabel: "Ou prends 2 photos pour un résultat plus précis",
+    photoIntro: "Deux photos de ton visage pour lire directement tes teintes naturelles.",
     photoGuidance:
-      "Pour un résultat plus fiable : lumière naturelle, sans maquillage ni filtre si possible.",
+      "Pour un résultat plus fiable : lumière naturelle, sans maquillage ni filtre si possible. Deux photos dans des conditions un peu différentes (par exemple à deux moments de la journée) aident à confirmer la lecture.",
     photoCta: "Révéler ma palette",
   },
   morphologie: {

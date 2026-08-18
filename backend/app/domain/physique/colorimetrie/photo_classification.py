@@ -1,7 +1,7 @@
-"""Détermination undertone + contraste à partir d'une photo (Claude vision).
+"""Détermination undertone + contraste à partir de 2 photos (Claude vision).
 
-Design volontaire : Claude ne calcule PAS la saison directement depuis la
-photo. Son unique rôle ici est de lire, sur l'image, les deux mêmes
+Design volontaire : Claude ne calcule PAS la saison directement depuis les
+photos. Son unique rôle ici est de lire, sur les images, les deux mêmes
 valeurs catégorielles que le formulaire déclaratif collecte (undertone,
 niveau_contraste) — dans le vocabulaire exact du document de référence de
 Clea. Le calcul de la saison reste ensuite fait par
@@ -13,18 +13,19 @@ Les définitions d'undertone et de contraste viennent verbatim de
 `backend/app/content/reference_docs/typologie_pilier_physique.md` (§4 et
 §8) — chargées depuis le fichier, pas dupliquées en dur.
 
-⚠️ Limite connue à documenter pour l'utilisatrice (cohérent avec la
-pratique professionnelle de color analysis) : la lecture d'undertone
-depuis une photo est sensible à l'éclairage, à la balance des blancs de
-l'appareil et au maquillage — d'où la consigne de capture (lumière
-naturelle, sans maquillage/filtre) et le champ `confiance` dans le
-résultat.
+⚠️ Pourquoi 2 photos plutôt qu'une : la lecture d'undertone depuis une
+photo est sensible à l'éclairage, à la balance des blancs de l'appareil
+et au maquillage (limite connue, cohérente avec la pratique professionnelle
+de color analysis, qui utilise plusieurs tests). 2 photos permettent à
+Claude de croiser ses lectures : cohérentes entre elles → confiance forte,
+divergentes → confiance faible et on le dit explicitement plutôt que de
+trancher au hasard.
 """
 
 from pathlib import Path
 
 from app.schemas.diagnostic import NiveauContraste, Undertone
-from app.services.claude_client import classify_image
+from app.services.claude_client import ImageInput, classify_image
 
 _REFERENCE_DOC = (
     Path(__file__).resolve().parents[3]
@@ -38,7 +39,7 @@ def _load_criteria() -> str:
     reference_text = _REFERENCE_DOC.read_text(encoding="utf-8")
     return f"""\
 Tu es un système d'analyse d'image pour l'application Reveal You. Ta tâche
-est de lire, sur la photo de visage fournie, deux caractéristiques
+est de lire, sur les 2 photos de visage fournies, deux caractéristiques
 précises : le sous-ton de peau (undertone) et le niveau de contraste
 entre peau/yeux/cheveux — dans le vocabulaire exact défini ci-dessous.
 
@@ -53,10 +54,14 @@ ensuite de la correspondance vers la saison.
 Consignes :
 - undertone : "chaud", "froid" ou "neutre" (§8 du document)
 - niveau_contraste : "faible", "moyen" ou "fort" (§4 du document)
-- confiance : ta confiance dans cette lecture. Marque "faible" si
-  l'éclairage semble artificiel, mixte, ou si un maquillage/filtre rend la
-  lecture incertaine — c'est une vraie limite de l'analyse par photo, pas
-  une faute de l'utilisatrice.
+- Tu reçois 2 photos, idéalement prises dans des conditions différentes
+  (lumière, moment de la journée). Lis chaque photo indépendamment, puis
+  rends un résultat unique :
+  - si les 2 lectures s'accordent → confiance "forte"
+  - si elles divergent, ou si une des deux photos a un éclairage
+    artificiel/mixte qui rend la lecture incertaine → confiance "faible",
+    et explique-le dans la justification (ce n'est jamais une faute de
+    l'utilisatrice, juste une limite de l'analyse par photo)
 - Ton chaleureux et descriptif dans la justification, jamais correctif —
   cohérent avec la marque (on décrit, on ne juge jamais).
 """
@@ -80,16 +85,24 @@ UNDERTONE_CONTRASTE_SCHEMA = {
 }
 
 
-def classify_undertone_contraste(*, image_bytes: bytes, media_type: str) -> dict:
+def classify_undertone_contraste(
+    *,
+    image_1_bytes: bytes,
+    media_type_1: str,
+    image_2_bytes: bytes,
+    media_type_2: str,
+) -> dict:
     """Retourne un dict avec undertone/niveau_contraste/confiance/justification.
 
     Les valeurs `undertone`/`niveau_contraste` sont directement compatibles
     avec `app.schemas.diagnostic.ColorimetrieInput` (mêmes enums).
     """
     return classify_image(
-        image_bytes=image_bytes,
-        media_type=media_type,
+        images=[
+            ImageInput(image_bytes=image_1_bytes, media_type=media_type_1, label="photo 1"),
+            ImageInput(image_bytes=image_2_bytes, media_type=media_type_2, label="photo 2"),
+        ],
         system_prompt=UNDERTONE_CONTRASTE_CRITERIA,
-        user_context="Analyse cette photo de visage.",
+        user_context="Analyse ces 2 photos de visage.",
         json_schema=UNDERTONE_CONTRASTE_SCHEMA,
     )

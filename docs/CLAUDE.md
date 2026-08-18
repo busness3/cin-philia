@@ -33,19 +33,19 @@ aujourd'hui. Détail complet et raisons dans
 - Morphologie V1 = **silhouette uniquement** (forme du visage différée)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
 - Yeux / sourcils / type de peau / texture cheveux : hors scope V1
-- Photo corps entier obligatoire (silhouette) + photo visage **optionnelle** (colorimétrie, alternative au formulaire — voir ci-dessous)
+- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
 
 ### 1. Diagnostic de colorimétrie
 Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
 - **Formulaire déclaratif** : undertone, niveau de contraste (faible/moyen/fort), couleur des cheveux
-- **Photo de visage** : Claude vision lit l'undertone et le contraste directement sur la photo (mêmes définitions, même moteur de règles ensuite) — plus précis pour qui ne sait pas s'auto-évaluer, avec une consigne de capture (lumière naturelle, sans maquillage/filtre) pour limiter les biais d'éclairage. Voir `backend/app/domain/physique/colorimetrie/photo_classification.py`.
+- **2 photos de visage** : Claude vision lit l'undertone et le contraste sur chaque photo et croise les 2 lectures (mêmes définitions, même moteur de règles ensuite) — plus précis pour qui ne sait pas s'auto-évaluer ; confiance dégradée explicitement si les 2 lectures divergent ou si l'éclairage semble trompeur, avec une consigne de capture (lumière naturelle, sans maquillage/filtre, idéalement 2 moments différents). Voir `backend/app/domain/physique/colorimetrie/photo_classification.py`.
 
 → Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif). **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
 ### 2. Analyse morphologique (silhouette) + recommandations vestimentaires
 En V1, basée sur la silhouette uniquement (forme du visage différée — voir décision de périmètre), avec des recommandations de style vestimentaire cohérentes avec le type identifié.
 
-**Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 recommandée : hybride** — mesures déclarées par l'utilisateur·rice + analyse visuelle, plutôt que vision par ordinateur pure.
+**Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 implémentée : hybride + 2 photos** — mesures déclarées par l'utilisateur·rice + analyse visuelle sur une vue de face ET une vue de profil (plutôt qu'une seule image), pour couvrir les volumes que la vue de face seule ne montre pas.
 
 ## 🧬 Framework typologique complet (9 catégories)
 

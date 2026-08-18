@@ -51,21 +51,29 @@ def diagnostic_colorimetrie(
 async def diagnostic_colorimetrie_photo(
     user_id: str,
     db: Session = Depends(get_db),
-    photo: UploadFile = File(...),
+    photo_1: UploadFile = File(...),
+    photo_2: UploadFile = File(...),
 ) -> ColorimetrieResult:
-    """Variante photo du diagnostic colorimétrie — voir
-    `photo_classification.py` pour le design (Claude lit undertone/
+    """Variante photo du diagnostic colorimétrie — 2 photos (idéalement
+    dans des conditions de lumière différentes) pour fiabiliser la lecture.
+    Voir `photo_classification.py` pour le design (Claude lit undertone/
     contraste, le moteur de règles déterministe calcule ensuite la saison,
     exactement comme le parcours formulaire).
     """
-    image_bytes = await _read_photo(photo)
+    image_1_bytes = await _read_photo(photo_1)
+    image_2_bytes = await _read_photo(photo_2)
 
     try:
-        lecture = classify_undertone_contraste(image_bytes=image_bytes, media_type=photo.content_type)
+        lecture = classify_undertone_contraste(
+            image_1_bytes=image_1_bytes,
+            media_type_1=photo_1.content_type,
+            image_2_bytes=image_2_bytes,
+            media_type_2=photo_2.content_type,
+        )
     except Exception:
         logger.exception("Échec de la lecture undertone/contraste (user_id=%s)", user_id)
         raise HTTPException(status_code=502, detail="Échec de l'analyse de la photo.") from None
-    # `image_bytes` sort de portée ici — jamais persisté, jamais loggé.
+    # `image_1_bytes`/`image_2_bytes` sortent de portée ici — jamais persistés, jamais logués.
 
     result = determine_season(
         ColorimetrieInput(undertone=lecture["undertone"], niveau_contraste=lecture["niveau_contraste"])
@@ -85,20 +93,24 @@ async def diagnostic_silhouette(
     user_id: str,
     mesures_declarees: str,
     db: Session = Depends(get_db),
-    photo: UploadFile = File(...),
+    photo_face: UploadFile = File(...),
+    photo_profil: UploadFile = File(...),
 ) -> MorphologieResult:
-    image_bytes = await _read_photo(photo)
+    image_face_bytes = await _read_photo(photo_face)
+    image_profil_bytes = await _read_photo(photo_profil)
 
     try:
         result = classify_silhouette(
-            image_bytes=image_bytes,
-            media_type=photo.content_type,
+            image_face_bytes=image_face_bytes,
+            media_type_face=photo_face.content_type,
+            image_profil_bytes=image_profil_bytes,
+            media_type_profil=photo_profil.content_type,
             mesures_declarees=mesures_declarees,
         )
     except Exception:
         logger.exception("Échec de la classification silhouette (user_id=%s)", user_id)
         raise HTTPException(status_code=502, detail="Échec de la classification.") from None
-    # `image_bytes` sort de portée ici — jamais persisté, jamais loggé.
+    # `image_face_bytes`/`image_profil_bytes` sortent de portée ici — jamais persistés, jamais logués.
 
     _save_result(db, user_id=user_id, category="morphologie_silhouette", result=result)
     return result
