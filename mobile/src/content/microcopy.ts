@@ -49,5 +49,7 @@ export const microcopy = {
     formeYeuxTitle: "Ton regard",
     formeYeuxUnavailable: "On n'a pas pu lire la forme de tes yeux cette fois-ci — réessaie plus tard.",
     conseilsMaquillageTitle: "Quelques pistes de maquillage",
+    sourcilsTitle: "Tes sourcils",
+    sourcilsUnavailable: "On n'a pas pu lire la forme de tes sourcils cette fois-ci — réessaie plus tard.",
   },
 } as const;

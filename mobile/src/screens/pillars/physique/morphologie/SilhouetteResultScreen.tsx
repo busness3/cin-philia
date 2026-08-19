@@ -82,6 +82,18 @@ export function SilhouetteResultScreen() {
       ) : (
         <Text style={styles.note}>{microcopy.morphologie.formeYeuxUnavailable}</Text>
       )}
+
+      {result.sourcils ? (
+        <TraitSection
+          sectionTitle={microcopy.morphologie.sourcilsTitle}
+          forme={result.sourcils.forme}
+          description={result.sourcils.description}
+          conseils={result.sourcils.conseils_style}
+          conseilsTitle={microcopy.morphologie.conseilsStyleTitle}
+        />
+      ) : (
+        <Text style={styles.note}>{microcopy.morphologie.sourcilsUnavailable}</Text>
+      )}
     </ScrollView>
   );
 }

@@ -11,7 +11,8 @@ l'exécution par le code de classification plutôt que dupliqués en dur.
 - [x] **Colorimétrie (4 saisons)** — fonctionnelle, **2 parcours** : formulaire déclaratif ou photo de visage (Claude vision lit undertone/contraste, voir `photo_classification.py`). Table de correspondance **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table fournie. À faire relire par Clea en priorité. Contraste (§4) approfondi : critères complets + conseils de style reçus et intégrés (`contraste_guide_reference.md`) — meilleure lecture photo, et `conseils_style` (2-3 conseils par niveau de contraste) maintenant renvoyé dans le résultat.
 - [x] **Forme du visage (7 types)** — critères complets reçus et intégrés (`forme_visage_guide_reference.md`) : Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (réutilise la photo de face déjà fournie pour la silhouette — pas de photo supplémentaire demandée). **Sort la morphologie du périmètre "silhouette uniquement"** décidé plus bas — mis à jour en conséquence.
 - [x] **Forme des yeux (9 types)** — critères complets reçus et intégrés (`forme_yeux_guide_reference.md`) : Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que silhouette + forme du visage — pas de photo supplémentaire). ⚠️ Ces 9 types couvrent en réalité 2 axes (forme de l'œil vs espacement) non mutuellement exclusifs — voir note dans `forme_yeux_classification.py` ; gardé en un seul choix pour coller au document source, à revoir avec Clea si besoin de plus de précision.
-- [ ] **Sourcils, type de peau, texture des cheveux** — hors scope V1 (voir décision de périmètre ci-dessous).
+- [x] **Sourcils (6 types)** — critères complets reçus et intégrés (`sourcils_guide_reference.md`) : Arqués, Droits, Arrondis, Épais, Fins, En pente descendante. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que les autres catégories — pas de photo supplémentaire). ⚠️ Le document source formule la catégorie "En pente descendante" dans un vocabulaire correctif ("air fatigué", "corriger") contraire à la charte de ton — reformulation explicitement demandée à Claude dans `sourcils_classification.py`, voir la note dans `sourcils_guide_reference.md`.
+- [ ] **Type de peau, texture des cheveux** — hors scope V1 (voir décision de périmètre ci-dessous).
 
 ## Décision de périmètre V1 (prise en session, à valider avec Clea)
 
@@ -22,14 +23,14 @@ et testable maintenant plutôt que bloquée sur des documents manquants,
 le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
 
 - ~~**Morphologie V1 = silhouette uniquement.**~~ **Mis à jour** : Clea a
-  fourni les critères de la forme du visage et de la forme des yeux — la
-  morphologie V1 couvre maintenant silhouette **+** forme du visage **+**
-  forme des yeux (voir statut ci-dessus).
+  fourni les critères de la forme du visage, de la forme des yeux et des
+  sourcils — la morphologie V1 couvre maintenant silhouette **+** forme
+  du visage **+** forme des yeux **+** sourcils (voir statut ci-dessus).
 - **Colorimétrie V1 = 4 saisons de base**, pas de 12 sous-saisons (les
   inputs déclaratifs collectés ne suffisent pas à les distinguer
   fiablement).
-- **Sourcils, type de peau, texture des cheveux (André Walker) : hors scope
-  V1.** Aucun des 2 features V1 déclarées n'en a besoin — ce sont des
+- **Type de peau, texture des cheveux (André Walker) : hors scope V1.**
+  Aucun des 2 features V1 déclarées n'en a besoin — ce sont des
   catégories du framework typologique complet, probablement destinées à
   des fonctionnalités futures (maquillage, soins...) non encore cadrées.
 - **Capture photo :** silhouette = **2 photos obligatoires** (face + profil
@@ -65,9 +66,13 @@ besoin.
    12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant
    que cette question n'est pas validée. Proposition de wording dans
    `colorimetrie_palettes_12_saisons.md`.
-4. Confirmer la décision de périmètre ci-dessus (sourcils/peau/cheveux
-   toujours hors scope — silhouette + forme du visage + forme des yeux
-   sont maintenant toutes les trois dans le scope morphologie).
+4. Confirmer la décision de périmètre ci-dessus (peau/cheveux toujours
+   hors scope — silhouette + forme du visage + forme des yeux + sourcils
+   sont maintenant toutes les quatre dans le scope morphologie).
 5. **Forme des yeux — axe forme vs espacement** : à trancher avec Clea si
    elle veut distinguer les deux plutôt qu'un choix unique parmi 9 (voir
    note dans `forme_yeux_classification.py`).
+6. **Sourcils — reformulation "En pente descendante"** : à faire confirmer
+   par Clea que la reformulation demandée à Claude (sans "air fatigué"
+   ni "corriger") rend bien l'esprit voulu, malgré le vocabulaire du
+   document source — voir note dans `sourcils_guide_reference.md`.

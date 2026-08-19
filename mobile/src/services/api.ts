@@ -42,6 +42,13 @@ export interface FormeYeuxResult {
   conseils_maquillage: string[];
 }
 
+export interface SourcilsResult {
+  forme: string;
+  confiance: string;
+  description: string;
+  conseils_style: string[];
+}
+
 export interface MorphologieResult {
   silhouette_type: string;
   confiance: string;
@@ -50,6 +57,7 @@ export interface MorphologieResult {
   // silhouette reste affiché seul dans ce cas.
   forme_visage: FormeVisageResult | null;
   forme_yeux: FormeYeuxResult | null;
+  sourcils: SourcilsResult | null;
 }
 
 export interface PhotoUpload {

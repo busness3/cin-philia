@@ -80,6 +80,16 @@ class FormeYeuxResult(BaseModel):
     )
 
 
+class SourcilsResult(BaseModel):
+    forme: str
+    confiance: str
+    description: str = Field(..., description="Texte généré, ton 'reveal not transform'")
+    conseils_style: list[str] = Field(
+        default_factory=list,
+        description="2-3 conseils courts (entretien, maquillage sourcils...) issus du document de référence.",
+    )
+
+
 class MorphologieResult(BaseModel):
     silhouette_type: str
     confiance: str
@@ -89,3 +99,4 @@ class MorphologieResult(BaseModel):
     # l'endpoint pour ça, la silhouette reste utile seule.
     forme_visage: FormeVisageResult | None = None
     forme_yeux: FormeYeuxResult | None = None
+    sourcils: SourcilsResult | None = None

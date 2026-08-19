@@ -30,11 +30,12 @@ livrer une V1 complète et testable plutôt que bloquée sur des documents
 manquants, le périmètre a été resserré à ce qui est classifiable dès
 aujourd'hui. Détail complet et raisons dans
 `backend/app/content/README.md` § Décision de périmètre V1. Résumé :
-- Morphologie V1 = **silhouette + forme du visage + forme des yeux** (mise
-  à jour : Clea a fourni les critères des 3, qui sortent donc du différé)
+- Morphologie V1 = **silhouette + forme du visage + forme des yeux +
+  sourcils** (mise à jour : Clea a fourni les critères des 4, qui sortent
+  donc du différé)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
-- Sourcils / type de peau / texture cheveux : hors scope V1
-- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage et à la forme des yeux (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
+- Type de peau / texture cheveux : hors scope V1
+- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage, la forme des yeux et les sourcils (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
 
 ### 1. Diagnostic de colorimétrie
 Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
@@ -43,12 +44,12 @@ Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 1
 
 → Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif), accompagnée de **2-3 conseils de style liés au niveau de contraste déclaré** (association de couleurs, maquillage) — issus de `backend/app/content/reference_docs/contraste_guide_reference.md` (fourni par Clea), voir `contraste_conseils.py`. **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
-### 2. Analyse morphologique (silhouette + forme du visage + forme des yeux) + recommandations
-En V1, couvre la silhouette, la forme du visage **et** la forme des yeux (mise à jour : critères des 3 reçus, plus différés — voir décision de périmètre), avec des recommandations vestimentaires/lunettes/coiffure/bijoux/maquillage cohérentes avec les types identifiés.
+### 2. Analyse morphologique (silhouette + forme du visage + forme des yeux + sourcils) + recommandations
+En V1, couvre la silhouette, la forme du visage, la forme des yeux **et** les sourcils (mise à jour : critères des 4 reçus, plus différés — voir décision de périmètre), avec des recommandations vestimentaires/lunettes/coiffure/bijoux/maquillage cohérentes avec les types identifiés.
 
 **Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 implémentée : hybride + 2 photos** — mesures déclarées par l'utilisateur·rice + analyse visuelle sur une vue de face ET une vue de profil (plutôt qu'une seule image), pour couvrir les volumes que la vue de face seule ne montre pas.
 
-**Forme du visage et forme des yeux :** classification à partir de la même vue de face (une seule photo suffit, se lisent entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py` et `forme_yeux_classification.py`. 7 catégories de forme de visage (Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire) et 9 de forme des yeux (Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants — ⚠️ ces 9 couvrent 2 axes différents, forme et espacement, non tranchés séparément, voir note dans le fichier). Résultats combinés avec la silhouette en un seul appel (`POST /morphologie/silhouette`), chacun non bloquant si sa classification échoue seule.
+**Forme du visage, forme des yeux et sourcils :** classification à partir de la même vue de face (une seule photo suffit, se lisent entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py`, `forme_yeux_classification.py` et `sourcils_classification.py`. 7 catégories de forme de visage (Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire), 9 de forme des yeux (Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants — ⚠️ ces 9 couvrent 2 axes différents, forme et espacement, non tranchés séparément, voir note dans le fichier) et 6 de sourcils (Arqués, Droits, Arrondis, Épais, Fins, En pente descendante — ⚠️ cette dernière catégorie est reformulée par Claude pour retirer le vocabulaire correctif du document source, voir note dans `sourcils_guide_reference.md`). Résultats combinés avec la silhouette en un seul appel (`POST /morphologie/silhouette`), chacun non bloquant si sa classification échoue seule.
 
 ## 🧬 Framework typologique complet (9 catégories)
 
@@ -73,6 +74,7 @@ Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble 
 - ✅ `forme_visage_guide_reference.md` — définitions + conseils de style pour les 7 formes de visage (source : `Reveal_You_Pilier_Physique_Forme_du_visage.docx`) — **classification forme du visage fonctionnelle en V1**
 - ✅ `forme_yeux_guide_reference.md` — définitions + conseils de maquillage pour les 9 formes des yeux (source : `Reveal_You_Pilier_Physique_Forme_des_yeux.docx`) — **classification forme des yeux fonctionnelle en V1**
 - ✅ `contraste_guide_reference.md` — définitions détaillées + conseils de style pour les 3 niveaux de contraste (source : `Reveal_You_Pilier_Physique_Contraste.docx`) — **approfondit le §4 de `typologie_pilier_physique.md`**, utilisé pour la lecture photo et pour les conseils de style du résultat colorimétrie
+- ✅ `sourcils_guide_reference.md` — définitions + conseils d'entretien/maquillage pour les 6 formes de sourcils (source : `Reveal_You_Pilier_Physique_Sourcils.docx`) — **classification sourcils fonctionnelle en V1**
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 
