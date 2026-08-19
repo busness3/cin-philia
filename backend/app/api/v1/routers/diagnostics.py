@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.domain.physique.cheveux.nature_cheveux import determine_nature_cheveux
 from app.domain.physique.colorimetrie.photo_classification import classify_undertone_contraste
 from app.domain.physique.colorimetrie.rules import determine_season
 from app.domain.physique.morphologie.classification import classify_silhouette
@@ -20,7 +21,13 @@ from app.domain.physique.morphologie.forme_visage_classification import classify
 from app.domain.physique.morphologie.forme_yeux_classification import classify_forme_yeux
 from app.domain.physique.morphologie.sourcils_classification import classify_sourcils
 from app.models.diagnostic_result import DiagnosticResult
-from app.schemas.diagnostic import ColorimetrieInput, ColorimetrieResult, MorphologieResult
+from app.schemas.diagnostic import (
+    ColorimetrieInput,
+    ColorimetrieResult,
+    MorphologieResult,
+    NatureCheveuxInput,
+    NatureCheveuxResult,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -146,4 +153,18 @@ async def diagnostic_silhouette(
     # `image_face_bytes`/`image_profil_bytes` sortent de portée ici — jamais persistés, jamais logués.
 
     _save_result(db, user_id=user_id, category="morphologie_silhouette", result=result)
+    return result
+
+
+@router.post("/cheveux/nature", response_model=NatureCheveuxResult)
+def diagnostic_nature_cheveux(
+    payload: NatureCheveuxInput,
+    user_id: str,
+    db: Session = Depends(get_db),
+) -> NatureCheveuxResult:
+    """Déclaratif uniquement, aucune photo ni appel IA — voir
+    `nature_cheveux.py` pour le choix produit (Clea) de ne pas classifier
+    la texture capillaire par photo pour l'instant."""
+    result = determine_nature_cheveux(payload.type_texture)
+    _save_result(db, user_id=user_id, category="cheveux_nature", result=result)
     return result

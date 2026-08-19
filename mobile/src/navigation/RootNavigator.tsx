@@ -6,6 +6,8 @@ import { PillarComingSoonCard } from "../components/PillarComingSoonCard";
 import { microcopy } from "../content/microcopy";
 import { WelcomeScreen } from "../screens/onboarding/WelcomeScreen";
 import { PhysiqueHomeScreen } from "../screens/pillars/physique/PhysiqueHomeScreen";
+import { NatureCheveuxFormScreen } from "../screens/pillars/physique/cheveux/NatureCheveuxFormScreen";
+import { NatureCheveuxResultScreen } from "../screens/pillars/physique/cheveux/NatureCheveuxResultScreen";
 import { ColorimetrieFormScreen } from "../screens/pillars/physique/colorimetrie/ColorimetrieFormScreen";
 import { ColorimetriePhotoScreen } from "../screens/pillars/physique/colorimetrie/ColorimetriePhotoScreen";
 import { ColorimetrieResultScreen } from "../screens/pillars/physique/colorimetrie/ColorimetrieResultScreen";
@@ -32,6 +34,8 @@ export type PhysiqueStackParamList = {
   ColorimetrieResult: undefined;
   SilhouetteCapture: undefined;
   SilhouetteResult: undefined;
+  NatureCheveuxForm: undefined;
+  NatureCheveuxResult: undefined;
 };
 
 export type MainTabParamList = {
@@ -73,6 +77,16 @@ function PhysiqueNavigator() {
         name="SilhouetteResult"
         component={SilhouetteResultScreen}
         options={{ headerShown: true, title: microcopy.morphologie.resultTitle }}
+      />
+      <PhysiqueStack.Screen
+        name="NatureCheveuxForm"
+        component={NatureCheveuxFormScreen}
+        options={{ headerShown: true, title: "Nature des cheveux" }}
+      />
+      <PhysiqueStack.Screen
+        name="NatureCheveuxResult"
+        component={NatureCheveuxResultScreen}
+        options={{ headerShown: true, title: microcopy.cheveux.resultTitle }}
       />
     </PhysiqueStack.Navigator>
   );

@@ -21,6 +21,11 @@ export function PhysiqueHomeScreen({ navigation }: Props) {
         <Text style={styles.cardTitle}>Morphologie</Text>
         <Text style={styles.cardBody}>{microcopy.morphologie.captureIntro}</Text>
       </Pressable>
+
+      <Pressable style={styles.card} onPress={() => navigation.navigate("NatureCheveuxForm")}>
+        <Text style={styles.cardTitle}>Nature des cheveux</Text>
+        <Text style={styles.cardBody}>{microcopy.cheveux.intro}</Text>
+      </Pressable>
     </View>
   );
 }

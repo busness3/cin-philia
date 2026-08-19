@@ -60,6 +60,33 @@ export interface MorphologieResult {
   sourcils: SourcilsResult | null;
 }
 
+// Méthode André Walker — voir microcopy.cheveux pour les libellés affichés.
+// Déclaratif uniquement (pas de photo) : l'utilisatrice choisit sa famille
+// (1-4) puis son sous-type (A/B/C) elle-même.
+export type TypeTextureCheveux =
+  | "1A"
+  | "1B"
+  | "1C"
+  | "2A"
+  | "2B"
+  | "2C"
+  | "3A"
+  | "3B"
+  | "3C"
+  | "4A"
+  | "4B"
+  | "4C";
+
+export interface NatureCheveuxInput {
+  type_texture: TypeTextureCheveux;
+}
+
+export interface NatureCheveuxResult {
+  type_texture: string;
+  description: string;
+  conseils_style: string[];
+}
+
 export interface PhotoUpload {
   uri: string;
   name: string;
@@ -132,4 +159,19 @@ export async function submitSilhouette(
     { user_id: userId, mesures_declarees: mesuresDeclarees },
     { photo_face: photoFace, photo_profil: photoProfil },
   );
+}
+
+export async function submitNatureCheveux(
+  userId: string,
+  input: NatureCheveuxInput,
+): Promise<NatureCheveuxResult> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/diagnostics/cheveux/nature?user_id=${encodeURIComponent(userId)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
+  return parseOrThrow<NatureCheveuxResult>(response);
 }

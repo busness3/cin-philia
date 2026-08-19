@@ -102,3 +102,36 @@ class MorphologieResult(BaseModel):
     forme_visage: FormeVisageResult | None = None
     forme_yeux: FormeYeuxResult | None = None
     sourcils: SourcilsResult | None = None
+
+
+class TypeTextureCheveux(str, Enum):
+    """Méthode André Walker — voir content/reference_docs/
+    nature_cheveux_guide_reference.md. Déclaratif uniquement (pas de
+    classification photo) : décision de Clea, la lecture capillaire par
+    photo demande une expertise qui reviendra dans une itération future."""
+
+    T1A = "1A"
+    T1B = "1B"
+    T1C = "1C"
+    T2A = "2A"
+    T2B = "2B"
+    T2C = "2C"
+    T3A = "3A"
+    T3B = "3B"
+    T3C = "3C"
+    T4A = "4A"
+    T4B = "4B"
+    T4C = "4C"
+
+
+class NatureCheveuxInput(BaseModel):
+    type_texture: TypeTextureCheveux
+
+
+class NatureCheveuxResult(BaseModel):
+    type_texture: str
+    description: str = Field(..., description="Texte issu du document de référence (pas généré par IA).")
+    conseils_style: list[str] = Field(
+        default_factory=list,
+        description="1-2 conseils d'entretien/coiffage issus du document de référence.",
+    )

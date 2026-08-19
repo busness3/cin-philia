@@ -23,7 +23,7 @@ L'app est conçue autour de 4 piliers de développement personnel :
 
 **Important pour le développement : la V1 se concentre exclusivement sur le pilier Physique.** L'architecture doit néanmoins être pensée pour accueillir les 3 autres piliers plus tard (navigation, modèle de données, structure de l'app extensible).
 
-## 📱 V1 — Pilier Physique : 2 fonctionnalités IA
+## 📱 V1 — Pilier Physique : 3 fonctionnalités (2 IA + 1 déclarative)
 
 ⚠️ **Décision de périmètre (prise en session, à valider avec Clea)** — pour
 livrer une V1 complète et testable plutôt que bloquée sur des documents
@@ -34,9 +34,13 @@ aujourd'hui. Détail complet et raisons dans
   sourcils** (mise à jour : Clea a fourni les critères des 4, qui sortent
   donc du différé)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
-- Type de peau / texture cheveux : hors scope V1 (documents reçus mais
-  fonctionnalité non cadrée — voir `backend/app/content/README.md`)
-- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage, la forme des yeux et les sourcils (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
+- Nature des cheveux V1 = **3e fonctionnalité, déclarative uniquement**
+  (mise à jour : Clea a fourni les critères et tranché l'approche — pas
+  de photo/IA pour l'instant, elle ne juge pas encore ce domaine assez
+  maîtrisé pour valider une classification automatique ; viendra en V2+)
+- Type de peau : hors scope V1 (document reçu mais fonctionnalité non
+  cadrée — voir `backend/app/content/README.md`)
+- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage, la forme des yeux et les sourcils (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire). Nature des cheveux : **aucune photo**, formulaire à 2 questions (famille puis sous-type).
 
 ### 1. Diagnostic de colorimétrie
 Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
@@ -51,6 +55,9 @@ En V1, couvre la silhouette, la forme du visage, la forme des yeux **et** les so
 **Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 implémentée : hybride + 2 photos** — mesures déclarées par l'utilisateur·rice + analyse visuelle sur une vue de face ET une vue de profil (plutôt qu'une seule image), pour couvrir les volumes que la vue de face seule ne montre pas.
 
 **Forme du visage, forme des yeux et sourcils :** classification à partir de la même vue de face (une seule photo suffit, se lisent entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py`, `forme_yeux_classification.py` et `sourcils_classification.py`. 7 catégories de forme de visage (Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire), 9 de forme des yeux (Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants — ⚠️ ces 9 couvrent 2 axes différents, forme et espacement, non tranchés séparément, voir note dans le fichier) et 6 de sourcils (Arqués, Droits, Arrondis, Épais, Fins, En pente descendante — ⚠️ cette dernière catégorie est reformulée par Claude pour retirer le vocabulaire correctif du document source, voir note dans `sourcils_guide_reference.md`). Résultats combinés avec la silhouette en un seul appel (`POST /morphologie/silhouette`), chacun non bloquant si sa classification échoue seule.
+
+### 3. Nature des cheveux (texture)
+Seule fonctionnalité V1 **sans IA ni photo** — décision explicite de Clea. L'utilisatrice répond à 2 questions déclaratives (famille 1-4, puis sous-type A/B/C, méthode André Walker) et l'app lui restitue directement la description et les conseils déjà rédigés par Clea pour ce sous-type (lookup fidèle au document, aucun texte généré) — voir `backend/app/domain/physique/cheveux/nature_cheveux.py`. 12 sous-types au total (1A à 4C). Endpoint : `POST /cheveux/nature`. La classification par photo n'est pas exclue mais reportée à une itération future, le temps que ce domaine soit mieux cadré côté produit.
 
 ## 🧬 Framework typologique complet (9 catégories)
 
@@ -78,7 +85,7 @@ Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble 
 - ✅ `sourcils_guide_reference.md` — définitions + conseils d'entretien/maquillage pour les 6 formes de sourcils (source : `Reveal_You_Pilier_Physique_Sourcils.docx`) — **classification sourcils fonctionnelle en V1**
 - ✅ `teint_soustons_guide_reference.md` — définitions détaillées + conseils de style pour les 3 undertones (source : `Reveal_You_Pilier_Physique_Teint_souston.docx`) — **approfondit le §8 de `typologie_pilier_physique.md`**, utilisé pour la lecture photo et pour les conseils de style du résultat colorimétrie
 - ⚠️ `type_de_peau_guide_reference.md` — définitions + conseils soins pour les 5 types de peau (source : `Reveal_You_Pilier_Physique_Type_de_peau.docx`) — **reçu, PAS intégré** : ne s'attache à aucune fonctionnalité existante (routine soins, pas colorimétrie/morphologie), à cadrer avec Clea
-- ⚠️ `nature_cheveux_guide_reference.md` — définitions + conseils coiffage pour les 12 sous-types de texture capillaire, méthode André Walker (source : `Reveal_You_Pilier_Physique_Nature_des_cheveux.docx`) — **reçu, PAS intégré**, même raison
+- ✅ `nature_cheveux_guide_reference.md` — définitions + conseils coiffage pour les 12 sous-types de texture capillaire, méthode André Walker (source : `Reveal_You_Pilier_Physique_Nature_des_cheveux.docx`) — **fonctionnalité "Nature des cheveux" fonctionnelle en V1** (déclaratif, voir § 3 ci-dessus)
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 

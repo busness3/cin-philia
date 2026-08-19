@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import type { ColorimetrieResult, MorphologieResult } from "../services/api";
+import type { ColorimetrieResult, MorphologieResult, NatureCheveuxResult } from "../services/api";
 
 /**
  * État en mémoire uniquement pour ce prototype — aucune persistance disque
@@ -13,8 +13,10 @@ interface DiagnosticState {
   userId: string;
   colorimetrie: ColorimetrieResult | null;
   morphologie: MorphologieResult | null;
+  natureCheveux: NatureCheveuxResult | null;
   setColorimetrie: (result: ColorimetrieResult) => void;
   setMorphologie: (result: MorphologieResult) => void;
+  setNatureCheveux: (result: NatureCheveuxResult) => void;
 }
 
 export const useDiagnosticStore = create<DiagnosticState>((set) => ({
@@ -22,6 +24,8 @@ export const useDiagnosticStore = create<DiagnosticState>((set) => ({
   userId: "prototype-user",
   colorimetrie: null,
   morphologie: null,
+  natureCheveux: null,
   setColorimetrie: (result) => set({ colorimetrie: result }),
   setMorphologie: (result) => set({ morphologie: result }),
+  setNatureCheveux: (result) => set({ natureCheveux: result }),
 }));

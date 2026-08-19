@@ -2,7 +2,9 @@
 
 *(source : `Reveal_You_Pilier_Physique_Nature_des_cheveux.docx`, fourni par Clea — reproduit verbatim)*
 
-⚠️ **Non intégré au code pour l'instant** — voir la note en fin de document.
+✅ **Intégré en V1, en déclaratif uniquement** — voir la note en fin de
+document. Pas de classification par photo (décision de Clea : ce n'est
+pas son domaine d'expertise pour le moment, viendra plus tard).
 
 Basée sur la classification André Walker, la nature des cheveux décrit le motif naturel de la fibre capillaire, du raide (type 1) au crépu (type 4), chacun subdivisé en trois sous-types (A, B, C) selon le degré de définition. Elle oriente le choix des produits, des techniques de coiffage et des routines d'entretien.
 
@@ -60,9 +62,14 @@ Cheveux avec un fort retrait (« shrinkage »), motif très serré, plus fragile
 
 ---
 
-⚠️ **Note (ajoutée, pas dans le document source) :** comme pour le type de
-peau, cette catégorie (12 sous-types) ne s'intègre pas naturellement dans
-"morphologie" ni "colorimétrie" — c'est une base pour une recommandation
-**routine capillaire**. Contenu conservé ici pour ne rien perdre, mais
-aucune classification n'a été codée — à discuter avec Clea avant de
-construire quoi que ce soit dessus.
+✅ **Note (mise à jour, décision de Clea en session) :** contrairement au
+type de peau (toujours non intégré), cette catégorie est maintenant une
+**3e fonctionnalité du pilier Physique**, à part de colorimétrie/
+morphologie. Approche V1 : **déclaratif uniquement, pas de photo/IA** —
+l'utilisatrice choisit sa famille (1-4) puis son sous-type (A/B/C)
+elle-même, l'app lui restitue directement la description et les conseils
+ci-dessus (lookup fidèle au document, aucune génération). Voir
+`backend/app/domain/physique/cheveux/nature_cheveux.py`. La classification
+par photo n'est pas exclue mais reportée à une itération future — Clea ne
+la juge pas encore assez fiable sans une vraie expertise capillaire pour
+la valider.
