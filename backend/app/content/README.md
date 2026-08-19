@@ -13,7 +13,7 @@ l'exécution par le code de classification plutôt que dupliqués en dur.
 - [x] **Forme des yeux (9 types)** — critères complets reçus et intégrés (`forme_yeux_guide_reference.md`) : Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que silhouette + forme du visage — pas de photo supplémentaire). ⚠️ Ces 9 types couvrent en réalité 2 axes (forme de l'œil vs espacement) non mutuellement exclusifs — voir note dans `forme_yeux_classification.py` ; gardé en un seul choix pour coller au document source, à revoir avec Clea si besoin de plus de précision.
 - [x] **Sourcils (6 types)** — critères complets reçus et intégrés (`sourcils_guide_reference.md`) : Arqués, Droits, Arrondis, Épais, Fins, En pente descendante. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que les autres catégories — pas de photo supplémentaire). ⚠️ Le document source formule la catégorie "En pente descendante" dans un vocabulaire correctif ("air fatigué", "corriger") contraire à la charte de ton — reformulation explicitement demandée à Claude dans `sourcils_classification.py`, voir la note dans `sourcils_guide_reference.md`.
 - [x] **Nature des cheveux (12 sous-types, André Walker)** — critères complets reçus et intégrés (`nature_cheveux_guide_reference.md`). **3e fonctionnalité du pilier Physique**, distincte de colorimétrie/morphologie. **Déclaratif uniquement, pas de photo/IA** (décision de Clea : la classification par photo demande une expertise capillaire qu'elle n'a pas encore pour la valider — reportée à une itération future). L'utilisatrice choisit famille (1-4) puis sous-type (A/B/C), l'app restitue directement la description + les conseils du document (lookup déterministe, voir `nature_cheveux.py`) — aucune génération IA. Endpoint : `POST /cheveux/nature`.
-- [ ] **Type de peau (5 types)** — document complet reçu (`type_de_peau_guide_reference.md`) mais **PAS intégré au code** : ne s'attache pas naturellement à "colorimétrie" ni "morphologie" (routine soins, pas style vestimentaire/couleurs) — nécessite de cadrer avec Clea (nouvelle fonctionnalité ? déclaratif comme les cheveux, ou photo ?) avant de coder quoi que ce soit. Voir "Ce qui reste à valider" ci-dessous.
+- [x] **Type de peau (5 types)** — critères complets reçus et intégrés (`type_de_peau_guide_reference.md`) : Normale, Sèche, Grasse, Mixte, Sensible. **4e fonctionnalité du pilier Physique**, déclarative comme les cheveux (Clea : photo jugée trop peu fiable pour cette catégorie). 3 questions (ressenti, observation visuelle, préoccupation principale), chaque option reprenant un aspect déjà présent dans une définition. ⚠️ **BROUILLON non validé : la logique qui combine les 3 réponses en 1 type** (scoring simple, tie-break par ordre de question) — construite par déduction, pas fournie par Clea. Voir la note dans `type_de_peau_guide_reference.md` et le détail dans `type_peau.py`. Endpoint : `POST /peau/type`.
 
 ## Décision de périmètre V1 (prise en session, à valider avec Clea)
 
@@ -33,10 +33,10 @@ le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
 - ~~**Texture des cheveux : hors scope V1.**~~ **Mis à jour** : Clea a
   fourni les critères et tranché l'approche — 3e fonctionnalité du pilier
   Physique, déclarative (voir statut ci-dessus). Sort donc du hors-scope.
-- **Type de peau : hors scope V1 — document reçu mais fonctionnalité non
-  cadrée.** Ne s'y rattache pas naturellement (routine soins, pas style
-  vestimentaire/couleurs) — voir "Ce qui reste à valider" pour la
-  question à trancher avec Clea.
+- ~~**Type de peau : hors scope V1.**~~ **Mis à jour** : même chose —
+  Clea a tranché pour du déclaratif (photo jugée peu fiable ici) — 4e
+  fonctionnalité du pilier Physique (voir statut ci-dessus). Sort du
+  hors-scope, mais la logique de scoring reste un brouillon à valider.
 - **Capture photo :** silhouette = **2 photos obligatoires** (face + profil
   — la vue de profil comble la limite de précision (~50%) d'une seule
   photo, déjà signalée dans le doc produit). Colorimétrie = **2 photos
@@ -70,10 +70,10 @@ besoin.
    12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant
    que cette question n'est pas validée. Proposition de wording dans
    `colorimetrie_palettes_12_saisons.md`.
-4. Confirmer la décision de périmètre ci-dessus (peau toujours hors
-   scope — silhouette + forme du visage + forme des yeux + sourcils sont
-   maintenant toutes les quatre dans le scope morphologie, et la texture
-   des cheveux est une 3e fonctionnalité à part).
+4. Confirmer la décision de périmètre ci-dessus (silhouette + forme du
+   visage + forme des yeux + sourcils dans le scope morphologie ; nature
+   des cheveux et type de peau en 3e/4e fonctionnalités déclaratives à
+   part).
 5. **Forme des yeux — axe forme vs espacement** : à trancher avec Clea si
    elle veut distinguer les deux plutôt qu'un choix unique parmi 9 (voir
    note dans `forme_yeux_classification.py`).
@@ -81,9 +81,9 @@ besoin.
    par Clea que la reformulation demandée à Claude (sans "air fatigué"
    ni "corriger") rend bien l'esprit voulu, malgré le vocabulaire du
    document source — voir note dans `sourcils_guide_reference.md`.
-7. **Type de peau — même question que pour les cheveux, pas encore
-   tranchée.** Le document est là (`type_de_peau_guide_reference.md`),
-   rien n'est codé. À trancher avec Clea : nouvelle fonctionnalité
-   dédiée (probablement déclarative comme les cheveux, même logique) ?
-   Rattachée à une fonctionnalité existante ? Ou on garde le contenu de
-   côté pour une itération future ?
+7. **Type de peau — logique de scoring à valider (priorité).** Les 3
+   questions et la grille de correspondance vers les 5 types sont un
+   brouillon construit par déduction à partir des définitions du
+   document — pas fourni par Clea. À faire relire en priorité, comme la
+   table de correspondance saison colorielle. Voir la note dans
+   `type_de_peau_guide_reference.md` et `type_peau.py`.

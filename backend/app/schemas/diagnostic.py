@@ -135,3 +135,46 @@ class NatureCheveuxResult(BaseModel):
         default_factory=list,
         description="1-2 conseils d'entretien/coiffage issus du document de référence.",
     )
+
+
+class RessentiPeau(str, Enum):
+    """Voir content/reference_docs/type_de_peau_guide_reference.md — 3
+    questions déclaratives (pas de photo, jugée peu fiable pour cette
+    catégorie), mapping BROUILLON à valider par Clea."""
+
+    EQUILIBREE = "equilibree"
+    TIRAILLE = "tiraille"
+    BRILLE = "brille"
+    VARIABLE_SELON_ZONES = "variable_selon_zones"
+    REACTIVE = "reactive"
+
+
+class VisuelPeau(str, Enum):
+    PORES_PEU_VISIBLES = "pores_peu_visibles"
+    ZONES_SECHES = "zones_seches"
+    BRILLANCE_ZONE_T = "brillance_zone_t"
+    ZONE_T_GRASSE_JOUES_SECHES = "zone_t_grasse_joues_seches"
+    ROUGEURS = "rougeurs"
+
+
+class ProblematiquePeau(str, Enum):
+    RIEN_DE_PARTICULIER = "rien_de_particulier"
+    MANQUE_HYDRATATION = "manque_hydratation"
+    IMPERFECTIONS = "imperfections"
+    DOUBLE_BESOIN = "double_besoin"
+    REACTIONS_AUX_PRODUITS = "reactions_aux_produits"
+
+
+class TypePeauInput(BaseModel):
+    ressenti: RessentiPeau
+    visuel: VisuelPeau
+    problematique: ProblematiquePeau
+
+
+class TypePeauResult(BaseModel):
+    type_peau: str
+    description: str = Field(..., description="Texte issu du document de référence (pas généré par IA).")
+    conseils_style: list[str] = Field(
+        default_factory=list,
+        description="2-3 conseils soins issus du document de référence.",
+    )

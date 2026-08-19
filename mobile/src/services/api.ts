@@ -87,6 +87,35 @@ export interface NatureCheveuxResult {
   conseils_style: string[];
 }
 
+// Type de peau — voir microcopy.peau pour les libellés affichés. Déclaratif
+// uniquement (pas de photo, jugée peu fiable pour cette catégorie) : 3
+// questions (ressenti, visuel, préoccupation) déterminent le type.
+export type RessentiPeau = "equilibree" | "tiraille" | "brille" | "variable_selon_zones" | "reactive";
+export type VisuelPeau =
+  | "pores_peu_visibles"
+  | "zones_seches"
+  | "brillance_zone_t"
+  | "zone_t_grasse_joues_seches"
+  | "rougeurs";
+export type ProblematiquePeau =
+  | "rien_de_particulier"
+  | "manque_hydratation"
+  | "imperfections"
+  | "double_besoin"
+  | "reactions_aux_produits";
+
+export interface TypePeauInput {
+  ressenti: RessentiPeau;
+  visuel: VisuelPeau;
+  problematique: ProblematiquePeau;
+}
+
+export interface TypePeauResult {
+  type_peau: string;
+  description: string;
+  conseils_style: string[];
+}
+
 export interface PhotoUpload {
   uri: string;
   name: string;
@@ -174,4 +203,16 @@ export async function submitNatureCheveux(
     },
   );
   return parseOrThrow<NatureCheveuxResult>(response);
+}
+
+export async function submitTypePeau(userId: string, input: TypePeauInput): Promise<TypePeauResult> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/diagnostics/peau/type?user_id=${encodeURIComponent(userId)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
+  return parseOrThrow<TypePeauResult>(response);
 }

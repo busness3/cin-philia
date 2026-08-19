@@ -2,7 +2,8 @@
 
 *(source : `Reveal_You_Pilier_Physique_Type_de_peau.docx`, fourni par Clea — reproduit verbatim)*
 
-⚠️ **Non intégré au code pour l'instant** — voir la note en fin de document.
+✅ **Intégré en V1, en déclaratif uniquement (BROUILLON sur la logique de
+mapping)** — voir la note en fin de document.
 
 Le type de peau reflète la production naturelle de sébum et la sensibilité cutanée. Il oriente le choix des textures, des actifs et de la fréquence des soins.
 
@@ -55,12 +56,22 @@ Peau réactive, sujette aux rougeurs, tiraillements ou picotements face à certa
 
 ---
 
-⚠️ **Note (ajoutée, pas dans le document source) :** contrairement à forme
-du visage / forme des yeux / sourcils, cette catégorie ne s'intègre pas
-naturellement dans le diagnostic "morphologie" existant (vêtements/style)
-ni dans "colorimétrie" (couleurs) — c'est une base pour une recommandation
-**soins de la peau**, un territoire produit différent (routine, actifs,
-fréquence), pas encore cadré comme fonctionnalité. Contenu conservé ici
-pour ne rien perdre, mais aucune classification n'a été codée — à discuter
-avec Clea avant de construire quoi que ce soit dessus (nouvelle
-fonctionnalité ? nouveau pilier ? quelle photo/quel input ?).
+✅ **Note (mise à jour, décision de Clea en session) :** photo jugée trop
+peu fiable pour ce cas (Clea : « ce sera un peu compliqué d'analyser le
+type de peau avec une photo ») — approche V1 retenue : **3 questions
+déclaratives** (ressenti au quotidien, observation visuelle, préoccupation
+principale), chacune couvrant un angle déjà présent dans les définitions
+ci-dessus. C'est une **4e fonctionnalité du pilier Physique**, comme la
+nature des cheveux.
+
+⚠️ **Brouillon non validé : la logique qui combine les 3 réponses pour
+déterminer le type.** Le document ci-dessus donne les 5 définitions et
+leurs conseils, mais pas de grille officielle "quelle réponse compte pour
+quel type" — cette grille a été construite par déduction directe à partir
+des définitions (une réponse = un aspect explicitement mentionné dans la
+définition du type correspondant, jamais inventé), puis un score simple
+(le type le plus souvent pointé par les 3 réponses l'emporte, égalité
+tranchée dans l'ordre ressenti → visuel → préoccupation). Voir
+`backend/app/domain/physique/peau/type_peau.py` pour le détail exact et
+la table de correspondance. **À faire valider par Clea avant mise en
+prod**, même logique de prudence que pour la table saison colorielle.

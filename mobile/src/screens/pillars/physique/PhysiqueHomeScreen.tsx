@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { microcopy } from "../../../content/microcopy";
@@ -9,7 +9,7 @@ type Props = NativeStackScreenProps<PhysiqueStackParamList, "PhysiqueHome">;
 
 export function PhysiqueHomeScreen({ navigation }: Props) {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{microcopy.pillars.physique}</Text>
 
       <Pressable style={styles.card} onPress={() => navigation.navigate("ColorimetrieForm")}>
@@ -26,12 +26,18 @@ export function PhysiqueHomeScreen({ navigation }: Props) {
         <Text style={styles.cardTitle}>Nature des cheveux</Text>
         <Text style={styles.cardBody}>{microcopy.cheveux.intro}</Text>
       </Pressable>
-    </View>
+
+      <Pressable style={styles.card} onPress={() => navigation.navigate("TypePeauForm")}>
+        <Text style={styles.cardTitle}>Type de peau</Text>
+        <Text style={styles.cardBody}>{microcopy.peau.intro}</Text>
+      </Pressable>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background, padding: spacing.lg, gap: spacing.md },
+  container: { flex: 1, backgroundColor: colors.background },
+  content: { padding: spacing.lg, gap: spacing.md },
   title: { ...typography.title, color: colors.text, marginBottom: spacing.sm },
   card: {
     backgroundColor: colors.surface,

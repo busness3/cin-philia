@@ -84,4 +84,36 @@ export const microcopy = {
       "4C": "Motif le plus serré, peu de boucle visible à l'œil nu.",
     },
   },
+  peau: {
+    // Déclaratif uniquement (pas de photo, jugée peu fiable pour cette
+    // catégorie) — voir backend/app/domain/physique/peau/type_peau.py.
+    intro: "Trois questions pour révéler ton type de peau et les gestes qui l'accompagnent.",
+    cta: "Révéler mon type de peau",
+    resultTitle: "Ton type de peau",
+    conseilsTitle: "Quelques gestes pour en prendre soin",
+    stepRessentiTitle: "Comment se sent ta peau au quotidien ?",
+    ressenti: {
+      equilibree: "Confortable, sans tiraillement ni excès de brillance",
+      tiraille: "Elle tiraille, parfois un peu rêche",
+      brille: "Elle brille facilement, surtout en cours de journée",
+      variable_selon_zones: "Ça dépend des zones du visage",
+      reactive: "Elle réagit facilement — rougeurs, picotements",
+    },
+    stepVisuelTitle: "Qu'est-ce que tu remarques le plus souvent ?",
+    visuel: {
+      pores_peu_visibles: "Des pores peu visibles, une texture lisse",
+      zones_seches: "Des zones sèches ou qui pèlent par endroits",
+      brillance_zone_t: "De la brillance et des pores dilatés, surtout front/nez/menton",
+      zone_t_grasse_joues_seches: "Le milieu du visage plus brillant, les joues plus sèches",
+      rougeurs: "Des rougeurs visibles",
+    },
+    stepProblematiqueTitle: "Qu'est-ce qui te préoccupe le plus en ce moment ?",
+    problematique: {
+      rien_de_particulier: "Rien de particulier",
+      manque_hydratation: "Le manque d'hydratation",
+      imperfections: "Les imperfections",
+      double_besoin: "Gérer 2 besoins différents sur le visage",
+      reactions_aux_produits: "Les réactions aux produits",
+    },
+  },
 } as const;

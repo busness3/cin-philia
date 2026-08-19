@@ -20,6 +20,7 @@ from app.domain.physique.morphologie.classification import classify_silhouette
 from app.domain.physique.morphologie.forme_visage_classification import classify_forme_visage
 from app.domain.physique.morphologie.forme_yeux_classification import classify_forme_yeux
 from app.domain.physique.morphologie.sourcils_classification import classify_sourcils
+from app.domain.physique.peau.type_peau import determine_type_peau
 from app.models.diagnostic_result import DiagnosticResult
 from app.schemas.diagnostic import (
     ColorimetrieInput,
@@ -27,6 +28,8 @@ from app.schemas.diagnostic import (
     MorphologieResult,
     NatureCheveuxInput,
     NatureCheveuxResult,
+    TypePeauInput,
+    TypePeauResult,
 )
 
 logger = logging.getLogger(__name__)
@@ -167,4 +170,23 @@ def diagnostic_nature_cheveux(
     la texture capillaire par photo pour l'instant."""
     result = determine_nature_cheveux(payload.type_texture)
     _save_result(db, user_id=user_id, category="cheveux_nature", result=result)
+    return result
+
+
+@router.post("/peau/type", response_model=TypePeauResult)
+def diagnostic_type_peau(
+    payload: TypePeauInput,
+    user_id: str,
+    db: Session = Depends(get_db),
+) -> TypePeauResult:
+    """Déclaratif uniquement, aucune photo ni appel IA — voir
+    `type_peau.py` : la logique qui combine les 3 réponses est un
+    BROUILLON non validé par Clea (contrairement au contenu des 5
+    définitions, qui vient verbatim du document de référence)."""
+    result = determine_type_peau(
+        ressenti=payload.ressenti,
+        visuel=payload.visuel,
+        problematique=payload.problematique,
+    )
+    _save_result(db, user_id=user_id, category="peau_type", result=result)
     return result

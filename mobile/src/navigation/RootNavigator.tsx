@@ -13,6 +13,8 @@ import { ColorimetriePhotoScreen } from "../screens/pillars/physique/colorimetri
 import { ColorimetrieResultScreen } from "../screens/pillars/physique/colorimetrie/ColorimetrieResultScreen";
 import { SilhouetteCaptureScreen } from "../screens/pillars/physique/morphologie/SilhouetteCaptureScreen";
 import { SilhouetteResultScreen } from "../screens/pillars/physique/morphologie/SilhouetteResultScreen";
+import { TypePeauFormScreen } from "../screens/pillars/physique/peau/TypePeauFormScreen";
+import { TypePeauResultScreen } from "../screens/pillars/physique/peau/TypePeauResultScreen";
 import { colors } from "../theme/tokens";
 
 /**
@@ -36,6 +38,8 @@ export type PhysiqueStackParamList = {
   SilhouetteResult: undefined;
   NatureCheveuxForm: undefined;
   NatureCheveuxResult: undefined;
+  TypePeauForm: undefined;
+  TypePeauResult: undefined;
 };
 
 export type MainTabParamList = {
@@ -87,6 +91,16 @@ function PhysiqueNavigator() {
         name="NatureCheveuxResult"
         component={NatureCheveuxResultScreen}
         options={{ headerShown: true, title: microcopy.cheveux.resultTitle }}
+      />
+      <PhysiqueStack.Screen
+        name="TypePeauForm"
+        component={TypePeauFormScreen}
+        options={{ headerShown: true, title: "Type de peau" }}
+      />
+      <PhysiqueStack.Screen
+        name="TypePeauResult"
+        component={TypePeauResultScreen}
+        options={{ headerShown: true, title: microcopy.peau.resultTitle }}
       />
     </PhysiqueStack.Navigator>
   );
