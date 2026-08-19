@@ -25,6 +25,7 @@ export interface ColorimetrieResult {
   palette: string[];
   confiance: string;
   justification: string | null;
+  conseils_style: string[];
 }
 
 export interface FormeVisageResult {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { microcopy } from "../../../../content/microcopy";
 import { useDiagnosticStore } from "../../../../store/useDiagnosticStore";
@@ -16,7 +16,7 @@ export function ColorimetrieResultScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{microcopy.colorimetrie.resultTitle}</Text>
       <Text style={styles.season}>{result.saison}</Text>
       {result.sous_saison ? <Text style={styles.subSeason}>{result.sous_saison}</Text> : null}
@@ -31,12 +31,25 @@ export function ColorimetrieResultScreen() {
       </View>
 
       {result.justification ? <Text style={styles.justification}>{result.justification}</Text> : null}
-    </View>
+
+      {result.conseils_style.length > 0 ? (
+        <View style={styles.conseils}>
+          <Text style={styles.conseilsTitle}>{microcopy.colorimetrie.conseilsStyleTitle}</Text>
+          {result.conseils_style.map((conseil) => (
+            <Text key={conseil} style={styles.conseil}>
+              •{"  "}
+              {conseil}
+            </Text>
+          ))}
+        </View>
+      ) : null}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background, padding: spacing.lg, gap: spacing.sm },
+  container: { flex: 1, backgroundColor: colors.background },
+  content: { padding: spacing.lg, gap: spacing.sm },
   title: { ...typography.subtitle, color: colors.textMuted },
   season: { ...typography.title, color: colors.text },
   subSeason: { ...typography.body, color: colors.textMuted },
@@ -47,4 +60,15 @@ const styles = StyleSheet.create({
   // Bordure défensive : certaines couleurs de palette (ex. blanc/glacier)
   // se fondraient sinon dans le fond clair de l'app.
   swatch: { width: 48, height: 48, borderRadius: radii.sm, borderWidth: 1, borderColor: colors.border },
+  conseils: {
+    backgroundColor: colors.surface,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+    gap: spacing.xs,
+    marginTop: spacing.lg,
+  },
+  conseilsTitle: { ...typography.body, color: colors.text, fontWeight: "600" },
+  conseil: { ...typography.body, color: colors.textMuted },
 });

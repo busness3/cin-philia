@@ -36,6 +36,7 @@ export const microcopy = {
     photoGuidance:
       "Pour un résultat plus fiable : lumière naturelle, sans maquillage ni filtre si possible. Deux photos dans des conditions un peu différentes (par exemple à deux moments de la journée) aident à confirmer la lecture.",
     photoCta: "Révéler ma palette",
+    conseilsStyleTitle: "Quelques pistes de style",
   },
   morphologie: {
     captureIntro: "Une photo et quelques mesures pour révéler ta silhouette.",

@@ -51,6 +51,13 @@ class ColorimetrieResult(BaseModel):
         default=None,
         description="Explication de la lecture undertone/contraste, uniquement sur le parcours photo.",
     )
+    conseils_style: list[str] = Field(
+        default_factory=list,
+        description=(
+            "2-3 conseils de style liés au niveau de contraste déclaré, issus de "
+            "content/reference_docs/contraste_guide_reference.md."
+        ),
+    )
 
 
 class FormeVisageResult(BaseModel):

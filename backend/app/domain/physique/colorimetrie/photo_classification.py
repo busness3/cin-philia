@@ -27,16 +27,16 @@ from pathlib import Path
 from app.schemas.diagnostic import NiveauContraste, Undertone
 from app.services.claude_client import ImageInput, classify_image
 
-_REFERENCE_DOC = (
-    Path(__file__).resolve().parents[3]
-    / "content"
-    / "reference_docs"
-    / "typologie_pilier_physique.md"
-)
+_CONTENT_DIR = Path(__file__).resolve().parents[3] / "content" / "reference_docs"
+_REFERENCE_DOC = _CONTENT_DIR / "typologie_pilier_physique.md"
+# Détail complet (définitions + exemples concrets) pour le contraste — le
+# §4 de typologie_pilier_physique.md n'en donne qu'un résumé en 3 lignes.
+_CONTRASTE_REFERENCE_DOC = _CONTENT_DIR / "contraste_guide_reference.md"
 
 
 def _load_criteria() -> str:
     reference_text = _REFERENCE_DOC.read_text(encoding="utf-8")
+    contraste_reference_text = _CONTRASTE_REFERENCE_DOC.read_text(encoding="utf-8")
     return f"""\
 Tu es un système d'analyse d'image pour l'application Reveal You. Ta tâche
 est de lire, sur les 2 photos de visage fournies, deux caractéristiques
@@ -50,6 +50,10 @@ ensuite de la correspondance vers la saison.
 --- DOCUMENT DE RÉFÉRENCE (verbatim) ---
 {reference_text}
 --- FIN DU DOCUMENT DE RÉFÉRENCE ---
+
+--- DOCUMENT DE RÉFÉRENCE COMPLÉMENTAIRE SUR LE CONTRASTE (verbatim, avec exemples concrets) ---
+{contraste_reference_text}
+--- FIN DU DOCUMENT COMPLÉMENTAIRE ---
 
 Consignes :
 - undertone : "chaud", "froid" ou "neutre" (§8 du document)

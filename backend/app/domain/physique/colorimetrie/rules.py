@@ -21,6 +21,7 @@ collecté).
 100% déterministe (pas d'appel IA) : le résultat doit être reproductible.
 """
 
+from app.domain.physique.colorimetrie.contraste_conseils import CONTRASTE_CONSEILS
 from app.domain.physique.colorimetrie.palettes import PALETTES
 from app.schemas.diagnostic import ColorimetrieInput, ColorimetrieResult, NiveauContraste, Undertone
 
@@ -50,5 +51,12 @@ def determine_season(diagnostic_input: ColorimetrieInput) -> ColorimetrieResult:
 
     confiance = "faible" if diagnostic_input.undertone in _LOWER_CONFIDENCE_UNDERTONES else "forte"
     palette = PALETTES.get(saison, [])  # brouillon — voir colorimetrie_palettes_12_saisons.md
+    conseils_style = CONTRASTE_CONSEILS.get(diagnostic_input.niveau_contraste, [])
 
-    return ColorimetrieResult(saison=saison, sous_saison=None, palette=palette, confiance=confiance)
+    return ColorimetrieResult(
+        saison=saison,
+        sous_saison=None,
+        palette=palette,
+        confiance=confiance,
+        conseils_style=conseils_style,
+    )
