@@ -8,11 +8,11 @@ l'exécution par le code de classification plutôt que dupliqués en dur.
 ## Statut par catégorie
 
 - [x] **Silhouette (H/A/V/O/X)** — critères complets reçus et intégrés (`silhouettes_guide_reference.md`). Classification fonctionnelle.
-- [x] **Colorimétrie (4 saisons)** — fonctionnelle, **2 parcours** : formulaire déclaratif ou photo de visage (Claude vision lit undertone/contraste, voir `photo_classification.py`). Table de correspondance **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table fournie. À faire relire par Clea en priorité. Contraste (§4) approfondi : critères complets + conseils de style reçus et intégrés (`contraste_guide_reference.md`) — meilleure lecture photo, et `conseils_style` (2-3 conseils par niveau de contraste) maintenant renvoyé dans le résultat.
+- [x] **Colorimétrie (4 saisons)** — fonctionnelle, **2 parcours** : formulaire déclaratif ou photo de visage (Claude vision lit undertone/contraste, voir `photo_classification.py`). Table de correspondance **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table fournie. À faire relire par Clea en priorité. Contraste (§4) **et** undertone (§8) approfondis : critères complets + conseils de style reçus et intégrés (`contraste_guide_reference.md`, `teint_soustons_guide_reference.md`) — meilleure lecture photo, et `conseils_style` (bijoux/couleurs + association de couleurs/maquillage combinés) maintenant renvoyé dans le résultat.
 - [x] **Forme du visage (7 types)** — critères complets reçus et intégrés (`forme_visage_guide_reference.md`) : Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (réutilise la photo de face déjà fournie pour la silhouette — pas de photo supplémentaire demandée). **Sort la morphologie du périmètre "silhouette uniquement"** décidé plus bas — mis à jour en conséquence.
 - [x] **Forme des yeux (9 types)** — critères complets reçus et intégrés (`forme_yeux_guide_reference.md`) : Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que silhouette + forme du visage — pas de photo supplémentaire). ⚠️ Ces 9 types couvrent en réalité 2 axes (forme de l'œil vs espacement) non mutuellement exclusifs — voir note dans `forme_yeux_classification.py` ; gardé en un seul choix pour coller au document source, à revoir avec Clea si besoin de plus de précision.
 - [x] **Sourcils (6 types)** — critères complets reçus et intégrés (`sourcils_guide_reference.md`) : Arqués, Droits, Arrondis, Épais, Fins, En pente descendante. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (même photo de face que les autres catégories — pas de photo supplémentaire). ⚠️ Le document source formule la catégorie "En pente descendante" dans un vocabulaire correctif ("air fatigué", "corriger") contraire à la charte de ton — reformulation explicitement demandée à Claude dans `sourcils_classification.py`, voir la note dans `sourcils_guide_reference.md`.
-- [ ] **Type de peau, texture des cheveux** — hors scope V1 (voir décision de périmètre ci-dessous).
+- [ ] **Type de peau (5 types), texture des cheveux (12 sous-types, André Walker)** — documents complets reçus (`type_de_peau_guide_reference.md`, `nature_cheveux_guide_reference.md`) mais **PAS intégrés au code** : contrairement aux 4 catégories morphologie ci-dessus, ces 2 ne s'attachent pas naturellement à "colorimétrie" ni "morphologie" (routine soins/cheveux, pas style vestimentaire/couleurs) — nécessite de cadrer une nouvelle fonctionnalité avant de coder quoi que ce soit. Voir "Ce qui reste à valider" ci-dessous.
 
 ## Décision de périmètre V1 (prise en session, à valider avec Clea)
 
@@ -29,10 +29,12 @@ le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
 - **Colorimétrie V1 = 4 saisons de base**, pas de 12 sous-saisons (les
   inputs déclaratifs collectés ne suffisent pas à les distinguer
   fiablement).
-- **Type de peau, texture des cheveux (André Walker) : hors scope V1.**
-  Aucun des 2 features V1 déclarées n'en a besoin — ce sont des
-  catégories du framework typologique complet, probablement destinées à
-  des fonctionnalités futures (maquillage, soins...) non encore cadrées.
+- **Type de peau, texture des cheveux (André Walker) : hors scope V1 —
+  documents reçus mais fonctionnalité non cadrée.** Aucun des 2 features
+  V1 déclarées n'en a besoin, et contrairement aux 4 catégories
+  morphologie, ces 2 ne s'y rattachent pas naturellement (routine
+  soins/cheveux, pas style vestimentaire/couleurs) — voir "Ce qui reste à
+  valider" pour la question à trancher avec Clea.
 - **Capture photo :** silhouette = **2 photos obligatoires** (face + profil
   — la vue de profil comble la limite de précision (~50%) d'une seule
   photo, déjà signalée dans le doc produit). Colorimétrie = **2 photos
@@ -76,3 +78,10 @@ besoin.
    par Clea que la reformulation demandée à Claude (sans "air fatigué"
    ni "corriger") rend bien l'esprit voulu, malgré le vocabulaire du
    document source — voir note dans `sourcils_guide_reference.md`.
+7. **Type de peau et texture des cheveux — nouvelle fonctionnalité ?** Les
+   documents sont là, mais rien n'est codé : c'est un territoire produit
+   différent (soins de la peau, routine capillaire) de colorimétrie/
+   morphologie. À trancher avec Clea : nouvelle fonctionnalité dédiée ?
+   Quelle photo (visage suffit pour la peau, mais les cheveux ont besoin
+   d'être visibles et détachés) ? Ou on garde le contenu de côté pour une
+   itération future sans le construire maintenant ?

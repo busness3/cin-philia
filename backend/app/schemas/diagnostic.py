@@ -54,8 +54,10 @@ class ColorimetrieResult(BaseModel):
     conseils_style: list[str] = Field(
         default_factory=list,
         description=(
-            "2-3 conseils de style liés au niveau de contraste déclaré, issus de "
-            "content/reference_docs/contraste_guide_reference.md."
+            "Conseils de style combinant undertone (bijoux/métaux, couleurs) et "
+            "niveau de contraste (association de couleurs, maquillage), issus de "
+            "content/reference_docs/teint_soustons_guide_reference.md et "
+            "contraste_guide_reference.md."
         ),
     )
 

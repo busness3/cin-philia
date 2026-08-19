@@ -23,6 +23,7 @@ collecté).
 
 from app.domain.physique.colorimetrie.contraste_conseils import CONTRASTE_CONSEILS
 from app.domain.physique.colorimetrie.palettes import PALETTES
+from app.domain.physique.colorimetrie.undertone_conseils import UNDERTONE_CONSEILS
 from app.schemas.diagnostic import ColorimetrieInput, ColorimetrieResult, NiveauContraste, Undertone
 
 # (undertone, niveau_contraste) -> saison
@@ -51,7 +52,12 @@ def determine_season(diagnostic_input: ColorimetrieInput) -> ColorimetrieResult:
 
     confiance = "faible" if diagnostic_input.undertone in _LOWER_CONFIDENCE_UNDERTONES else "forte"
     palette = PALETTES.get(saison, [])  # brouillon — voir colorimetrie_palettes_12_saisons.md
-    conseils_style = CONTRASTE_CONSEILS.get(diagnostic_input.niveau_contraste, [])
+    # Conseils des 2 axes déclarés — undertone (bijoux/métaux, couleurs) et
+    # contraste (association de couleurs, maquillage) — combinés en une
+    # seule liste, undertone en premier.
+    conseils_style = UNDERTONE_CONSEILS.get(diagnostic_input.undertone, []) + CONTRASTE_CONSEILS.get(
+        diagnostic_input.niveau_contraste, []
+    )
 
     return ColorimetrieResult(
         saison=saison,

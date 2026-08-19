@@ -34,7 +34,8 @@ aujourd'hui. Détail complet et raisons dans
   sourcils** (mise à jour : Clea a fourni les critères des 4, qui sortent
   donc du différé)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
-- Type de peau / texture cheveux : hors scope V1
+- Type de peau / texture cheveux : hors scope V1 (documents reçus mais
+  fonctionnalité non cadrée — voir `backend/app/content/README.md`)
 - Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage, la forme des yeux et les sourcils (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
 
 ### 1. Diagnostic de colorimétrie
@@ -42,7 +43,7 @@ Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 1
 - **Formulaire déclaratif** : undertone, niveau de contraste (faible/moyen/fort), couleur des cheveux
 - **2 photos de visage** : Claude vision lit l'undertone et le contraste sur chaque photo et croise les 2 lectures (mêmes définitions, même moteur de règles ensuite) — plus précis pour qui ne sait pas s'auto-évaluer ; confiance dégradée explicitement si les 2 lectures divergent ou si l'éclairage semble trompeur, avec une consigne de capture (lumière naturelle, sans maquillage/filtre, idéalement 2 moments différents). Voir `backend/app/domain/physique/colorimetrie/photo_classification.py`.
 
-→ Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif), accompagnée de **2-3 conseils de style liés au niveau de contraste déclaré** (association de couleurs, maquillage) — issus de `backend/app/content/reference_docs/contraste_guide_reference.md` (fourni par Clea), voir `contraste_conseils.py`. **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
+→ Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif), accompagnée de **conseils de style combinant undertone et contraste** (bijoux/métaux, couleurs vestimentaires, maquillage) — issus de `backend/app/content/reference_docs/teint_soustons_guide_reference.md` et `contraste_guide_reference.md` (fournis par Clea), voir `undertone_conseils.py` et `contraste_conseils.py`. **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
 ### 2. Analyse morphologique (silhouette + forme du visage + forme des yeux + sourcils) + recommandations
 En V1, couvre la silhouette, la forme du visage, la forme des yeux **et** les sourcils (mise à jour : critères des 4 reçus, plus différés — voir décision de périmètre), avec des recommandations vestimentaires/lunettes/coiffure/bijoux/maquillage cohérentes avec les types identifiés.
@@ -75,6 +76,9 @@ Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble 
 - ✅ `forme_yeux_guide_reference.md` — définitions + conseils de maquillage pour les 9 formes des yeux (source : `Reveal_You_Pilier_Physique_Forme_des_yeux.docx`) — **classification forme des yeux fonctionnelle en V1**
 - ✅ `contraste_guide_reference.md` — définitions détaillées + conseils de style pour les 3 niveaux de contraste (source : `Reveal_You_Pilier_Physique_Contraste.docx`) — **approfondit le §4 de `typologie_pilier_physique.md`**, utilisé pour la lecture photo et pour les conseils de style du résultat colorimétrie
 - ✅ `sourcils_guide_reference.md` — définitions + conseils d'entretien/maquillage pour les 6 formes de sourcils (source : `Reveal_You_Pilier_Physique_Sourcils.docx`) — **classification sourcils fonctionnelle en V1**
+- ✅ `teint_soustons_guide_reference.md` — définitions détaillées + conseils de style pour les 3 undertones (source : `Reveal_You_Pilier_Physique_Teint_souston.docx`) — **approfondit le §8 de `typologie_pilier_physique.md`**, utilisé pour la lecture photo et pour les conseils de style du résultat colorimétrie
+- ⚠️ `type_de_peau_guide_reference.md` — définitions + conseils soins pour les 5 types de peau (source : `Reveal_You_Pilier_Physique_Type_de_peau.docx`) — **reçu, PAS intégré** : ne s'attache à aucune fonctionnalité existante (routine soins, pas colorimétrie/morphologie), à cadrer avec Clea
+- ⚠️ `nature_cheveux_guide_reference.md` — définitions + conseils coiffage pour les 12 sous-types de texture capillaire, méthode André Walker (source : `Reveal_You_Pilier_Physique_Nature_des_cheveux.docx`) — **reçu, PAS intégré**, même raison
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 

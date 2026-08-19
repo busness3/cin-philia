@@ -32,11 +32,15 @@ _REFERENCE_DOC = _CONTENT_DIR / "typologie_pilier_physique.md"
 # Détail complet (définitions + exemples concrets) pour le contraste — le
 # §4 de typologie_pilier_physique.md n'en donne qu'un résumé en 3 lignes.
 _CONTRASTE_REFERENCE_DOC = _CONTENT_DIR / "contraste_guide_reference.md"
+# Idem pour l'undertone (§8) — critères de repérage plus précis (reflets,
+# veines du poignet).
+_UNDERTONE_REFERENCE_DOC = _CONTENT_DIR / "teint_soustons_guide_reference.md"
 
 
 def _load_criteria() -> str:
     reference_text = _REFERENCE_DOC.read_text(encoding="utf-8")
     contraste_reference_text = _CONTRASTE_REFERENCE_DOC.read_text(encoding="utf-8")
+    undertone_reference_text = _UNDERTONE_REFERENCE_DOC.read_text(encoding="utf-8")
     return f"""\
 Tu es un système d'analyse d'image pour l'application Reveal You. Ta tâche
 est de lire, sur les 2 photos de visage fournies, deux caractéristiques
@@ -55,9 +59,17 @@ ensuite de la correspondance vers la saison.
 {contraste_reference_text}
 --- FIN DU DOCUMENT COMPLÉMENTAIRE ---
 
+--- DOCUMENT DE RÉFÉRENCE COMPLÉMENTAIRE SUR L'UNDERTONE (verbatim, avec critères de repérage) ---
+{undertone_reference_text}
+--- FIN DU DOCUMENT COMPLÉMENTAIRE ---
+
 Consignes :
 - undertone : "chaud", "froid" ou "neutre" (§8 du document)
 - niveau_contraste : "faible", "moyen" ou "fort" (§4 du document)
+- ⚠️ Le document complémentaire sur l'undertone mentionne aussi les veines
+  du poignet comme indice — tu n'as accès qu'à des photos de visage, donc
+  ignore cet indice et base-toi uniquement sur les reflets visibles sur la
+  peau du visage (jaunes/dorés/pêche = chaud, roses/rouges/bleutés = froid).
 - Tu reçois 2 photos, idéalement prises dans des conditions différentes
   (lumière, moment de la journée). Lis chaque photo indépendamment, puis
   rends un résultat unique :
