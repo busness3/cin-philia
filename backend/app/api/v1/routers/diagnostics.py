@@ -17,6 +17,7 @@ from app.domain.physique.colorimetrie.photo_classification import classify_under
 from app.domain.physique.colorimetrie.rules import determine_season
 from app.domain.physique.morphologie.classification import classify_silhouette
 from app.domain.physique.morphologie.forme_visage_classification import classify_forme_visage
+from app.domain.physique.morphologie.forme_yeux_classification import classify_forme_yeux
 from app.models.diagnostic_result import DiagnosticResult
 from app.schemas.diagnostic import ColorimetrieInput, ColorimetrieResult, MorphologieResult
 
@@ -123,6 +124,15 @@ async def diagnostic_silhouette(
         # Non bloquant : le résultat silhouette reste utile seul si la
         # classification forme du visage échoue (ex. incident API ponctuel).
         logger.exception("Échec de la classification forme du visage (user_id=%s)", user_id)
+
+    try:
+        # Même photo de face, 3e catégorie combinée dans la même réponse.
+        result.forme_yeux = classify_forme_yeux(
+            image_face_bytes=image_face_bytes,
+            media_type_face=photo_face.content_type,
+        )
+    except Exception:
+        logger.exception("Échec de la classification forme des yeux (user_id=%s)", user_id)
     # `image_face_bytes`/`image_profil_bytes` sortent de portée ici — jamais persistés, jamais logués.
 
     _save_result(db, user_id=user_id, category="morphologie_silhouette", result=result)

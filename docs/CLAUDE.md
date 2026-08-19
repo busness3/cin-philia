@@ -30,11 +30,11 @@ livrer une V1 complète et testable plutôt que bloquée sur des documents
 manquants, le périmètre a été resserré à ce qui est classifiable dès
 aujourd'hui. Détail complet et raisons dans
 `backend/app/content/README.md` § Décision de périmètre V1. Résumé :
-- Morphologie V1 = **silhouette + forme du visage** (mise à jour : Clea a
-  fourni les critères de la forme du visage, qui sort donc du différé)
+- Morphologie V1 = **silhouette + forme du visage + forme des yeux** (mise
+  à jour : Clea a fourni les critères des 3, qui sortent donc du différé)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
-- Yeux / sourcils / type de peau / texture cheveux : hors scope V1
-- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
+- Sourcils / type de peau / texture cheveux : hors scope V1
+- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage et à la forme des yeux (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
 
 ### 1. Diagnostic de colorimétrie
 Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
@@ -43,12 +43,12 @@ Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 1
 
 → Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif). **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
-### 2. Analyse morphologique (silhouette + forme du visage) + recommandations vestimentaires
-En V1, couvre la silhouette **et** la forme du visage (mise à jour : critères forme du visage reçus, plus différée — voir décision de périmètre), avec des recommandations de style vestimentaire/lunettes/coiffure/bijoux cohérentes avec les types identifiés.
+### 2. Analyse morphologique (silhouette + forme du visage + forme des yeux) + recommandations
+En V1, couvre la silhouette, la forme du visage **et** la forme des yeux (mise à jour : critères des 3 reçus, plus différés — voir décision de périmètre), avec des recommandations vestimentaires/lunettes/coiffure/bijoux/maquillage cohérentes avec les types identifiés.
 
 **Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 implémentée : hybride + 2 photos** — mesures déclarées par l'utilisateur·rice + analyse visuelle sur une vue de face ET une vue de profil (plutôt qu'une seule image), pour couvrir les volumes que la vue de face seule ne montre pas.
 
-**Forme du visage :** classification à partir de la même vue de face (une seule photo suffit, se lit entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py`. 7 catégories : Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire. Résultat combiné avec la silhouette en un seul appel (`POST /morphologie/silhouette`), non bloquant si cette classification échoue seule.
+**Forme du visage et forme des yeux :** classification à partir de la même vue de face (une seule photo suffit, se lisent entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py` et `forme_yeux_classification.py`. 7 catégories de forme de visage (Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire) et 9 de forme des yeux (Amande, Rond, Tombant, Relevé, Monolide, Hooded, Rapprochés, Écartés, Protubérants — ⚠️ ces 9 couvrent 2 axes différents, forme et espacement, non tranchés séparément, voir note dans le fichier). Résultats combinés avec la silhouette en un seul appel (`POST /morphologie/silhouette`), chacun non bloquant si sa classification échoue seule.
 
 ## 🧬 Framework typologique complet (9 catégories)
 
@@ -56,7 +56,7 @@ Ordre diagnostique défini :
 
 1. **Silhouette** — typologie H / A / V / O / X
 2. **Forme du visage** — 7 types
-3. **Forme des yeux** — 9+ types
+3. **Forme des yeux** — 9 types
 4. **Niveau de contraste** — (alimente la colorimétrie)
 5. **Sourcils**
 6. **Type de peau**
@@ -71,11 +71,11 @@ Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble 
 - ✅ `typologie_pilier_physique.md` — définitions et typologies des 9 catégories (source : `Reveal_You_Pilier_Physique.pdf`)
 - ✅ `silhouettes_guide_reference.md` — critères complets de repérage par type de silhouette (source : `Morphologies_Reveal_You.docx`) — **classification silhouette fonctionnelle en V1**
 - ✅ `forme_visage_guide_reference.md` — définitions + conseils de style pour les 7 formes de visage (source : `Reveal_You_Pilier_Physique_Forme_du_visage.docx`) — **classification forme du visage fonctionnelle en V1**
+- ✅ `forme_yeux_guide_reference.md` — définitions + conseils de maquillage pour les 9 formes des yeux (source : `Reveal_You_Pilier_Physique_Forme_des_yeux.docx`) — **classification forme des yeux fonctionnelle en V1**
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 
 ⚠️ **Non résolu à date :**
-- Formes des yeux : noms + clarifications partielles reçus, critères de repérage complets manquants.
 - Table de correspondance saison colorielle (undertone + contraste + cheveux → saison/sous-saison) — le framework est reçu, pas la table elle-même.
 
 Voir `backend/app/content/README.md` pour le détail à jour de ce qui bloque quoi.

@@ -34,13 +34,21 @@ export interface FormeVisageResult {
   conseils_style: string[];
 }
 
+export interface FormeYeuxResult {
+  forme: string;
+  confiance: string;
+  description: string;
+  conseils_maquillage: string[];
+}
+
 export interface MorphologieResult {
   silhouette_type: string;
   confiance: string;
   description: string;
-  // Absent si la classification forme du visage a échoué côté backend —
-  // le résultat silhouette reste affiché seul dans ce cas.
+  // Absents si leur classification a échoué côté backend — le résultat
+  // silhouette reste affiché seul dans ce cas.
   forme_visage: FormeVisageResult | null;
+  forme_yeux: FormeYeuxResult | null;
 }
 
 export interface PhotoUpload {

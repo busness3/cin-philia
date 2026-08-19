@@ -63,11 +63,22 @@ class FormeVisageResult(BaseModel):
     )
 
 
+class FormeYeuxResult(BaseModel):
+    forme: str
+    confiance: str
+    description: str = Field(..., description="Texte généré, ton 'reveal not transform'")
+    conseils_maquillage: list[str] = Field(
+        default_factory=list,
+        description="2-3 conseils courts (eyeliner, ombre à paupières...) issus du document de référence.",
+    )
+
+
 class MorphologieResult(BaseModel):
     silhouette_type: str
     confiance: str
     description: str = Field(..., description="Texte généré, ton 'reveal not transform'")
-    # Optionnel : absent si la classification forme du visage échoue alors que
-    # la silhouette a réussi (voir diagnostics.py) — on ne fait pas échouer
-    # tout l'endpoint pour ça, la silhouette reste utile seule.
+    # Optionnels : absents si leur classification échoue alors que la
+    # silhouette a réussi (voir diagnostics.py) — on ne fait pas échouer tout
+    # l'endpoint pour ça, la silhouette reste utile seule.
     forme_visage: FormeVisageResult | None = None
+    forme_yeux: FormeYeuxResult | None = None

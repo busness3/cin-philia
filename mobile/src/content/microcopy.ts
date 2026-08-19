@@ -45,5 +45,8 @@ export const microcopy = {
     // backend alors que la silhouette a réussi — voir diagnostics.py.
     formeVisageUnavailable: "On n'a pas pu lire ta forme de visage cette fois-ci — réessaie plus tard.",
     conseilsStyleTitle: "Quelques pistes de style",
+    formeYeuxTitle: "Ton regard",
+    formeYeuxUnavailable: "On n'a pas pu lire la forme de tes yeux cette fois-ci — réessaie plus tard.",
+    conseilsMaquillageTitle: "Quelques pistes de maquillage",
   },
 } as const;

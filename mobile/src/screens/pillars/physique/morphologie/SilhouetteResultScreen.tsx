@@ -4,6 +4,44 @@ import { microcopy } from "../../../../content/microcopy";
 import { useDiagnosticStore } from "../../../../store/useDiagnosticStore";
 import { colors, radii, spacing, typography } from "../../../../theme/tokens";
 
+/** Un trait secondaire (forme du visage, forme des yeux...) : titre de
+ * section, type identifié, description et conseils associés. Factorisé
+ * pour éviter de dupliquer ce bloc à chaque nouvelle catégorie ajoutée à
+ * l'écran résultat morphologie. */
+function TraitSection({
+  sectionTitle,
+  forme,
+  description,
+  conseils,
+  conseilsTitle,
+}: {
+  sectionTitle: string;
+  forme: string;
+  description: string;
+  conseils: string[];
+  conseilsTitle: string;
+}) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.title}>{sectionTitle}</Text>
+      <Text style={styles.type}>{forme}</Text>
+      <Text style={styles.body}>{description}</Text>
+
+      {conseils.length > 0 ? (
+        <View style={styles.conseils}>
+          <Text style={styles.conseilsTitle}>{conseilsTitle}</Text>
+          {conseils.map((conseil) => (
+            <Text key={conseil} style={styles.conseil}>
+              •{"  "}
+              {conseil}
+            </Text>
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
 export function SilhouetteResultScreen() {
   const result = useDiagnosticStore((state) => state.morphologie);
 
@@ -22,25 +60,27 @@ export function SilhouetteResultScreen() {
       <Text style={styles.body}>{result.description}</Text>
 
       {result.forme_visage ? (
-        <View style={styles.section}>
-          <Text style={styles.title}>{microcopy.morphologie.formeVisageTitle}</Text>
-          <Text style={styles.type}>{result.forme_visage.forme}</Text>
-          <Text style={styles.body}>{result.forme_visage.description}</Text>
-
-          {result.forme_visage.conseils_style.length > 0 ? (
-            <View style={styles.conseils}>
-              <Text style={styles.conseilsTitle}>{microcopy.morphologie.conseilsStyleTitle}</Text>
-              {result.forme_visage.conseils_style.map((conseil) => (
-                <Text key={conseil} style={styles.conseil}>
-                  •{"  "}
-                  {conseil}
-                </Text>
-              ))}
-            </View>
-          ) : null}
-        </View>
+        <TraitSection
+          sectionTitle={microcopy.morphologie.formeVisageTitle}
+          forme={result.forme_visage.forme}
+          description={result.forme_visage.description}
+          conseils={result.forme_visage.conseils_style}
+          conseilsTitle={microcopy.morphologie.conseilsStyleTitle}
+        />
       ) : (
         <Text style={styles.note}>{microcopy.morphologie.formeVisageUnavailable}</Text>
+      )}
+
+      {result.forme_yeux ? (
+        <TraitSection
+          sectionTitle={microcopy.morphologie.formeYeuxTitle}
+          forme={result.forme_yeux.forme}
+          description={result.forme_yeux.description}
+          conseils={result.forme_yeux.conseils_maquillage}
+          conseilsTitle={microcopy.morphologie.conseilsMaquillageTitle}
+        />
+      ) : (
+        <Text style={styles.note}>{microcopy.morphologie.formeYeuxUnavailable}</Text>
       )}
     </ScrollView>
   );
