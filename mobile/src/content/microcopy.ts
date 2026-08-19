@@ -40,5 +40,10 @@ export const microcopy = {
   morphologie: {
     captureIntro: "Une photo et quelques mesures pour révéler ta silhouette.",
     resultTitle: "Ta silhouette",
+    formeVisageTitle: "Ta forme de visage",
+    // Affiché seulement si la classification forme du visage a échoué côté
+    // backend alors que la silhouette a réussi — voir diagnostics.py.
+    formeVisageUnavailable: "On n'a pas pu lire ta forme de visage cette fois-ci — réessaie plus tard.",
+    conseilsStyleTitle: "Quelques pistes de style",
   },
 } as const;

@@ -30,10 +30,11 @@ livrer une V1 complète et testable plutôt que bloquée sur des documents
 manquants, le périmètre a été resserré à ce qui est classifiable dès
 aujourd'hui. Détail complet et raisons dans
 `backend/app/content/README.md` § Décision de périmètre V1. Résumé :
-- Morphologie V1 = **silhouette uniquement** (forme du visage différée)
+- Morphologie V1 = **silhouette + forme du visage** (mise à jour : Clea a
+  fourni les critères de la forme du visage, qui sort donc du différé)
 - Colorimétrie V1 = **4 saisons de base** (pas de 12 sous-saisons)
 - Yeux / sourcils / type de peau / texture cheveux : hors scope V1
-- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
+- Photos silhouette : **2 obligatoires** (face + profil — comble la limite de précision ~50% d'une seule photo), la vue de face sert aussi à la forme du visage (pas de photo supplémentaire). Photos colorimétrie : **2 optionnelles** (alternative au formulaire, pas obligatoire).
 
 ### 1. Diagnostic de colorimétrie
 Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 12 sous-saisons différées, voir décision de périmètre ci-dessus), via **2 parcours au choix** :
@@ -42,10 +43,12 @@ Détermine la saison colorielle de l'utilisateur·rice (système 4 saisons — 1
 
 → Résultat : palette de couleurs qui "révèlent" la personne (jamais "qui l'avantagent" ou "qui la flattent" — reformuler en langage non-correctif). **La table de correspondance undertone+contraste→saison est un brouillon non validé** (voir `backend/app/content/reference_docs/colorimetrie_saisons_brouillon.md`) — aucune table n'ayant été fournie, un brouillon basé sur la méthode standard de color analysis a été posé pour débloquer la V1, à faire relire par Clea.
 
-### 2. Analyse morphologique (silhouette) + recommandations vestimentaires
-En V1, basée sur la silhouette uniquement (forme du visage différée — voir décision de périmètre), avec des recommandations de style vestimentaire cohérentes avec le type identifié.
+### 2. Analyse morphologique (silhouette + forme du visage) + recommandations vestimentaires
+En V1, couvre la silhouette **et** la forme du visage (mise à jour : critères forme du visage reçus, plus différée — voir décision de périmètre), avec des recommandations de style vestimentaire/lunettes/coiffure/bijoux cohérentes avec les types identifiés.
 
 **Contrainte technique connue :** la classification de silhouette à partir d'une seule image a une précision d'environ 50% même avec des modèles robustes. **Approche V1 implémentée : hybride + 2 photos** — mesures déclarées par l'utilisateur·rice + analyse visuelle sur une vue de face ET une vue de profil (plutôt qu'une seule image), pour couvrir les volumes que la vue de face seule ne montre pas.
+
+**Forme du visage :** classification à partir de la même vue de face (une seule photo suffit, se lit entièrement de face) — voir `backend/app/domain/physique/morphologie/forme_visage_classification.py`. 7 catégories : Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire. Résultat combiné avec la silhouette en un seul appel (`POST /morphologie/silhouette`), non bloquant si cette classification échoue seule.
 
 ## 🧬 Framework typologique complet (9 catégories)
 
@@ -67,11 +70,11 @@ Undertone + Niveau de contraste + Couleur des cheveux → déterminent ensemble 
 **Documents de référence (reçus et intégrés dans `backend/app/content/reference_docs/`) :**
 - ✅ `typologie_pilier_physique.md` — définitions et typologies des 9 catégories (source : `Reveal_You_Pilier_Physique.pdf`)
 - ✅ `silhouettes_guide_reference.md` — critères complets de repérage par type de silhouette (source : `Morphologies_Reveal_You.docx`) — **classification silhouette fonctionnelle en V1**
+- ✅ `forme_visage_guide_reference.md` — définitions + conseils de style pour les 7 formes de visage (source : `Reveal_You_Pilier_Physique_Forme_du_visage.docx`) — **classification forme du visage fonctionnelle en V1**
 
 Ces documents sont rédigés dans un langage descriptif et non-correctif, cohérent avec le positionnement de la marque. **Si le détail précis d'une catégorie manque pour implémenter la logique de classification, demander à l'utilisatrice de fournir le contenu du document correspondant plutôt que d'inventer des critères.**
 
 ⚠️ **Non résolu à date :**
-- Formes de visage : noms reçus, caractéristiques des traits par forme toujours manquantes.
 - Formes des yeux : noms + clarifications partielles reçus, critères de repérage complets manquants.
 - Table de correspondance saison colorielle (undertone + contraste + cheveux → saison/sous-saison) — le framework est reçu, pas la table elle-même.
 

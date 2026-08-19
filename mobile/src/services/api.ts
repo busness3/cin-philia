@@ -27,10 +27,20 @@ export interface ColorimetrieResult {
   justification: string | null;
 }
 
+export interface FormeVisageResult {
+  forme: string;
+  confiance: string;
+  description: string;
+  conseils_style: string[];
+}
+
 export interface MorphologieResult {
   silhouette_type: string;
   confiance: string;
   description: string;
+  // Absent si la classification forme du visage a échoué côté backend —
+  // le résultat silhouette reste affiché seul dans ce cas.
+  forme_visage: FormeVisageResult | null;
 }
 
 export interface PhotoUpload {

@@ -9,7 +9,7 @@ l'exécution par le code de classification plutôt que dupliqués en dur.
 
 - [x] **Silhouette (H/A/V/O/X)** — critères complets reçus et intégrés (`silhouettes_guide_reference.md`). Classification fonctionnelle.
 - [x] **Colorimétrie (4 saisons)** — fonctionnelle, **2 parcours** : formulaire déclaratif ou photo de visage (Claude vision lit undertone/contraste, voir `photo_classification.py`). Table de correspondance **brouillon non validée** (`colorimetrie_saisons_brouillon.md`) faute de table fournie. À faire relire par Clea en priorité.
-- [ ] **Forme du visage (7 types)** — hors scope V1 (voir décision de périmètre ci-dessous). Noms reçus, critères distinctifs toujours non fournis.
+- [x] **Forme du visage (7 types)** — critères complets reçus et intégrés (`forme_visage_guide_reference.md`) : Ovale, Rond, Carré, Cœur, Allongé, Losange, Triangulaire. Classification fonctionnelle, branchée sur `POST /morphologie/silhouette` (réutilise la photo de face déjà fournie pour la silhouette — pas de photo supplémentaire demandée). **Sort la morphologie du périmètre "silhouette uniquement"** décidé plus bas — mis à jour en conséquence.
 - [ ] **Forme des yeux (9+ types)** — hors scope V1. Noms + quelques clarifications partielles reçus, critères de repérage complets manquants.
 - [ ] **Sourcils, type de peau, texture des cheveux** — hors scope V1 (voir décision de périmètre ci-dessous).
 
@@ -21,9 +21,9 @@ alimentent réellement les 2 fonctionnalités IA déclarées pour la V1
 et testable maintenant plutôt que bloquée sur des documents manquants,
 le périmètre V1 est réduit à ce qui est classifiable dès aujourd'hui :
 
-- **Morphologie V1 = silhouette uniquement.** La forme du visage est
-  différée à une itération suivante (ses critères ne sont de toute façon
-  pas encore définis, y compris côté document source de Clea).
+- ~~**Morphologie V1 = silhouette uniquement.**~~ **Mis à jour** : Clea a
+  fourni les critères de la forme du visage — la morphologie V1 couvre
+  maintenant silhouette **et** forme du visage (voir statut ci-dessus).
 - **Colorimétrie V1 = 4 saisons de base**, pas de 12 sous-saisons (les
   inputs déclaratifs collectés ne suffisent pas à les distinguer
   fiablement).
@@ -64,7 +64,7 @@ besoin.
    12 palettes sont prêtes (`SUBSEASON_PALETTES`) mais pas branchées tant
    que cette question n'est pas validée. Proposition de wording dans
    `colorimetrie_palettes_12_saisons.md`.
-4. Confirmer la décision de périmètre ci-dessus (silhouette seule pour la
-   morphologie V1, yeux/sourcils/peau/cheveux hors scope).
-5. Documents formes de visage / formes des yeux — à fournir quand cette
-   catégorie repasse dans le scope.
+4. Confirmer la décision de périmètre ci-dessus (yeux/sourcils/peau/cheveux
+   toujours hors scope — silhouette + forme du visage sont maintenant
+   toutes les deux dans le scope morphologie).
+5. Document forme des yeux — à fournir quand cette catégorie repasse dans le scope.
