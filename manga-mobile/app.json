@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Shiori",
+    "slug": "shiori-manga-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F4EFE3",
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#9C3B2E"
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cinphilia.shiori"
+    },
+    "android": {
+      "package": "com.cinphilia.shiori",
+      "adaptiveIcon": {
+        "backgroundColor": "#F4EFE3"
+      },
+      "predictiveBackGestureEnabled": false
+    }
+  }
+}
