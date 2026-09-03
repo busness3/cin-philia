@@ -1,7 +1,7 @@
 # Shiori — Manga Tracker (mobile)
 
 App mobile Expo/React Native du tracker de lecture manga/manhwa/manhua.
-Voir aussi [`../manga-backend/README.md`](../manga-backend/README.md) pour
+Voir aussi [`../backend/README.md`](../backend/README.md) pour
 la partie serveur (recherche, suivi des nouveaux chapitres, push).
 
 ## Fonctionnalités
@@ -32,13 +32,13 @@ npm install
 cp .env.example .env.local
 # renseigner EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY
 # (même projet Supabase que le backend, clé "anon" cette fois)
-# et EXPO_PUBLIC_API_BASE_URL (URL du backend manga-tracker)
+# et EXPO_PUBLIC_API_BASE_URL (URL du backend Shiori)
 npm start
 ```
 
 Prérequis : avoir exécuté `supabase/schema.sql` (voir le README du
 backend) sur le projet Supabase, et avoir le backend démarré (`npm run
-dev` dans `manga-backend/`) pour que la recherche fonctionne.
+dev` dans `shiori/backend/`) pour que la recherche fonctionne.
 
 ## Notifications push
 

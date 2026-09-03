@@ -6,7 +6,7 @@ import { config } from "./config";
 /**
  * Client Supabase côté mobile — clé "anon" uniquement, toutes les
  * lectures/écritures passent par les policies RLS définies dans
- * manga-backend/supabase/schema.sql (chaque utilisateur ne voit et ne
+ * shiori/backend/supabase/schema.sql (chaque utilisateur ne voit et ne
  * modifie que ses propres lignes).
  */
 export const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {

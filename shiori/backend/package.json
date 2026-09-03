@@ -1,5 +1,5 @@
 {
-  "name": "manga-tracker-backend",
+  "name": "shiori-backend",
   "version": "1.0.0",
   "private": true,
   "description": "Backend du tracker de lecture manga/manhwa/manhua — recherche MangaDex/AniList, suivi des nouveaux chapitres, notifications push Expo.",

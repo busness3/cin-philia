@@ -1,13 +1,14 @@
-# Shiori — Manga Tracker
+# Shiori (栞) — Manga Tracker
 
 Projet **indépendant** du reste de ce dépôt (« Reveal You », documenté
-dans [`CLAUDE.md`](./CLAUDE.md)) : une app de suivi de lecture
-manga/manhwa/manhua, en français, vivant dans ses propres dossiers à la
-racine pour ne pas interférer avec le code existant :
+dans [`../docs/CLAUDE.md`](../docs/CLAUDE.md)) : une app de suivi de
+lecture manga/manhwa/manhua, en français. Tout ce qui concerne Shiori
+vit ici, dans ce seul dossier :
 
 ```
-manga-backend/   # API Node/TypeScript — recherche, suivi des chapitres, push
-manga-mobile/    # App Expo/React Native
+shiori/
+├── backend/   # API Node/TypeScript — recherche, suivi des chapitres, push
+└── mobile/    # App Expo/React Native
 ```
 
 ## Pourquoi un backend, pas juste une appli locale
@@ -22,8 +23,8 @@ nécessitent un serveur :
    planifié doit interroger régulièrement le flux MangaDex, comparer
    au dernier chapitre connu, et pousser une notification.
 
-Détail complet : [`manga-backend/README.md`](../manga-backend/README.md)
-et [`manga-mobile/README.md`](../manga-mobile/README.md).
+Détail complet : [`backend/README.md`](./backend/README.md) et
+[`mobile/README.md`](./mobile/README.md).
 
 ## Limite structurelle à connaître
 
@@ -37,16 +38,16 @@ fonctionne que pour les titres identifiés sur MangaDex.
 
 ```bash
 # 1. Base de données — dans le dashboard Supabase, éditeur SQL :
-#    exécuter manga-backend/supabase/schema.sql
+#    exécuter shiori/backend/supabase/schema.sql
 
 # 2. Backend
-cd manga-backend
+cd shiori/backend
 npm install
 cp .env.example .env   # SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
 npm run dev
 
 # 3. Mobile (autre terminal)
-cd manga-mobile
+cd shiori/mobile
 npm install
 cp .env.example .env.local   # SUPABASE_URL + clé anon + URL du backend
 npm start

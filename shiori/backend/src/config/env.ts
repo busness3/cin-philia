@@ -14,6 +14,6 @@ export const env = {
   supabaseServiceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
   chapterCheckCron: process.env.CHAPTER_CHECK_CRON ?? "0 * * * *",
   mangadexUserAgent:
-    process.env.MANGADEX_USER_AGENT ?? "cin-philia-manga-tracker/1.0",
+    process.env.MANGADEX_USER_AGENT ?? "shiori-manga-tracker/1.0",
   corsOrigin: process.env.CORS_ORIGIN ?? "*",
 };
