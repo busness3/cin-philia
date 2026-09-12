@@ -1,0 +1,58 @@
+# =============================================================================
+# Diagnostic Série — analyse/critique rapide d'une série TV.
+# DA : punchy, rythmée, contrastée. Sous-titres "TikTok classique" avec mot
+# en cours surligné, cartons de titre nets, coupes franches.
+# Placeholder à ajuster par Cléa — toutes les valeurs ici sont modifiables
+# sans toucher au code.
+# =============================================================================
+
+nom: "Diagnostic Série"
+description: "Analyse/critique rapide d'une série (points forts, points faibles, verdict)."
+
+couleurs:
+  accent: "#FF3B5C"       # rouge/rose vif — reprend l'accent de la charte globale
+  fond_titre: "#111111"
+  texte: "#FFFFFF"
+
+sous_titres:
+  police: Montserrat-SemiBold
+  taille_px: 68
+  couleur_texte: "#FFFFFF"
+  couleur_contour: "#000000"
+  epaisseur_contour: 3
+  couleur_mot_actif: "#FF3B5C"   # le mot en cours de lecture se surligne en accent
+  position: bas_centre
+  marge_verticale_px: 340
+  majuscules: true
+  mots_par_groupe: 3             # légendes courtes et percutantes
+  animation: pop
+  duree_animation_ms: 120
+
+titres:
+  style: carton_plein
+  police: Montserrat-Bold
+  taille_px: 96
+  couleur_texte: "#FFFFFF"
+  couleur_fond: "#111111"
+  animation_entree: slide_up
+  animation_sortie: fade
+  duree_ms: 1600
+
+overlays:
+  cadre:
+    actif: false
+  watermark_serie:
+    actif: true
+    texte: "DIAGNOSTIC SÉRIE"
+    position: haut_gauche
+
+rythme:
+  duree_plan_min_s: 1.2
+  duree_plan_max_s: 3.5
+  transition_defaut: cut         # coupes franches, rythme nerveux
+  duree_transition_ms: 200
+
+audio:
+  mood_musique: energique
+  volume_musique_db: -20
+  sfx_transition: whoosh_court

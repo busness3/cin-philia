@@ -1,0 +1,55 @@
+# =============================================================================
+# Vlogs — quotidien, ton personnel/posé.
+# DA : plus douce et chaleureuse que Diagnostic Série, rythme plus lent,
+# sous-titres moins "punchy" (animation fondu plutôt que pop).
+# Placeholder à ajuster par Cléa.
+# =============================================================================
+
+nom: "Vlogs"
+description: "Vlog quotidien / lifestyle, ton personnel."
+
+couleurs:
+  accent: "#F2A65A"       # ambre chaud
+  fond_titre: "#F5E6D8"   # crème (carton clair, texte foncé dessus)
+  texte: "#2B211B"
+
+sous_titres:
+  police: Montserrat-SemiBold
+  taille_px: 62
+  couleur_texte: "#FFFFFF"
+  couleur_contour: "#000000"
+  epaisseur_contour: 3
+  couleur_mot_actif: "#F2A65A"
+  position: bas_centre
+  marge_verticale_px: 320
+  majuscules: false        # ton plus naturel, casse normale
+  mots_par_groupe: 2       # légendes plus courtes, rythme de lecture posé
+  animation: fade
+  duree_animation_ms: 250
+
+titres:
+  style: carton_plein
+  police: Montserrat-Bold
+  taille_px: 88
+  couleur_texte: "#2B211B"
+  couleur_fond: "#F5E6D8"
+  animation_entree: fade
+  animation_sortie: fade
+  duree_ms: 2000
+
+overlays:
+  cadre:
+    actif: false
+  watermark_serie:
+    actif: false
+
+rythme:
+  duree_plan_min_s: 3.0
+  duree_plan_max_s: 8.0
+  transition_defaut: fade   # transitions douces, rythme posé
+  duree_transition_ms: 400
+
+audio:
+  mood_musique: chill
+  volume_musique_db: -22
+  sfx_transition: null

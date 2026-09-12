@@ -7,9 +7,12 @@ Voir [`docs/CLAUDE.md`](docs/CLAUDE.md) pour les spécifications produit complè
 
 ```
 reveal-you/
-├── backend/     # API FastAPI — diagnostic colorimétrie + morphologie
-├── mobile/      # App mobile Expo (React Native + TypeScript)
-└── docs/        # Spécifications produit
+├── backend/         # API FastAPI — diagnostic colorimétrie + morphologie
+├── mobile/          # App mobile Expo (React Native + TypeScript)
+├── docs/            # Spécifications produit
+└── content-studio/  # Outil perso : montage vidéo TikTok (Python/ffmpeg),
+                      # indépendant de l'app Reveal You — voir son propre
+                      # README pour le détail
 ```
 
 ## Statut : prototype

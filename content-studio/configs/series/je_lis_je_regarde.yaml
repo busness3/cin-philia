@@ -1,0 +1,58 @@
+# =============================================================================
+# "Je lis je regarde je vous en parle" — livres/films/séries, ton posé et
+# réflexif.
+# DA : palette sobre bleu-vert/crème façon carnet de lecture, rythme le plus
+# lent des 4 séries, sous-titres avec plus de mots à la fois (ton narratif).
+# Placeholder à ajuster par Cléa.
+# =============================================================================
+
+nom: "Je lis je regarde je vous en parle"
+description: "Retour sur un livre/film/série : ce que j'en ai pensé."
+
+couleurs:
+  accent: "#3E6259"       # bleu-vert sobre, carnet de lecture
+  fond_titre: "#EFE9DD"   # crème clair
+  texte: "#2B2B2B"
+
+sous_titres:
+  police: Montserrat-SemiBold
+  taille_px: 60
+  couleur_texte: "#FFFFFF"
+  couleur_contour: "#000000"
+  epaisseur_contour: 3
+  couleur_mot_actif: "#3E6259"
+  position: bas_centre
+  marge_verticale_px: 320
+  majuscules: false
+  mots_par_groupe: 4       # légendes plus longues, ton narratif/réflexif
+  animation: fade
+  duree_animation_ms: 300
+
+titres:
+  style: carton_plein
+  police: Montserrat-Bold
+  taille_px: 84
+  couleur_texte: "#2B2B2B"
+  couleur_fond: "#EFE9DD"
+  animation_entree: fade
+  animation_sortie: fade
+  duree_ms: 2200
+
+overlays:
+  cadre:
+    actif: false
+  watermark_serie:
+    actif: true
+    texte: "JE LIS JE REGARDE"
+    position: haut_gauche
+
+rythme:
+  duree_plan_min_s: 2.5
+  duree_plan_max_s: 6.0
+  transition_defaut: fade   # le plus lent des 4 : rythme calme, réflexif
+  duree_transition_ms: 450
+
+audio:
+  mood_musique: calme
+  volume_musique_db: -22
+  sfx_transition: null

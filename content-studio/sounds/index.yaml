@@ -1,0 +1,37 @@
+# =============================================================================
+# Index de la bibliothèque de sons — associe des clés lisibles (utilisées
+# dans configs/series/*.yaml et episodes/*.yaml) aux fichiers réels.
+#
+# Comment l'utiliser :
+# 1. Dépose tes fichiers audio dans sounds/music/ ou sounds/sfx/
+# 2. Référence-les ici sous la bonne clé (mood pour la musique, id pour un sfx)
+# 3. Une série pointe vers un mood (`audio.mood_musique` dans sa config) ;
+#    un épisode peut aussi forcer une musique précise (`audio.musique`) ou
+#    déclencher un sfx à un instant donné (`audio.sfx`).
+#
+# Un mood peut lister plusieurs pistes : une est piochée au hasard à chaque
+# rendu, pour varier les vidéos d'une même série.
+#
+# Rien n'est encore fourni : les entrées ci-dessous sont un point de départ
+# (moods utilisés par les 4 séries actuelles) — dépose les fichiers
+# correspondants puis ajuste les chemins. Tant qu'un fichier n'existe pas,
+# le pipeline s'en passe proprement (juste un message dans les logs).
+# =============================================================================
+
+musique:
+  energique:      # Diagnostic Série
+    - music/energique_01.mp3
+  chill:          # Vlogs
+    - music/chill_01.mp3
+  gourmand:       # Tests Restos
+    - music/gourmand_01.mp3
+  calme:          # Je lis je regarde je vous en parle
+    - music/calme_01.mp3
+  neutre:         # repli par défaut
+    - music/neutre_01.mp3
+
+sfx:
+  whoosh_court: sfx/whoosh_court.mp3
+  pop: sfx/pop.mp3
+  ding: sfx/ding.mp3
+  click: sfx/click.mp3
