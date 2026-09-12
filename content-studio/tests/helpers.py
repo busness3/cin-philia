@@ -28,3 +28,21 @@ def make_synthetic_clip(
     cmd += ["-c:v", "libx264", "-pix_fmt", "yuv420p", str(path)]
     ff.run(cmd)
     return path
+
+
+def make_synthetic_audio(
+    path: str | Path,
+    duration: float = 1.0,
+    frequency: int = 440,
+) -> Path:
+    """Génère un fichier audio de test (tonalité pure) pour musique/SFX factices."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "lavfi", "-i", f"sine=frequency={frequency}:duration={duration}",
+        "-c:a", "libmp3lame",
+        str(path),
+    ]
+    ff.run(cmd)
+    return path
