@@ -1,0 +1,26 @@
+# Rushs et rendus : gros fichiers, jamais commités
+rushs/
+out/
+*.mp4
+*.mov
+*.mkv
+
+# Bibliothèque de sons fournie par Cléa : structure gardée (index.yaml),
+# fichiers audio eux-mêmes non commités (trop lourds pour git).
+sounds/music/*
+sounds/sfx/*
+!sounds/music/.gitkeep
+!sounds/sfx/**/.gitkeep
+!sounds/index.yaml
+
+# Polices (fichiers .ttf/.otf fournis par Cléa, pas commités)
+assets/fonts/*
+!assets/fonts/.gitkeep
+
+# Logo/watermark
+assets/logo/*
+!assets/logo/.gitkeep
+
+__pycache__/
+*.pyc
+.pytest_cache/

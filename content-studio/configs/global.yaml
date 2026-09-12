@@ -1,0 +1,56 @@
+# =============================================================================
+# Identité TikTok globale — commune à TOUTES les séries.
+# Ce fichier fixe le socle technique (résolution, codecs, zone sûre par
+# rapport à l'UI TikTok, loudness) et les éléments de marque partagés
+# (watermark, police par défaut, couleurs de marque).
+#
+# Chaque série (configs/series/*.yaml) peut ensuite définir SA propre
+# direction artistique (couleurs, typo, style de sous-titres, rythme) par
+# dessus ce socle — voir ResolvedConfig.couleur() dans le code, qui retombe
+# sur `identite.couleurs_marque` si la série ne précise pas une couleur.
+#
+# Placeholder en attendant la charte définitive : à ajuster librement, aucune
+# valeur ici n'est figée dans le code.
+# =============================================================================
+
+identite:
+  nom_compte: "@a-completer"
+
+  watermark:
+    actif: false              # passe à true dès que le logo est prêt
+    image: null                # ex: "assets/logo/watermark.png"
+    position: haut_droite
+    opacite: 0.85
+    marge_px: 24
+
+  police_principale: Montserrat-Bold   # nom de fichier (sans extension) dans assets/fonts/
+
+  couleurs_marque:
+    accent: "#FF3B5C"
+    texte_clair: "#FFFFFF"
+    texte_sombre: "#111111"
+
+video:
+  largeur: 1080
+  hauteur: 1920
+  fps: 30
+  codec_video: libx264
+  crf: 18
+  preset: medium
+  codec_audio: aac
+  bitrate_audio: 192k
+
+  # Marges à ne jamais couvrir avec du texte/overlay : zone occupée par
+  # l'interface TikTok (nom du compte, légende, boutons like/partage...).
+  zone_sure:
+    haut_px: 220
+    bas_px: 320
+    lateral_px: 40
+
+audio:
+  loudness_cible_lufs: -14.0   # standard streaming/réseaux sociaux
+  musique:
+    volume_defaut_db: -18
+    ducking_sous_voix_db: -12
+  sfx:
+    volume_defaut_db: -6
