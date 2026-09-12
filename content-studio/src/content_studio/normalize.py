@@ -83,6 +83,11 @@ def normalize_clip(
         duration = end - (start or 0.0)
         cmd += ["-t", f"{duration}"]
 
+    # Indispensable : quand une piste silencieuse (anullsrc) est ajoutée,
+    # c'est un générateur audio infini. Sans -shortest (ni -t explicite),
+    # ffmpeg ne s'arrêterait jamais puisque l'audio ne finit pas de lui-même.
+    cmd += ["-shortest"]
+
     cmd += [
         "-c:v", video_cfg.codec_video,
         "-crf", str(video_cfg.crf),
