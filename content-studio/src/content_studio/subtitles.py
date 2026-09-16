@@ -1,10 +1,14 @@
-"""Brique 2 : sous-titres synchronisés et stylables (génération ASS + burn-in).
+"""Brique 2 : sous-titres synchronisés (génération ASS + burn-in).
 
-Le format .ass (Advanced SubStation Alpha, via libass) est utilisé plutôt que
-le .srt car il permet : police/taille/couleur/contour par style, position
-précise (alignement + marges en pixels), et des tags d'animation par ligne
-(\\fad, \\t, \\move) — de quoi reproduire les styles de légendes "TikTok
-punchy" (pop, slide, mot en cours surligné).
+Style v2 — aligné sur le document de DA globale : minimaliste, fond crème
+translucide derrière le texte chocolat, pas d'animation, pas de surlignage
+mot par mot. Le format .ass (via libass) reste utilisé pour le fond en boîte
+(BorderStyle=3) et un positionnement pixel-précis.
+
+Limites connues (cf. README) : le rayon d'angle (12px) de la config n'est pas
+appliqué — le rendu ASS donne un rectangle net, pas arrondi ; le padding
+horizontal/vertical de la config est unique en ASS (une seule valeur
+"Outline" fait office de padding), la moyenne des deux est utilisée.
 """
 from __future__ import annotations
 
@@ -12,14 +16,8 @@ from pathlib import Path
 from typing import Optional
 
 from . import ffmpeg_utils as ff
-from .models import SousTitresStyle, VideoConfig
+from .models import SousTitresConfig, VideoConfig
 from .transcribe import Word, WordGroup, group_words
-
-_ALIGNMENT = {
-    "bas_centre": 2,
-    "centre": 5,
-    "haut_centre": 8,
-}
 
 
 def hex_to_ass_color(hex_color: str, alpha_hex: str = "00") -> str:
@@ -31,38 +29,30 @@ def hex_to_ass_color(hex_color: str, alpha_hex: str = "00") -> str:
     return f"&H{alpha_hex}{b}{g}{r}&".upper()
 
 
+def _opacity_to_alpha_hex(opacite: float) -> str:
+    """opacité 0..1 -> octet alpha ASS (00 = opaque, FF = transparent)."""
+    alpha = round((1 - max(0.0, min(opacite, 1.0))) * 255)
+    return f"{alpha:02X}"
+
+
 def _escape_ass_text(text: str) -> str:
     return text.replace("{", r"\{").replace("}", r"\}").replace("\n", r"\N")
 
 
-def _animation_override(style: SousTitresStyle) -> str:
-    """Tags d'override ASS à préfixer au texte pour l'animation d'entrée."""
-    dur = max(style.duree_animation_ms, 1)
-    if style.animation == "fade":
-        return f"{{\\fad({dur},{dur // 2})}}"
-    if style.animation == "pop":
-        # démarre à 60% de la taille puis grossit jusqu'à 100% -> effet "pop"
-        return f"{{\\fscx60\\fscy60\\t(0,{dur},\\fscx100\\fscy100)}}"
-    if style.animation == "slide_up":
-        # léger décalage vertical qui remonte vers sa position finale
-        return f"{{\\fad({dur},{dur // 2})}}"
-    return ""
-
-
-def _style_line(style: SousTitresStyle, video_cfg: VideoConfig) -> str:
-    alignment = _ALIGNMENT[style.position]
-    primary = hex_to_ass_color(style.couleur_texte)
-    outline = hex_to_ass_color(style.couleur_contour)
-    margin_v = style.marge_verticale_px
+def _style_line(config: SousTitresConfig, video_cfg: VideoConfig) -> str:
+    primary = hex_to_ass_color(config.couleur_texte)
+    backdrop_color = hex_to_ass_color(config.backdrop.couleur, alpha_hex=_opacity_to_alpha_hex(config.backdrop.opacite))
+    padding = round((config.backdrop.padding_x_px + config.backdrop.padding_y_px) / 2)
+    margin_v = video_cfg.hauteur - config.baseline_y_px
     return (
         "Style: sous_titres,"
-        f"{style.police},{style.taille_px},{primary},{primary},{outline},&H00000000,"
-        f"-1,0,0,0,100,100,0,0,1,{style.epaisseur_contour},0,{alignment},"
+        f"{config.police},{config.taille_px},{primary},{primary},{backdrop_color},{backdrop_color},"
+        f"0,0,0,0,100,100,0,0,3,{padding},0,2,"
         f"{video_cfg.zone_sure.lateral_px},{video_cfg.zone_sure.lateral_px},{margin_v},1"
     )
 
 
-def _script_header(style: SousTitresStyle, video_cfg: VideoConfig) -> str:
+def _script_header(config: SousTitresConfig, video_cfg: VideoConfig) -> str:
     return (
         "[Script Info]\n"
         "ScriptType: v4.00+\n"
@@ -75,7 +65,7 @@ def _script_header(style: SousTitresStyle, video_cfg: VideoConfig) -> str:
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        f"{_style_line(style, video_cfg)}\n"
+        f"{_style_line(config, video_cfg)}\n"
         "\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
@@ -89,59 +79,47 @@ def _fmt_ts(seconds: float) -> str:
     m = int((seconds % 3600) // 60)
     s = int(seconds % 60)
     cs = int(round((seconds - int(seconds)) * 100))
-    if cs == 100:  # arrondi qui déborde sur la seconde suivante
+    if cs == 100:
         cs = 0
         s += 1
     return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
 
 
-def _group_text(group: WordGroup, style: SousTitresStyle, mot_actif: Optional[Word] = None) -> str:
-    parts = []
-    for w in group.words:
-        text = w.text.upper() if style.majuscules else w.text
-        text = _escape_ass_text(text)
-        if mot_actif is not None and w is mot_actif and style.couleur_mot_actif:
-            color = hex_to_ass_color(style.couleur_mot_actif)
-            parts.append(f"{{\\c{color}}}{text}{{\\c{hex_to_ass_color(style.couleur_texte)}}}")
-        else:
-            parts.append(text)
-    return " ".join(parts)
-
-
-def build_ass(words: list[Word], style: SousTitresStyle, video_cfg: VideoConfig) -> str:
-    """Construit le contenu .ass complet à partir des mots horodatés.
-
-    Si `style.couleur_mot_actif` est défini : un événement par mot (le
-    groupe entier est réaffiché à chaque mot, avec le mot courant surligné —
-    effet "karaoke" synchronisé). Sinon : un événement par groupe de mots.
-    """
-    groups = group_words(words, style.mots_par_groupe)
+def build_ass_from_groups(groups: list[WordGroup], config: SousTitresConfig, video_cfg: VideoConfig) -> str:
+    """Construit le .ass à partir de groupes déjà formés (segments whisper,
+    lignes de SRT fourni, ou paquets de mots)."""
     events = []
-    anim = _animation_override(style)
-
     for group in groups:
-        if style.couleur_mot_actif:
-            for i, w in enumerate(group.words):
-                w_start = w.start
-                w_end = group.words[i + 1].start if i + 1 < len(group.words) else group.end
-                w_end = max(w_end, w_start + 0.05)
-                text = anim + _group_text(group, style, mot_actif=w)
-                events.append(
-                    f"Dialogue: 0,{_fmt_ts(w_start)},{_fmt_ts(w_end)},sous_titres,,0,0,0,,{text}"
-                )
-        else:
-            text = anim + _group_text(group, style)
-            events.append(
-                f"Dialogue: 0,{_fmt_ts(group.start)},{_fmt_ts(group.end)},sous_titres,,0,0,0,,{text}"
-            )
-
-    return _script_header(style, video_cfg) + "\n".join(events) + "\n"
+        text = _escape_ass_text(group.text)
+        events.append(f"Dialogue: 0,{_fmt_ts(group.start)},{_fmt_ts(group.end)},sous_titres,,0,0,0,,{text}")
+    return _script_header(config, video_cfg) + "\n".join(events) + "\n"
 
 
-def write_ass(words: list[Word], style: SousTitresStyle, video_cfg: VideoConfig, output_path: str | Path) -> Path:
+def build_ass(
+    config: SousTitresConfig,
+    video_cfg: VideoConfig,
+    words: Optional[list[Word]] = None,
+    segments: Optional[list[WordGroup]] = None,
+) -> str:
+    """Point d'entrée principal : choisit le regroupement selon
+    `config.mode_groupement` ("segments" = phrases naturelles whisper,
+    nécessite `segments` ; "groupes_mots" = paquets de N mots, nécessite
+    `words`)."""
+    if config.mode_groupement == "segments":
+        if segments is None:
+            raise ValueError("mode_groupement='segments' nécessite des segments (transcription whisper)")
+        groups = segments
+    else:
+        if words is None:
+            raise ValueError("mode_groupement='groupes_mots' nécessite des mots horodatés")
+        groups = group_words(words, config.mots_par_groupe)
+    return build_ass_from_groups(groups, config, video_cfg)
+
+
+def write_ass(content_or_path: str, output_path: str | Path) -> Path:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(build_ass(words, style, video_cfg), encoding="utf-8")
+    output_path.write_text(content_or_path, encoding="utf-8")
     return output_path
 
 
@@ -157,7 +135,6 @@ def burn_subtitles(
     video_path, ass_path, output_path = Path(video_path), Path(ass_path), Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # échappe les caractères sensibles au parsing du filtre ffmpeg (chemins avec ':' etc.)
     ass_escaped = str(ass_path).replace("\\", "/").replace(":", r"\:")
     vf = f"ass={ass_escaped}"
     if fonts_dir is not None:

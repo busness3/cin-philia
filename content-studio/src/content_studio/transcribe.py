@@ -52,26 +52,59 @@ def words_from_whisper_segments(segments: Iterable) -> list[Word]:
     return words
 
 
-def transcribe(
-    audio_path: str | Path,
-    language: str = "fr",
-    model_size: str = "small",
-) -> list[Word]:
-    """Transcrit un rush (ou un fichier audio) et renvoie les mots horodatés."""
-    model = _get_model(model_size=model_size)
-    segments, _info = model.transcribe(str(audio_path), language=language, word_timestamps=True)
-    return words_from_whisper_segments(segments)
-
-
 @dataclass
 class WordGroup:
     words: list[Word]
     start: float
     end: float
+    # texte explicite (ex: segment whisper tel quel, ou ligne de SRT) — prime
+    # sur la reconstruction à partir de `words` quand fourni, car un segment
+    # whisper peut avoir une ponctuation/espacement plus naturel que
+    # `" ".join(w.text for w in words)`.
+    texte_brut: Optional[str] = None
 
     @property
     def text(self) -> str:
+        if self.texte_brut is not None:
+            return self.texte_brut
         return " ".join(w.text for w in self.words)
+
+
+def segments_from_whisper(segments: Iterable) -> list[WordGroup]:
+    """Convertit les segments faster-whisper (phrases naturelles) en
+    WordGroup — un groupe par segment, texte et timing tels que whisper les a
+    détectés (pas de découpage forcé par nombre de mots)."""
+    groups: list[WordGroup] = []
+    for seg in segments:
+        text = (seg.text or "").strip()
+        if not text:
+            continue
+        seg_words = words_from_whisper_segments([seg])
+        groups.append(WordGroup(words=seg_words, start=float(seg.start), end=float(seg.end), texte_brut=text))
+    return groups
+
+
+@dataclass
+class TranscriptResult:
+    words: list[Word]
+    segments: list[WordGroup]
+
+
+def transcribe(
+    audio_path: str | Path,
+    language: str = "fr",
+    model_size: str = "small",
+) -> TranscriptResult:
+    """Transcrit un rush (ou un fichier audio) : mots horodatés + segments
+    (phrases naturelles), pour alimenter selon le cas le mode "groupes_mots"
+    ou "segments" des sous-titres."""
+    model = _get_model(model_size=model_size)
+    raw_segments, _info = model.transcribe(str(audio_path), language=language, word_timestamps=True)
+    raw_segments = list(raw_segments)
+    return TranscriptResult(
+        words=words_from_whisper_segments(raw_segments),
+        segments=segments_from_whisper(raw_segments),
+    )
 
 
 def group_words(words: list[Word], mots_par_groupe: int, trailing_pad_s: float = 0.15) -> list[WordGroup]:

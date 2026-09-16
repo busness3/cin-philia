@@ -1,0 +1,22 @@
+# =============================================================================
+# Vlogs Dakar — quotidien entre Dakar et Paris.
+# Hérite intégralement de configs/global.yaml. Cette config ne définit QUE
+# l'accent et des métadonnées de production (doc DA §11).
+# =============================================================================
+
+nom: "Vlogs Dakar"
+description: "Vlog quotidien à Dakar (et à Paris), ton personnel."
+
+accent: "#C96B4A"   # terracotta (doc DA §2)
+
+tenue: "Tenue du quotidien, rien de mis en scène."
+decor: "Extérieurs/intérieurs à Dakar (et Paris selon la période)."
+structure_script: "Peu de plans, capture le moment tel qu'il vient plutôt qu'un script rigide."
+duree_cible_s: 60
+cta_sortie: "Vous voulez voir la suite ?"
+formule_titre: "Un moment/lieu en 4 mots max (ex: \"Une journée à Dakar\")."
+
+audio:
+  mood_musique: chill
+  volume_musique_db: -22
+  sfx_transition: null

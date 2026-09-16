@@ -1,11 +1,17 @@
 from types import SimpleNamespace
 
-from content_studio.transcribe import group_words, parse_srt, words_from_whisper_segments
+from content_studio.transcribe import group_words, parse_srt, segments_from_whisper, words_from_whisper_segments
 
 
-def _fake_segment(words):
+def _fake_segment(words, text=None, start=None, end=None):
     fake_words = [SimpleNamespace(word=w[0], start=w[1], end=w[2]) for w in words]
-    return SimpleNamespace(words=fake_words)
+    if text is None:
+        text = "".join(w[0] for w in words).strip()
+    if start is None:
+        start = words[0][1] if words else 0.0
+    if end is None:
+        end = words[-1][2] if words else 0.0
+    return SimpleNamespace(words=fake_words, text=text, start=start, end=end)
 
 
 def test_words_from_whisper_segments():
@@ -55,3 +61,22 @@ def test_parse_srt(tmp_path):
     assert groups[0].start == 0.0
     assert groups[0].end == 2.0
     assert groups[1].text == "Deuxième ligne sur deux mots"
+
+
+def test_segments_from_whisper():
+    segments = [
+        _fake_segment([(" Bonjour", 0.0, 0.4), (" à", 0.4, 0.5)], text="Bonjour à toutes.", start=0.0, end=1.2),
+        _fake_segment([(" Suite", 1.5, 1.9)], text="Suite de la phrase.", start=1.5, end=2.4),
+    ]
+    groups = segments_from_whisper(segments)
+    assert len(groups) == 2
+    assert groups[0].text == "Bonjour à toutes."
+    assert groups[0].start == 0.0
+    assert groups[0].end == 1.2
+    assert groups[1].text == "Suite de la phrase."
+
+
+def test_segments_from_whisper_skips_empty_text():
+    segments = [_fake_segment([], text="   ", start=0.0, end=0.5)]
+    groups = segments_from_whisper(segments)
+    assert groups == []

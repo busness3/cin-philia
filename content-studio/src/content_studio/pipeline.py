@@ -1,11 +1,19 @@
 """Orchestrateur : assemble toutes les briques pour rendre un épisode complet
 à partir de `episodes/*.yaml` + la config de la série concernée.
 
+v2 — aligné sur le document de DA globale « petit boucan » : plus de carton
+d'intro séparé, le titre est incrusté sur le plan d'ouverture (bandeau
+crème + bloc accent, même gabarit que la couverture) ; sortie optionnelle
+avec le même bandeau + CTA de la série ; musique qui démarre après le
+premier mot détecté par la transcription ; génération de la couverture PNG
+en plus de la vidéo.
+
 Étapes, par séquence : normalisation (recadrage/format proxy) -> sous-titres
-(auto/SRT fourni/aucun) -> overlays texte ponctuels. Puis assemblage de
-l'accroche + des séquences avec transitions, cadre/watermarks, et enfin mixage
-audio (musique de la bibliothèque + SFX). Le tout dans un dossier de travail
-temporaire, nettoyé à la fin sauf si `keep_intermediates=True`.
+(auto/SRT fourni/aucun) -> overlays texte ponctuels. Puis assemblage des
+séquences avec transitions, bandeau d'ouverture, bandeau de sortie (si
+activé), mixage audio (musique de la bibliothèque + SFX), et couverture.
+Le tout dans un dossier de travail temporaire, nettoyé à la fin sauf si
+`keep_intermediates=True`.
 """
 from __future__ import annotations
 
@@ -15,16 +23,18 @@ from pathlib import Path
 from typing import Optional
 
 from . import audio as audio_mod
+from . import band as band_mod
+from . import cover as cover_mod
 from . import ffmpeg_utils as ff
 from . import overlays as overlays_mod
 from . import subtitles as subtitles_mod
 from . import transcribe as transcribe_mod
 from . import transitions as transitions_mod
-from .config import ASSETS_DIR, EPISODES_DIR, ROOT, SOUNDS_DIR, load_episode, resolve_config
+from .config import ASSETS_DIR, ROOT, SOUNDS_DIR, load_episode, resolve_config
+from .fonts import resolve_font_path
 from .models import EpisodeConfig, ResolvedConfig, SfxCue
 from .normalize import normalize_clip
 from .sound_library import SoundLibraryError, get_sfx, pick_music
-from .titles import render_title_card
 
 
 def _log(msg: str) -> None:
@@ -35,19 +45,18 @@ def _resolve_rush_path(rush: str) -> Path:
     p = Path(rush)
     if p.is_absolute():
         return p
-    # essaie relatif à content-studio/ (ROOT), sinon tel quel (relatif au cwd)
     candidate = ROOT / p
     return candidate if candidate.exists() else p
 
 
 def _default_overlay_style(resolved: ResolvedConfig) -> dict:
-    st = resolved.serie.sous_titres
+    st = resolved.global_.sous_titres
     return dict(
-        police=resolved.serie.titres.police,
-        taille_px=max(int(st.taille_px * 0.6), 24),
+        police=st.police,
+        taille_px=max(int(st.taille_px * 0.7), 24),
         couleur_texte=st.couleur_texte,
-        couleur_contour=st.couleur_contour,
-        epaisseur_contour=max(st.epaisseur_contour - 1, 1),
+        couleur_contour="#000000",
+        epaisseur_contour=0,  # style minimaliste de la DA : pas de contour
     )
 
 
@@ -57,8 +66,15 @@ def _render_sequence(
     resolved: ResolvedConfig,
     work_dir: Path,
     fonts_dir: Path,
-) -> Path:
+) -> tuple[Path, Optional[float]]:
+    """Rend une séquence (normalisation + sous-titres + overlays).
+
+    Renvoie (clip, premier_mot_s) — `premier_mot_s` est l'instant du premier
+    mot détecté par la transcription auto (utile pour caler le départ de la
+    musique sur la 1re séquence), ou None si non déterminé.
+    """
     video_cfg = resolved.global_.video
+    sous_titres_cfg = resolved.global_.sous_titres
     rush_path = _resolve_rush_path(seq.rush)
 
     normalized = normalize_clip(
@@ -66,17 +82,21 @@ def _render_sequence(
         mode="cover", start=seq.debut_s or None, end=seq.fin_s,
     )
     current = normalized
+    premier_mot_s: Optional[float] = None
 
     if seq.sous_titres == "auto":
         try:
-            words = transcribe_mod.transcribe(current, language="fr")
+            result = transcribe_mod.transcribe(current, language="fr")
         except Exception as e:  # modèle indisponible, audio illisible, etc.
             _log(f"séquence {index} : transcription auto indisponible ({e}) -> pas de sous-titres")
-            words = []
-        if words:
-            ass_path = subtitles_mod.write_ass(
-                words, resolved.serie.sous_titres, video_cfg, work_dir / f"seq{index:02d}_subs.ass"
+            result = None
+        if result and result.words:
+            premier_mot_s = result.words[0].start
+        if result and (result.words or result.segments):
+            ass_content = subtitles_mod.build_ass(
+                sous_titres_cfg, video_cfg, words=result.words, segments=result.segments
             )
+            ass_path = subtitles_mod.write_ass(ass_content, work_dir / f"seq{index:02d}_subs.ass")
             current = subtitles_mod.burn_subtitles(
                 current, ass_path, work_dir / f"seq{index:02d}_subs.mp4", video_cfg, fonts_dir=fonts_dir
             )
@@ -84,12 +104,13 @@ def _render_sequence(
         # chemin vers un .srt fourni par Cléa
         srt_path = _resolve_rush_path(seq.sous_titres)
         groups = transcribe_mod.parse_srt(srt_path)
-        words = [g.words[0] for g in groups]
-        style_1 = resolved.serie.sous_titres.model_copy(update={"mots_par_groupe": 1})
-        ass_path = subtitles_mod.write_ass(words, style_1, video_cfg, work_dir / f"seq{index:02d}_subs.ass")
-        current = subtitles_mod.burn_subtitles(
-            current, ass_path, work_dir / f"seq{index:02d}_subs.mp4", video_cfg, fonts_dir=fonts_dir
-        )
+        if groups:
+            premier_mot_s = groups[0].start
+            ass_content = subtitles_mod.build_ass_from_groups(groups, sous_titres_cfg, video_cfg)
+            ass_path = subtitles_mod.write_ass(ass_content, work_dir / f"seq{index:02d}_subs.ass")
+            current = subtitles_mod.burn_subtitles(
+                current, ass_path, work_dir / f"seq{index:02d}_subs.mp4", video_cfg, fonts_dir=fonts_dir
+            )
 
     if seq.overlay_texte:
         style = _default_overlay_style(resolved)
@@ -98,7 +119,7 @@ def _render_sequence(
             fonts_dir=fonts_dir, work_dir=work_dir, **style,
         )
 
-    return current
+    return current, premier_mot_s
 
 
 def render_episode(
@@ -109,7 +130,9 @@ def render_episode(
     episode: EpisodeConfig = load_episode(episode_path)
     resolved = resolve_config(episode.serie)
     video_cfg = resolved.global_.video
+    timing = resolved.global_.timing
     fonts_dir = ASSETS_DIR / "fonts"
+    titre_font_path = resolve_font_path(resolved.global_.fonts.titre.police, fonts_dir)
 
     work_dir = Path(work_dir) if work_dir else ROOT / "out" / f".tmp_{Path(episode.sortie).stem}"
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -117,41 +140,45 @@ def render_episode(
 
     clips: list[Path] = []
     transitions: list[str] = []
-    default_trans = resolved.serie.rythme.transition_defaut
-
-    if episode.accroche:
-        _log("rendu de l'accroche (carton de titre)")
-        card = render_title_card(
-            episode.accroche.texte, resolved.serie.titres, video_cfg,
-            episode.accroche.duree_s, work_dir / "00_accroche.mp4",
-            fonts_dir=fonts_dir, work_dir=work_dir,
-        )
-        clips.append(card)
-        transitions.append(default_trans)
+    default_trans = resolved.global_.rythme.transition_defaut
+    premier_mot_s: Optional[float] = None
 
     for i, seq in enumerate(episode.sequences):
         _log(f"séquence {i + 1}/{len(episode.sequences)} : {seq.rush}")
-        clip = _render_sequence(seq, i, resolved, work_dir, fonts_dir)
+        clip, first_word = _render_sequence(seq, i, resolved, work_dir, fonts_dir)
+        if i == 0 and first_word is not None:
+            premier_mot_s = first_word
         clips.append(clip)
         if i < len(episode.sequences) - 1:
             transitions.append(seq.transition_sortie or default_trans)
 
     _log(f"assemblage de {len(clips)} clip(s) avec transitions")
     assembled = transitions_mod.concat_with_transitions(
-        clips, transitions, resolved.serie.rythme.duree_transition_ms / 1000,
+        clips, transitions, resolved.global_.rythme.duree_transition_ms / 1000,
         work_dir / "assembled.mp4", video_cfg,
     )
     current = assembled
 
-    if resolved.serie.overlays.cadre.actif:
-        _log("application du cadre")
-        current = overlays_mod.apply_cadre(current, work_dir / "with_cadre.mp4", resolved.serie.overlays.cadre, video_cfg)
+    if episode.accroche and episode.accroche.texte:
+        _log("incrustation du titre d'ouverture (bandeau)")
+        current = band_mod.apply_band_to_video(
+            current, work_dir / "with_open_band.mp4", resolved.global_.couverture,
+            resolved.serie.accent, titre_font_path, resolved.global_.fonts.titre.taille_px,
+            episode.accroche.texte, video_cfg,
+            start_s=timing.titre_apparition_s, duration_s=timing.titre_duree_s,
+            work_dir=work_dir, label_prefix="ouverture",
+        )
 
-    if resolved.serie.overlays.watermark_serie.actif:
-        _log("application du watermark série")
-        current = overlays_mod.apply_text_watermark(
-            current, work_dir / "with_wm_serie.mp4", resolved.serie.overlays.watermark_serie, video_cfg,
-            police=resolved.global_.identite.police_principale, fonts_dir=fonts_dir, work_dir=work_dir,
+    if timing.sortie_activee and resolved.serie.cta_sortie:
+        total_duration = ff.probe(current).duration
+        outro_start = max(total_duration - timing.sortie_duree_s, 0.0)
+        _log("incrustation du bandeau de sortie (CTA)")
+        current = band_mod.apply_band_to_video(
+            current, work_dir / "with_outro_band.mp4", resolved.global_.couverture,
+            resolved.serie.accent, titre_font_path, resolved.global_.fonts.titre.taille_px,
+            resolved.serie.cta_sortie, video_cfg,
+            start_s=outro_start, duration_s=timing.sortie_duree_s,
+            work_dir=work_dir, label_prefix="sortie",
         )
 
     if resolved.global_.identite.watermark.actif and resolved.global_.identite.watermark.image:
@@ -171,6 +198,10 @@ def render_episode(
         except SoundLibraryError as e:
             _log(f"pas de musique : {e}")
 
+    music_delay_s = 0.0
+    if timing.musique_apres_voix and music_path is not None:
+        music_delay_s = premier_mot_s if premier_mot_s is not None else 1.0
+
     sfx_paths: dict[str, Path] = {}
     sfx_cues: list[SfxCue] = []
     for cue in episode.audio.sfx:
@@ -180,7 +211,7 @@ def render_episode(
         except SoundLibraryError as e:
             _log(f"sfx ignoré : {e}")
 
-    _log("mixage audio (musique + sfx + voix)")
+    _log(f"mixage audio (musique{' (délai ' + str(round(music_delay_s, 2)) + 's)' if music_delay_s else ''} + sfx + voix)")
     final = audio_mod.mix_audio(
         current, work_dir / "final.mp4", video_cfg, duration_s,
         music_path=music_path,
@@ -188,6 +219,7 @@ def render_episode(
         sfx_cues=sfx_cues, sfx_paths=sfx_paths,
         sfx_default_volume_db=resolved.global_.audio.sfx.volume_defaut_db,
         loudness_lufs=resolved.global_.audio.loudness_cible_lufs,
+        music_delay_s=music_delay_s,
     )
 
     sortie = Path(episode.sortie)
@@ -196,6 +228,22 @@ def render_episode(
     sortie.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(final, sortie)
     _log(f"terminé : {sortie}")
+
+    couverture_texte = None
+    if episode.couverture and episode.couverture.texte:
+        couverture_texte = episode.couverture.texte
+    elif episode.accroche:
+        couverture_texte = episode.accroche.texte
+    if couverture_texte:
+        temps_capture = episode.couverture.temps_capture_s if episode.couverture else 0.5
+        cover_path = sortie.with_name(sortie.stem + "_couverture.png")
+        _log("génération de la couverture")
+        cover_mod.generate_cover(
+            assembled, cover_path, resolved.global_.couverture, resolved.serie.accent,
+            titre_font_path, resolved.global_.fonts.titre.taille_px, couverture_texte,
+            video_cfg, temps_capture, work_dir,
+        )
+        _log(f"couverture : {cover_path}")
 
     if not keep_intermediates:
         shutil.rmtree(work_dir, ignore_errors=True)

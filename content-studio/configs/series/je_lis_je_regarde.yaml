@@ -1,56 +1,26 @@
 # =============================================================================
-# "Je lis je regarde je vous en parle" — livres/films/séries, ton posé et
-# réflexif.
-# DA : palette sobre bleu-vert/crème façon carnet de lecture, rythme le plus
-# lent des 4 séries, sous-titres avec plus de mots à la fois (ton narratif).
-# Placeholder à ajuster par Cléa.
+# "Je lis je regarde je vous en parle" — livres/films/séries, ton posé.
+# Hérite intégralement de configs/global.yaml. Cette config ne définit QUE
+# l'accent et des métadonnées de production (doc DA §11).
+#
+# Accent : le document de DA globale ne couvrait que 3 séries au moment de sa
+# rédaction (§2 : "séries à venir -> à définir"). Celui-ci est un choix par
+# défaut qui respecte les règles de la section 2 (famille chaude, brique/
+# prune, distinct du chocolat et des 3 autres accents) — à valider/ajuster
+# librement.
 # =============================================================================
 
 nom: "Je lis je regarde je vous en parle"
 description: "Retour sur un livre/film/série : ce que j'en ai pensé."
 
-couleurs:
-  accent: "#3E6259"       # bleu-vert sobre, carnet de lecture
-  fond_titre: "#EFE9DD"   # crème clair
-  texte: "#2B2B2B"
+accent: "#8C4A3E"   # brique — chaud, distinct des 3 autres accents et du chocolat
 
-sous_titres:
-  police: Montserrat-SemiBold
-  taille_px: 60
-  couleur_texte: "#FFFFFF"
-  couleur_contour: "#000000"
-  epaisseur_contour: 3
-  couleur_mot_actif: "#3E6259"
-  position: bas_centre
-  marge_verticale_px: 320
-  majuscules: false
-  mots_par_groupe: 4       # légendes plus longues, ton narratif/réflexif
-  animation: fade
-  duree_animation_ms: 300
-
-titres:
-  style: carton_plein
-  police: Montserrat-Bold
-  taille_px: 84
-  couleur_texte: "#2B2B2B"
-  couleur_fond: "#EFE9DD"
-  animation_entree: fade
-  animation_sortie: fade
-  duree_ms: 2200
-
-overlays:
-  cadre:
-    actif: false
-  watermark_serie:
-    actif: true
-    texte: "JE LIS JE REGARDE"
-    position: haut_gauche
-
-rythme:
-  duree_plan_min_s: 2.5
-  duree_plan_max_s: 6.0
-  transition_defaut: fade   # le plus lent des 4 : rythme calme, réflexif
-  duree_transition_ms: 450
+tenue: "Tenue du quotidien."
+decor: "Intérieur cosy — coin lecture/canapé par exemple."
+structure_script: "Accroche -> de quoi ça parle (sans trop spoiler) -> ce que j'en ai pensé -> je recommande ou pas."
+duree_cible_s: 60
+cta_sortie: "Vous l'avez lu/vu ? Dites-moi en commentaire."
+formule_titre: "Titre de l'œuvre + avis en 4 mots max (ex: \"[Titre] : mon vrai avis\")."
 
 audio:
   mood_musique: calme

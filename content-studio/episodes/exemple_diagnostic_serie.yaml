@@ -1,8 +1,9 @@
 # =============================================================================
 # Exemple d'épisode — sert de gabarit à copier pour chaque nouvelle vidéo.
-# Un épisode = quelle série + quels rushs, dans quel ordre, avec quelles
-# accroches/overlays/sfx spécifiques à CETTE vidéo (la direction artistique,
-# elle, vient entièrement de configs/series/<serie>.yaml).
+# Un épisode = quelle série + quels rushs, dans quel ordre, + le texte
+# spécifique à CETTE vidéo (titre d'ouverture, overlays éventuels). La DA
+# (couleurs, typo, sous-titres, gabarit, timing) vient entièrement de
+# configs/global.yaml + l'accent de la série — rien à en dire ici.
 #
 # Pour rendre cet épisode une fois les rushs en place :
 #   python -m content_studio.cli render episodes/exemple_diagnostic_serie.yaml
@@ -12,41 +13,37 @@ serie: diagnostic_serie
 titre_episode: "Diagnostic : [nom de la série]"
 sortie: out/diagnostic_exemple.mp4
 
-# Carton d'intro (optionnel) : texte affiché en carton plein avant la 1re séquence
+# Titre incrusté sur le plan d'ouverture (bandeau crème + bloc accent),
+# apparaît à t=0.3s pendant 2s (réglages fixes, cf. configs/global.yaml
+# `timing`) — 4 mots max / 2 lignes pour rester lisible dans le gabarit.
 accroche:
-  texte: "Cette série a un énorme problème..."
-  duree_s: 2.0
+  texte: "Cette série a un problème"
+
+# Couverture (image fixe) : optionnelle. Sans ce bloc, le titre de
+# l'accroche ci-dessus est repris tel quel pour la couverture.
+couverture:
+  texte: "Cette série a un problème"
+  temps_capture_s: 0.5   # instant de la vidéo utilisé comme fond (visage visible idéalement)
 
 sequences:
   # rush : chemin vers le fichier vidéo brut (relatif à content-studio/, ou absolu)
   # debut_s/fin_s : découpe du rush (fin_s omis = jusqu'à la fin du fichier)
   # sous_titres : "auto" (transcription automatique) | "aucun" | chemin vers un .srt fourni
   # transition_sortie : transition vers la séquence suivante (sinon celle par
-  #   défaut de la série est utilisée) : cut | fade | slide | zoom
+  #   défaut définie dans configs/global.yaml est utilisée)
   - rush: "rushs/diagnostic_exemple/clip1.mp4"
     debut_s: 0.0
-    fin_s: 8.0
+    fin_s: 20.0
     sous_titres: auto
     transition_sortie: cut
 
   - rush: "rushs/diagnostic_exemple/clip2.mp4"
     debut_s: 2.0
-    fin_s: 15.0
-    sous_titres: auto
-    overlay_texte:
-      - texte: "⚠️ spoiler"
-        debut_s: 3.0
-        fin_s: 5.0
-        position: haut_centre
-    transition_sortie: fade
-
-  - rush: "rushs/diagnostic_exemple/clip3.mp4"
+    fin_s: 35.0
     sous_titres: auto
 
 # Audio de l'épisode (optionnel — sans ce bloc : musique piochée automatiquement
 # selon `audio.mood_musique` de la série, et pas de sfx)
 audio:
   musique: null    # ex: "sounds/music/energique_02.mp3" pour forcer une piste précise
-  sfx:
-    - id: whoosh_court
-      au_temps_s: 8.0
+  sfx: []

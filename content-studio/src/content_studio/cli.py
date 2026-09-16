@@ -43,10 +43,12 @@ def _cmd_check_config(args: argparse.Namespace) -> int:
         print(f"Erreur de config : {e}", file=sys.stderr)
         return 1
     print(f"Série : {resolved.serie.nom} ({resolved.serie.id})")
-    print(f"  couleur accent : {resolved.couleur('accent')}")
-    print(f"  sous-titres    : {resolved.serie.sous_titres.police}, {resolved.serie.sous_titres.taille_px}px, "
-          f"animation={resolved.serie.sous_titres.animation}")
-    print(f"  rythme         : transition par défaut = {resolved.serie.rythme.transition_defaut}")
+    print(f"  accent         : {resolved.serie.accent}")
+    print(f"  CTA de sortie  : {resolved.serie.cta_sortie or '(aucun)'}")
+    print(f"  mood musique   : {resolved.serie.audio.mood_musique}")
+    print(f"  sous-titres    : {resolved.global_.sous_titres.police}, {resolved.global_.sous_titres.taille_px}px "
+          f"(global, mode={resolved.global_.sous_titres.mode_groupement})")
+    print(f"  rythme         : transition par défaut = {resolved.global_.rythme.transition_defaut} (global)")
     print("Config valide.")
     return 0
 

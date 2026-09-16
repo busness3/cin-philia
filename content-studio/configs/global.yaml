@@ -1,34 +1,24 @@
 # =============================================================================
-# Identité TikTok globale — commune à TOUTES les séries.
-# Ce fichier fixe le socle technique (résolution, codecs, zone sûre par
-# rapport à l'UI TikTok, loudness) et les éléments de marque partagés
-# (watermark, police par défaut, couleurs de marque).
+# Identité TikTok globale — compte « petit boucan ».
+# Ce fichier est LE document de direction artistique du compte : palette,
+# typo, style des sous-titres, gabarit de couverture, timing d'ouverture/
+# sortie. Une série (configs/series/*.yaml) ne surcharge QUE sa couleur
+# d'accent + des métadonnées de production — tout le reste ici est commun à
+# toutes les vidéos, quelle que soit la série.
 #
-# Chaque série (configs/series/*.yaml) peut ensuite définir SA propre
-# direction artistique (couleurs, typo, style de sous-titres, rythme) par
-# dessus ce socle — voir ResolvedConfig.couleur() dans le code, qui retombe
-# sur `identite.couleurs_marque` si la série ne précise pas une couleur.
-#
-# Placeholder en attendant la charte définitive : à ajuster librement, aucune
-# valeur ici n'est figée dans le code.
+# Miroir du document de référence DA « petit boucan » (v1).
 # =============================================================================
 
 identite:
-  nom_compte: "@a-completer"
+  nom_compte: "petit boucan"
+  bio: "23 ans — étudiante en médecine — je vis entre Dakar et Paris"
 
   watermark:
-    actif: false              # passe à true dès que le logo est prêt
-    image: null                # ex: "assets/logo/watermark.png"
-    position: haut_droite
-    opacite: 0.85
-    marge_px: 24
-
-  police_principale: Montserrat-Bold   # nom de fichier (sans extension) dans assets/fonts/
+    actif: false   # pas de logo/tampon sur cette DA (doc §4)
 
   couleurs_marque:
-    accent: "#FF3B5C"
-    texte_clair: "#FFFFFF"
-    texte_sombre: "#111111"
+    creme: "#F5EFE6"      # fond, bandeaux, voile des sous-titres
+    chocolat: "#4A3328"   # texte, tout élément "sombre" (le noir pur est interdit)
 
 video:
   largeur: 1080
@@ -39,16 +29,69 @@ video:
   preset: medium
   codec_audio: aac
   bitrate_audio: 192k
-
-  # Marges à ne jamais couvrir avec du texte/overlay : zone occupée par
-  # l'interface TikTok (nom du compte, légende, boutons like/partage...).
   zone_sure:
     haut_px: 220
-    bas_px: 320
+    bas_px: 480     # l'UI TikTok recouvre les ~480 derniers pixels
     lateral_px: 40
 
+fonts:
+  titre:
+    police: ArchivoNarrow-SemiBold   # assets/fonts/ArchivoNarrow-SemiBold.ttf
+    taille_px: 96
+    interligne_px: 104
+  sous_titre:
+    police: Archivo-Medium           # assets/fonts/Archivo-Medium.ttf
+    taille_px: 64
+
+sous_titres:
+  police: Archivo-Medium
+  taille_px: 64
+  couleur_texte: "#4A3328"
+  backdrop:
+    couleur: "#F5EFE6"
+    opacite: 0.85
+    rayon_px: 12    # non appliqué techniquement (rendu = rectangle net, cf. README)
+    padding_x_px: 24
+    padding_y_px: 16
+  baseline_y_px: 1250
+  max_lignes: 2
+  mode_groupement: segments   # phrases naturelles (whisper) — pas de légendes punchy
+  mots_par_groupe: 6          # utilisé seulement si mode_groupement = groupes_mots
+
+couverture:
+  bandeau:
+    x: 0
+    y: 1140
+    largeur: 1080
+    hauteur: 360
+    couleur_fond: "#F5EFE6"
+  bloc_accent:
+    x: 72
+    y: 1200
+    largeur: 18
+    hauteur: 120
+  titre:
+    x: 138
+    baseline_ligne1_y: 1260
+    baseline_ligne2_y: 1364
+    largeur_max_px: 870
+    max_lignes: 2
+    max_mots: 4
+    couleur_texte: "#4A3328"
+
+timing:
+  titre_apparition_s: 0.3
+  titre_duree_s: 2.0
+  sortie_duree_s: 2.0
+  musique_apres_voix: true
+  sortie_activee: true   # à tester avant généralisation (doc §7) — désactivable facilement
+
+rythme:
+  transition_defaut: cut   # pas de rythme différencié par série dans cette DA
+  duree_transition_ms: 200
+
 audio:
-  loudness_cible_lufs: -14.0   # standard streaming/réseaux sociaux
+  loudness_cible_lufs: -14.0
   musique:
     volume_defaut_db: -18
     ducking_sous_voix_db: -12

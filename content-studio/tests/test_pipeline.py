@@ -21,7 +21,7 @@ audio:
 """
 
 
-def _setup_project(tmp_path, monkeypatch, series_yaml: str = "nom: Test Serie\n"):
+def _setup_project(tmp_path, monkeypatch, series_yaml: str = "nom: Test Serie\naccent: \"#AA3300\"\n"):
     configs_dir = tmp_path / "configs"
     series_dir = configs_dir / "series"
     series_dir.mkdir(parents=True)
@@ -35,7 +35,7 @@ def _setup_project(tmp_path, monkeypatch, series_yaml: str = "nom: Test Serie\n"
     monkeypatch.setattr(pipeline, "ASSETS_DIR", tmp_path / "assets")
 
 
-def test_render_episode_end_to_end_no_subtitles(tmp_path, monkeypatch):
+def test_render_episode_end_to_end_with_opening_band_and_cover(tmp_path, monkeypatch):
     _setup_project(tmp_path, monkeypatch)
     rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=2.0)
 
@@ -46,7 +46,6 @@ def test_render_episode_end_to_end_no_subtitles(tmp_path, monkeypatch):
         "sortie: out/test_final.mp4\n"
         "accroche:\n"
         "  texte: \"Salut à toutes\"\n"
-        "  duree_s: 1.0\n"
         "sequences:\n"
         f"  - rush: \"{rush}\"\n"
         "    sous_titres: aucun\n",
@@ -58,10 +57,13 @@ def test_render_episode_end_to_end_no_subtitles(tmp_path, monkeypatch):
     info = ff.probe(out)
     assert info.has_audio
     assert info.width == 360 and info.height == 640
-    # accroche (1s) + rush (2s) en cut -> ~3s
-    assert 2.5 < info.duration < 3.5
+    # le titre est incrusté sur le plan existant (pas un carton séparé) ->
+    # la durée reste celle du rush, pas rush + accroche.
+    assert 1.7 < info.duration < 2.3
     # dossier de travail nettoyé
     assert not (tmp_path / "out" / ".tmp_test_final").exists()
+    # couverture générée à côté de la vidéo (reprend le texte de l'accroche)
+    assert (tmp_path / "out" / "test_final_couverture.png").exists()
 
 
 def test_render_episode_two_sequences_with_transition(tmp_path, monkeypatch):
@@ -89,21 +91,14 @@ def test_render_episode_two_sequences_with_transition(tmp_path, monkeypatch):
     assert info.has_audio
 
 
-def test_render_episode_with_overlays_and_cadre(tmp_path, monkeypatch):
+def test_render_episode_overlay_and_outro_band(tmp_path, monkeypatch):
     series_yaml = (
         "nom: Test Serie\n"
-        "overlays:\n"
-        "  cadre:\n"
-        "    actif: true\n"
-        "    couleur: \"#FF3B5C\"\n"
-        "    epaisseur_px: 10\n"
-        "  watermark_serie:\n"
-        "    actif: true\n"
-        "    texte: \"TEST SERIE\"\n"
-        "    position: haut_gauche\n"
+        "accent: \"#AA3300\"\n"
+        "cta_sortie: \"Dites-moi tout\"\n"
     )
     _setup_project(tmp_path, monkeypatch, series_yaml=series_yaml)
-    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=1.5)
+    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=5.0)
 
     episode_path = tmp_path / "ep3.yaml"
     episode_path.write_text(
@@ -125,6 +120,27 @@ def test_render_episode_with_overlays_and_cadre(tmp_path, monkeypatch):
     assert out.exists()
     info = ff.probe(out)
     assert info.has_audio
+    assert 4.7 < info.duration < 5.3
+
+
+def test_render_episode_no_outro_when_cta_absent(tmp_path, monkeypatch):
+    # sans cta_sortie défini par la série, pas de bandeau de sortie -> ne
+    # doit pas planter, juste être ignoré.
+    _setup_project(tmp_path, monkeypatch)
+    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=3.0)
+
+    episode_path = tmp_path / "ep5.yaml"
+    episode_path.write_text(
+        "serie: test_serie\n"
+        "titre_episode: Test 5\n"
+        "sortie: out/test5_final.mp4\n"
+        "sequences:\n"
+        f"  - rush: \"{rush}\"\n"
+        "    sous_titres: aucun\n",
+        encoding="utf-8",
+    )
+    out = pipeline.render_episode(episode_path, keep_intermediates=False)
+    assert out.exists()
 
 
 def test_render_episode_keep_intermediates(tmp_path, monkeypatch):

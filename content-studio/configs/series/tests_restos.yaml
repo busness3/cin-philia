@@ -1,59 +1,22 @@
 # =============================================================================
 # Tests restos — critiques/tests de restaurants.
-# DA : couleurs "appétissantes" (jaune moutarde/brun chaud), cadre actif
-# façon signature visuelle de la série, rythme moyen.
-# Placeholder à ajuster par Cléa.
+# Hérite intégralement de configs/global.yaml. Cette config ne définit QUE
+# l'accent et des métadonnées de production (doc DA §11).
 # =============================================================================
 
 nom: "Tests Restos"
 description: "Test/avis de restaurant : plats, ambiance, verdict."
 
-couleurs:
-  accent: "#FFB703"       # jaune moutarde, appétissant
-  fond_titre: "#1D1A16"   # brun quasi noir
-  texte: "#FFF8E7"        # blanc cassé chaleureux
+accent: "#D89A1E"   # ocre (doc DA §2)
 
-sous_titres:
-  police: Montserrat-SemiBold
-  taille_px: 66
-  couleur_texte: "#FFFFFF"
-  couleur_contour: "#000000"
-  epaisseur_contour: 3
-  couleur_mot_actif: "#FFB703"
-  position: bas_centre
-  marge_verticale_px: 340
-  majuscules: true
-  mots_par_groupe: 3
-  animation: pop
-  duree_animation_ms: 130
-
-titres:
-  style: carton_plein
-  police: Montserrat-Bold
-  taille_px: 92
-  couleur_texte: "#FFF8E7"
-  couleur_fond: "#1D1A16"
-  animation_entree: zoom
-  animation_sortie: fade
-  duree_ms: 1700
-
-overlays:
-  cadre:
-    actif: true             # fine bordure couleur accent, signature visuelle de la série
-    couleur: "#FFB703"
-    epaisseur_px: 8
-  watermark_serie:
-    actif: true
-    texte: "TEST RESTO"
-    position: haut_droite
-
-rythme:
-  duree_plan_min_s: 1.5
-  duree_plan_max_s: 4.0
-  transition_defaut: zoom
-  duree_transition_ms: 300
+tenue: "Tenue du quotidien."
+decor: "Sur place au restaurant — plats, ambiance, quelques mots à la fin."
+structure_script: "Accroche -> ce qui a été commandé -> ressenti -> verdict/note."
+duree_cible_s: 60
+cta_sortie: "Le nom du resto est en légende !"
+formule_titre: "Nom du resto ou du plat en 4 mots max (ex: \"Ce resto m'a bluffée\")."
 
 audio:
   mood_musique: gourmand
   volume_musique_db: -20
-  sfx_transition: pop
+  sfx_transition: null

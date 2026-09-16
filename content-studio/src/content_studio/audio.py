@@ -26,6 +26,7 @@ def build_audio_filter(
     sfx_default_volume_db: float,
     loudness_lufs: float,
     apply_ducking: bool = True,
+    music_delay_s: float = 0.0,
 ) -> str:
     """Construit le filter_complex audio. Entrées attendues, dans l'ordre :
     0 = voix (piste audio de la vidéo normalisée), 1 = musique (si présente),
@@ -41,9 +42,13 @@ def build_audio_filter(
     labels.append("voice_dry")
 
     if has_music:
+        delay_clause = ""
+        if music_delay_s > 0:
+            delay_ms = round(music_delay_s * 1000)
+            delay_clause = f",adelay={delay_ms}|{delay_ms}"
         parts.append(
             f"[1:a]volume={music_volume_db}dB,aloop=loop=-1:size=2e9,"
-            f"atrim=0:{duration_s},asetpts=PTS-STARTPTS[music_a]"
+            f"atrim=0:{duration_s},asetpts=PTS-STARTPTS{delay_clause}[music_a]"
         )
         if do_duck:
             parts.append(
@@ -82,6 +87,7 @@ def mix_audio(
     sfx_default_volume_db: float,
     loudness_lufs: float,
     apply_ducking: bool = True,
+    music_delay_s: float = 0.0,
 ) -> Path:
     ff.check_ffmpeg_available()
     video_path, output_path = Path(video_path), Path(output_path)
@@ -101,6 +107,7 @@ def mix_audio(
         sfx_default_volume_db=sfx_default_volume_db,
         loudness_lufs=loudness_lufs,
         apply_ducking=apply_ducking,
+        music_delay_s=music_delay_s,
     )
 
     cmd += [

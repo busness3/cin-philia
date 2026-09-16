@@ -15,53 +15,55 @@ def test_load_global_config():
     g = config.load_global_config()
     assert g.video.largeur == 1080
     assert g.video.hauteur == 1920
-    assert g.identite.couleurs_marque["accent"].startswith("#")
+    assert g.identite.couleurs_marque["creme"].startswith("#")
+    assert g.identite.couleurs_marque["chocolat"].startswith("#")
+    assert g.sous_titres.mode_groupement == "segments"
+    assert g.couverture.titre.max_mots == 4
 
 
 def test_load_minimal_series_config(tmp_path, monkeypatch):
-    # Une config de série minimale ne doit fournir que id/nom : tout le reste
-    # doit se remplir avec des valeurs par défaut sensées.
+    # Une config de série minimale ne doit fournir que nom (+ éventuellement
+    # accent) : tout le reste (métadonnées) a une valeur par défaut.
     series_dir = tmp_path / "series"
     series_dir.mkdir()
-    (series_dir / "ma_serie.yaml").write_text("nom: Ma Série\n", encoding="utf-8")
+    (series_dir / "ma_serie.yaml").write_text("nom: Ma Série\naccent: \"#AA3300\"\n", encoding="utf-8")
     monkeypatch.setattr(config, "SERIES_DIR", series_dir)
 
     serie = config.load_series_config("ma_serie")
     assert serie.id == "ma_serie"
     assert serie.nom == "Ma Série"
-    assert serie.sous_titres.mots_par_groupe == 3
-    assert serie.rythme.transition_defaut == "cut"
+    assert serie.accent == "#AA3300"
+    assert serie.cta_sortie == ""
 
 
-def test_series_config_invalid_color(tmp_path, monkeypatch):
+def test_series_config_invalid_accent_color(tmp_path, monkeypatch):
     series_dir = tmp_path / "series"
     series_dir.mkdir()
-    (series_dir / "bad.yaml").write_text(
-        "nom: Bad\ncouleurs:\n  accent: pas-une-couleur\n", encoding="utf-8"
-    )
+    (series_dir / "bad.yaml").write_text("nom: Bad\naccent: pas-une-couleur\n", encoding="utf-8")
     monkeypatch.setattr(config, "SERIES_DIR", series_dir)
     with pytest.raises(ConfigError):
         config.load_series_config("bad")
 
 
-def test_resolved_config_color_fallback(tmp_path, monkeypatch):
+def test_resolved_config_couleur_accent(tmp_path, monkeypatch):
     series_dir = tmp_path / "series"
     series_dir.mkdir()
-    (series_dir / "s1.yaml").write_text("nom: S1\n", encoding="utf-8")
+    (series_dir / "s1.yaml").write_text("nom: S1\naccent: \"#123456\"\n", encoding="utf-8")
     monkeypatch.setattr(config, "SERIES_DIR", series_dir)
 
     resolved = config.resolve_config("s1")
-    # pas de `couleurs.accent` défini dans s1 -> fallback sur la charte globale
-    assert resolved.couleur("accent") == resolved.global_.identite.couleurs_marque["accent"]
+    assert resolved.couleur("accent") == "#123456"
+    assert resolved.couleur("creme") == resolved.global_.identite.couleurs_marque["creme"]
 
 
-def test_series_config_override_color():
-    serie = SeriesConfig.model_validate({
-        "id": "x",
-        "nom": "X",
-        "couleurs": {"accent": "#00FF00"},
-    })
-    assert serie.couleurs["accent"] == "#00FF00"
+def test_series_config_default_accent():
+    serie = SeriesConfig.model_validate({"id": "x", "nom": "X"})
+    assert serie.accent.startswith("#")  # valeur par défaut sensée, pas d'erreur
+
+
+def test_series_config_override_accent():
+    serie = SeriesConfig.model_validate({"id": "x", "nom": "X", "accent": "#00FF00"})
+    assert serie.accent == "#00FF00"
 
 
 def test_episode_config_minimal():
@@ -73,3 +75,4 @@ def test_episode_config_minimal():
     })
     assert ep.sequences[0].sous_titres == "auto"
     assert ep.sequences[0].debut_s == 0.0
+    assert ep.accroche is None

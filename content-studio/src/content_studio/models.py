@@ -1,17 +1,15 @@
 """Modèles de configuration (pydantic).
 
-Deux niveaux de config, dans configs/ :
-- `configs/global.yaml`  -> GlobalConfig  : identité TikTok commune à toutes les
-  séries (résolution, watermark, safe zone, loudness...).
-- `configs/series/*.yaml` -> SeriesConfig : direction artistique propre à une
-  série (couleurs, typo, style des sous-titres, rythme, ambiance audio...).
+Architecture v2, alignée sur le document de DA globale du compte
+« petit boucan » : la quasi-totalité de l'identité visuelle (palette, typo,
+style des sous-titres, gabarit de couverture, timing d'ouverture/sortie) est
+**globale et non négociable**. Une série ne peut surcharger que sa couleur
+d'accent, plus des métadonnées de production qui ne pilotent pas le rendu
+(tenue, décor, structure de script...).
 
-Et un niveau "contenu", dans episodes/ :
-- `episodes/*.yaml` -> EpisodeConfig : un épisode concret = quels rushs, dans
-  quel ordre, avec quelles accroches/overlays/sfx spécifiques.
-
-Tous les champs ont des valeurs par défaut raisonnables : un fichier de série
-peut se limiter à `id` + `nom` + les 2-3 réglages qu'on veut changer.
+- `configs/global.yaml`   -> GlobalConfig  : tout le socle DA + technique.
+- `configs/series/*.yaml` -> SeriesConfig  : accent + métadonnées d'une série.
+- `episodes/*.yaml`       -> EpisodeConfig : contenu concret d'une vidéo.
 """
 from __future__ import annotations
 
@@ -23,15 +21,6 @@ from pydantic import BaseModel, Field, field_validator
 HEX_RE = re.compile(r"^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$")
 
 
-class HexColorModel(BaseModel):
-    """Mixin utilitaire : valide que les champs couleur sont bien en #RRGGBB."""
-
-    @field_validator("*", mode="before")
-    @classmethod
-    def _noop(cls, v):  # pragma: no cover - placeholder pour sous-classes
-        return v
-
-
 def _check_hex(v: str) -> str:
     if not isinstance(v, str) or not HEX_RE.match(v):
         raise ValueError(f"couleur invalide {v!r}, attendu un format #RRGGBB")
@@ -39,11 +28,15 @@ def _check_hex(v: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Config globale (identité TikTok commune)
+# Config globale — identité TikTok commune (non négociable par série, sauf
+# mention explicite « défini par la série »)
 # ---------------------------------------------------------------------------
 
 
 class Watermark(BaseModel):
+    """Logo/watermark image, optionnel — absent du document de DA actuel
+    (section 4 : « pas de logo, pas de tampon »), désactivé par défaut."""
+
     actif: bool = False
     image: Optional[str] = None
     position: Literal["haut_gauche", "haut_droite", "bas_gauche", "bas_droite"] = "haut_droite"
@@ -52,14 +45,13 @@ class Watermark(BaseModel):
 
 
 class Identite(BaseModel):
-    nom_compte: str = ""
+    nom_compte: str = "petit boucan"
+    bio: str = ""
     watermark: Watermark = Field(default_factory=Watermark)
-    police_principale: str = "Montserrat-Bold"
     couleurs_marque: dict[str, str] = Field(
         default_factory=lambda: {
-            "accent": "#FF3B5C",
-            "texte_clair": "#FFFFFF",
-            "texte_sombre": "#111111",
+            "creme": "#F5EFE6",
+            "chocolat": "#4A3328",
         }
     )
 
@@ -70,10 +62,10 @@ class Identite(BaseModel):
 
 
 class ZoneSure(BaseModel):
-    """Marges à ne pas couvrir par du texte/overlay (boutons/UI TikTok)."""
+    """Marges à ne pas couvrir par du texte/overlay (UI TikTok + rognage grille)."""
 
     haut_px: int = 220
-    bas_px: int = 320
+    bas_px: int = 480  # l'UI TikTok recouvre les ~480 derniers pixels
     lateral_px: int = 40
 
 
@@ -87,6 +79,113 @@ class VideoConfig(BaseModel):
     codec_audio: str = "aac"
     bitrate_audio: str = "192k"
     zone_sure: ZoneSure = Field(default_factory=ZoneSure)
+
+
+class FontSpec(BaseModel):
+    """Police = nom de fichier (sans extension) dans assets/fonts/."""
+
+    police: str
+    taille_px: int
+    interligne_px: Optional[int] = None
+
+
+class FontsConfig(BaseModel):
+    titre: FontSpec = Field(
+        default_factory=lambda: FontSpec(police="ArchivoNarrow-SemiBold", taille_px=96, interligne_px=104)
+    )
+    sous_titre: FontSpec = Field(default_factory=lambda: FontSpec(police="Archivo-Medium", taille_px=64))
+
+
+class SubtitleBackdrop(BaseModel):
+    couleur: str = "#F5EFE6"
+    opacite: float = 0.85
+    rayon_px: int = 12  # non appliqué techniquement (rendu ASS = rectangle net) — cf. README
+    padding_x_px: int = 24
+    padding_y_px: int = 16
+
+    @field_validator("couleur")
+    @classmethod
+    def _valide(cls, v: str) -> str:
+        return _check_hex(v)
+
+
+class SousTitresConfig(BaseModel):
+    """Style des sous-titres — global, non surchargeable par série (doc DA §11).
+
+    Minimaliste par consigne explicite : pas d'animation, pas de contour, pas
+    d'ombre, pas de surlignage mot par mot.
+    """
+
+    police: str = "Archivo-Medium"
+    taille_px: int = 64
+    couleur_texte: str = "#4A3328"
+    backdrop: SubtitleBackdrop = Field(default_factory=SubtitleBackdrop)
+    baseline_y_px: int = 1250
+    max_lignes: int = 2
+    # "segments" : découpage par phrases naturelles (whisper) — lecture posée,
+    # correspond à la consigne « pas de légendes punchy ».
+    # "groupes_mots" : paquets de N mots (gardé disponible pour un usage futur
+    # hors de cette DA, mais non utilisé par les séries actuelles).
+    mode_groupement: Literal["segments", "groupes_mots"] = "segments"
+    mots_par_groupe: int = 6
+
+    @field_validator("couleur_texte")
+    @classmethod
+    def _valide(cls, v: str) -> str:
+        return _check_hex(v)
+
+
+class BandeauConfig(BaseModel):
+    x: int = 0
+    y: int = 1140
+    largeur: int = 1080
+    hauteur: int = 360
+    couleur_fond: str = "#F5EFE6"
+
+    @field_validator("couleur_fond")
+    @classmethod
+    def _valide(cls, v: str) -> str:
+        return _check_hex(v)
+
+
+class BlocAccentConfig(BaseModel):
+    x: int = 72
+    y: int = 1200
+    largeur: int = 18
+    hauteur: int = 120
+
+
+class TitreCouvertureConfig(BaseModel):
+    x: int = 138
+    baseline_ligne1_y: int = 1260
+    baseline_ligne2_y: int = 1364
+    largeur_max_px: int = 870
+    max_lignes: int = 2
+    max_mots: int = 4
+    couleur_texte: str = "#4A3328"
+
+    @field_validator("couleur_texte")
+    @classmethod
+    def _valide(cls, v: str) -> str:
+        return _check_hex(v)
+
+
+class GabaritCouverture(BaseModel):
+    """Gabarit partagé par la couverture statique ET le bandeau incrusté en
+    ouverture/sortie de vidéo (même bandeau, même police, même position)."""
+
+    bandeau: BandeauConfig = Field(default_factory=BandeauConfig)
+    bloc_accent: BlocAccentConfig = Field(default_factory=BlocAccentConfig)
+    titre: TitreCouvertureConfig = Field(default_factory=TitreCouvertureConfig)
+
+
+class TimingConfig(BaseModel):
+    titre_apparition_s: float = 0.3
+    titre_duree_s: float = 2.0
+    sortie_duree_s: float = 2.0
+    musique_apres_voix: bool = True
+    # section 7 : sortie fixe « à tester avant généralisation » — coupe-circuit facile
+    sortie_activee: bool = True
 
 
 class MusiqueGlobalConfig(BaseModel):
@@ -104,56 +203,32 @@ class AudioGlobalConfig(BaseModel):
     sfx: SfxGlobalConfig = Field(default_factory=SfxGlobalConfig)
 
 
+class RythmeConfig(BaseModel):
+    """Global, non exposé par série (le document de DA ne prévoit pas de
+    rythme différencié — « peu de plans par vidéo » est une contrainte
+    transverse, cf. §9)."""
+
+    transition_defaut: Literal["cut", "fade", "slide", "zoom"] = "cut"
+    duree_transition_ms: int = 200
+
+
 class GlobalConfig(BaseModel):
     identite: Identite = Field(default_factory=Identite)
     video: VideoConfig = Field(default_factory=VideoConfig)
+    fonts: FontsConfig = Field(default_factory=FontsConfig)
+    sous_titres: SousTitresConfig = Field(default_factory=SousTitresConfig)
+    couverture: GabaritCouverture = Field(default_factory=GabaritCouverture)
+    timing: TimingConfig = Field(default_factory=TimingConfig)
+    rythme: RythmeConfig = Field(default_factory=RythmeConfig)
     audio: AudioGlobalConfig = Field(default_factory=AudioGlobalConfig)
 
 
 # ---------------------------------------------------------------------------
-# Config par série (direction artistique)
+# Overlays génériques (cadre / watermark texte) — pas utilisés par la DA
+# actuelle (pas de cadre, pas de tampon de série), mais gardés disponibles :
+# la brique overlays.py reste utilisable telle quelle si une série future en
+# a besoin.
 # ---------------------------------------------------------------------------
-
-
-class SousTitresStyle(BaseModel):
-    police: str = "Montserrat-SemiBold"
-    taille_px: int = 68
-    couleur_texte: str = "#FFFFFF"
-    couleur_contour: str = "#000000"
-    epaisseur_contour: int = 3
-    couleur_mot_actif: Optional[str] = None
-    position: Literal["bas_centre", "centre", "haut_centre"] = "bas_centre"
-    marge_verticale_px: int = 340
-    majuscules: bool = True
-    mots_par_groupe: int = 3
-    animation: Literal["pop", "fade", "slide_up", "none"] = "pop"
-    duree_animation_ms: int = 120
-
-    @field_validator("couleur_texte", "couleur_contour")
-    @classmethod
-    def _valide(cls, v: str) -> str:
-        return _check_hex(v)
-
-    @field_validator("couleur_mot_actif")
-    @classmethod
-    def _valide_opt(cls, v: Optional[str]) -> Optional[str]:
-        return _check_hex(v) if v else v
-
-
-class TitresStyle(BaseModel):
-    style: Literal["carton_plein", "overlay_transparent"] = "carton_plein"
-    police: str = "Montserrat-Bold"
-    taille_px: int = 96
-    couleur_texte: str = "#FFFFFF"
-    couleur_fond: str = "#111111"
-    animation_entree: Literal["slide_up", "fade", "zoom", "none"] = "slide_up"
-    animation_sortie: Literal["fade", "slide_down", "none"] = "fade"
-    duree_ms: int = 1800
-
-    @field_validator("couleur_texte", "couleur_fond")
-    @classmethod
-    def _valide(cls, v: str) -> str:
-        return _check_hex(v)
 
 
 class CadreOverlay(BaseModel):
@@ -173,16 +248,9 @@ class WatermarkSerie(BaseModel):
     position: Literal["haut_gauche", "haut_droite", "bas_gauche", "bas_droite"] = "haut_gauche"
 
 
-class OverlaysConfig(BaseModel):
-    cadre: CadreOverlay = Field(default_factory=CadreOverlay)
-    watermark_serie: WatermarkSerie = Field(default_factory=WatermarkSerie)
-
-
-class RythmeConfig(BaseModel):
-    duree_plan_min_s: float = 1.5
-    duree_plan_max_s: float = 4.0
-    transition_defaut: Literal["cut", "fade", "slide", "zoom"] = "cut"
-    duree_transition_ms: int = 250
+# ---------------------------------------------------------------------------
+# Config par série — réduite à l'accent + métadonnées de production (doc DA §11)
+# ---------------------------------------------------------------------------
 
 
 class AudioSerieConfig(BaseModel):
@@ -195,17 +263,25 @@ class SeriesConfig(BaseModel):
     id: str
     nom: str
     description: str = ""
-    couleurs: dict[str, str] = Field(default_factory=dict)
-    sous_titres: SousTitresStyle = Field(default_factory=SousTitresStyle)
-    titres: TitresStyle = Field(default_factory=TitresStyle)
-    overlays: OverlaysConfig = Field(default_factory=OverlaysConfig)
-    rythme: RythmeConfig = Field(default_factory=RythmeConfig)
+
+    # Seul override visuel autorisé (doc DA §2 et §11).
+    accent: str = "#D42A2A"
+
+    # Métadonnées de production — informatives, ne pilotent pas le rendu
+    # (sauf cta_sortie, affiché dans le bandeau de sortie).
+    tenue: str = ""
+    decor: str = ""
+    structure_script: str = ""
+    duree_cible_s: Optional[float] = None
+    cta_sortie: str = ""
+    formule_titre: str = ""
+
     audio: AudioSerieConfig = Field(default_factory=AudioSerieConfig)
 
-    @field_validator("couleurs")
+    @field_validator("accent")
     @classmethod
-    def _valide_couleurs(cls, v: dict[str, str]) -> dict[str, str]:
-        return {k: _check_hex(c) for k, c in v.items()}
+    def _valide_accent(cls, v: str) -> str:
+        return _check_hex(v)
 
 
 class ResolvedConfig(BaseModel):
@@ -217,14 +293,15 @@ class ResolvedConfig(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
 
     def couleur(self, cle: str, defaut: Optional[str] = None) -> str:
-        """Couleur de la série si définie, sinon fallback sur la charte globale."""
-        if cle in self.serie.couleurs:
-            return self.serie.couleurs[cle]
+        """`"accent"` -> celui de la série ; toute autre clé -> charte globale
+        (creme/chocolat)."""
+        if cle == "accent":
+            return self.serie.accent
         if cle in self.global_.identite.couleurs_marque:
             return self.global_.identite.couleurs_marque[cle]
         if defaut is not None:
             return defaut
-        raise KeyError(f"couleur {cle!r} introuvable dans la série ni la charte globale")
+        raise KeyError(f"couleur {cle!r} introuvable (ni accent série, ni charte globale)")
 
 
 # ---------------------------------------------------------------------------
@@ -233,8 +310,18 @@ class ResolvedConfig(BaseModel):
 
 
 class Accroche(BaseModel):
+    """Titre incrusté sur le plan d'ouverture (pas un carton séparé) — la
+    durée/l'instant d'apparition sont fixés globalement (`timing`)."""
+
     texte: str
-    duree_s: float = 2.0
+
+
+class CoverEpisodeConfig(BaseModel):
+    """Couverture statique de la vidéo (gabarit `couverture` de la config
+    globale). Le titre reprend celui de l'accroche si non précisé ici."""
+
+    texte: Optional[str] = None
+    temps_capture_s: float = 0.5
 
 
 class OverlayTexte(BaseModel):
@@ -271,5 +358,6 @@ class EpisodeConfig(BaseModel):
     titre_episode: str
     sortie: str
     accroche: Optional[Accroche] = None
+    couverture: Optional[CoverEpisodeConfig] = None
     sequences: list[Sequence]
     audio: AudioEpisodeConfig = Field(default_factory=AudioEpisodeConfig)

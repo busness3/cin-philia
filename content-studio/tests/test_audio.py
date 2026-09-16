@@ -61,3 +61,49 @@ def test_mix_audio_music_and_sfx_together(tmp_path):
     info = ff.probe(out)
     assert info.has_audio
     assert abs(info.duration - 2.5) < 0.3
+
+
+def test_mix_audio_music_delay_after_voice(tmp_path):
+    # vidéo avec une piste "voix" silencieuse (anullsrc) : tout le volume
+    # mesuré dans le mix final vient donc de la musique -> sert à vérifier
+    # qu'elle ne démarre bien qu'après music_delay_s.
+    src = tmp_path / "src.mp4"
+    ff.run([
+        "ffmpeg", "-y",
+        "-f", "lavfi", "-i", "testsrc2=size=480x854:rate=24:duration=3",
+        "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
+        "-shortest", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac",
+        str(src),
+    ])
+    music = make_synthetic_audio(tmp_path / "music.mp3", duration=3.0, frequency=220)
+    out = mix_audio(
+        src, tmp_path / "out.mp4", VIDEO_CFG, duration_s=3.0,
+        music_path=music, music_volume_db=-6, sfx_cues=[], sfx_paths={},
+        sfx_default_volume_db=-6, loudness_lufs=-14.0, apply_ducking=False,
+        music_delay_s=1.5,
+    )
+    info = ff.probe(out)
+    assert info.has_audio
+    # avant 1.5s : pas de musique (silence, la vidéo source est muette) ;
+    # après 1.5s : la musique doit être audible.
+    ff.run([
+        "ffmpeg", "-y", "-i", str(out), "-t", "1.4", "-af", "volumedetect", "-f", "null", "-",
+    ])
+    proc_before = ff.run([
+        "ffmpeg", "-y", "-i", str(out), "-t", "1.4", "-af", "volumedetect", "-f", "null", "-",
+    ])
+    proc_after = ff.run([
+        "ffmpeg", "-y", "-ss", "2.0", "-i", str(out), "-t", "0.8", "-af", "volumedetect", "-f", "null", "-",
+    ])
+
+    def _mean_volume(stderr: str) -> float:
+        for line in stderr.splitlines():
+            if "mean_volume" in line:
+                return float(line.split(":")[1].strip().replace(" dB", ""))
+        return -999.0
+
+    vol_before = _mean_volume(proc_before.stderr)
+    vol_after = _mean_volume(proc_after.stderr)
+    # loudnorm relève un peu le plancher du silence, donc l'écart n'est pas
+    # infini, mais doit rester net.
+    assert vol_before < vol_after - 8
