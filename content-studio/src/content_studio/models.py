@@ -96,30 +96,19 @@ class FontsConfig(BaseModel):
     sous_titre: FontSpec = Field(default_factory=lambda: FontSpec(police="Archivo-Medium", taille_px=64))
 
 
-class SubtitleBackdrop(BaseModel):
-    couleur: str = "#F5EFE6"
-    opacite: float = 0.85
-    rayon_px: int = 12  # non appliqué techniquement (rendu ASS = rectangle net) — cf. README
-    padding_x_px: int = 24
-    padding_y_px: int = 16
-
-    @field_validator("couleur")
-    @classmethod
-    def _valide(cls, v: str) -> str:
-        return _check_hex(v)
-
-
 class SousTitresConfig(BaseModel):
     """Style des sous-titres — global, non surchargeable par série (doc DA §11).
 
-    Minimaliste par consigne explicite : pas d'animation, pas de contour, pas
-    d'ombre, pas de surlignage mot par mot.
+    Texte intégré directement sur l'image (pas de fond) : un contour assure
+    la lisibilité sur n'importe quel plan. Pas d'animation, pas de
+    surlignage mot par mot.
     """
 
     police: str = "Archivo-Medium"
     taille_px: int = 64
     couleur_texte: str = "#4A3328"
-    backdrop: SubtitleBackdrop = Field(default_factory=SubtitleBackdrop)
+    couleur_contour: str = "#F5EFE6"
+    epaisseur_contour: int = 3
     baseline_y_px: int = 1250
     max_lignes: int = 2
     # "segments" : découpage par phrases naturelles (whisper) — lecture posée,
@@ -129,7 +118,7 @@ class SousTitresConfig(BaseModel):
     mode_groupement: Literal["segments", "groupes_mots"] = "segments"
     mots_par_groupe: int = 6
 
-    @field_validator("couleur_texte")
+    @field_validator("couleur_texte", "couleur_contour")
     @classmethod
     def _valide(cls, v: str) -> str:
         return _check_hex(v)
@@ -254,6 +243,10 @@ class WatermarkSerie(BaseModel):
 
 
 class AudioSerieConfig(BaseModel):
+    """Mood par défaut de la série, à titre indicatif — la musique n'est
+    ajoutée à une vidéo que si son episode.yaml le demande explicitement
+    (`audio.musique` ou `audio.mood_musique`) : pas de musique automatique."""
+
     mood_musique: str = "neutre"
     volume_musique_db: float = -20.0
     sfx_transition: Optional[str] = None
@@ -349,7 +342,13 @@ class Sequence(BaseModel):
 
 
 class AudioEpisodeConfig(BaseModel):
-    musique: Optional[str] = None  # chemin explicite, sinon pioché via mood_musique de la série
+    """Musique optionnelle, opt-in par vidéo — pas de musique par défaut
+    (toutes les vidéos n'en ont pas besoin). Renseigner `musique` (chemin
+    explicite) ou `mood_musique` (pioche dans la bibliothèque) pour en
+    ajouter à CETTE vidéo."""
+
+    musique: Optional[str] = None
+    mood_musique: Optional[str] = None
     sfx: list[SfxCue] = Field(default_factory=list)
 
 

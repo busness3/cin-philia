@@ -1,14 +1,9 @@
 """Brique 2 : sous-titres synchronisés (génération ASS + burn-in).
 
-Style v2 — aligné sur le document de DA globale : minimaliste, fond crème
-translucide derrière le texte chocolat, pas d'animation, pas de surlignage
-mot par mot. Le format .ass (via libass) reste utilisé pour le fond en boîte
-(BorderStyle=3) et un positionnement pixel-précis.
-
-Limites connues (cf. README) : le rayon d'angle (12px) de la config n'est pas
-appliqué — le rendu ASS donne un rectangle net, pas arrondi ; le padding
-horizontal/vertical de la config est unique en ASS (une seule valeur
-"Outline" fait office de padding), la moyenne des deux est utilisée.
+Style v2 — texte intégré directement sur l'image (pas de fond), contour
+crème pour rester lisible sur n'importe quel plan, pas d'animation, pas de
+surlignage mot par mot. Le format .ass (via libass) est utilisé pour un
+positionnement pixel-précis (BorderStyle=1 : contour + ombre, ombre à 0).
 """
 from __future__ import annotations
 
@@ -29,25 +24,18 @@ def hex_to_ass_color(hex_color: str, alpha_hex: str = "00") -> str:
     return f"&H{alpha_hex}{b}{g}{r}&".upper()
 
 
-def _opacity_to_alpha_hex(opacite: float) -> str:
-    """opacité 0..1 -> octet alpha ASS (00 = opaque, FF = transparent)."""
-    alpha = round((1 - max(0.0, min(opacite, 1.0))) * 255)
-    return f"{alpha:02X}"
-
-
 def _escape_ass_text(text: str) -> str:
     return text.replace("{", r"\{").replace("}", r"\}").replace("\n", r"\N")
 
 
 def _style_line(config: SousTitresConfig, video_cfg: VideoConfig) -> str:
     primary = hex_to_ass_color(config.couleur_texte)
-    backdrop_color = hex_to_ass_color(config.backdrop.couleur, alpha_hex=_opacity_to_alpha_hex(config.backdrop.opacite))
-    padding = round((config.backdrop.padding_x_px + config.backdrop.padding_y_px) / 2)
+    outline = hex_to_ass_color(config.couleur_contour)
     margin_v = video_cfg.hauteur - config.baseline_y_px
     return (
         "Style: sous_titres,"
-        f"{config.police},{config.taille_px},{primary},{primary},{backdrop_color},{backdrop_color},"
-        f"0,0,0,0,100,100,0,0,3,{padding},0,2,"
+        f"{config.police},{config.taille_px},{primary},{primary},{outline},&H00000000,"
+        f"0,0,0,0,100,100,0,0,1,{config.epaisseur_contour},0,2,"
         f"{video_cfg.zone_sure.lateral_px},{video_cfg.zone_sure.lateral_px},{margin_v},1"
     )
 

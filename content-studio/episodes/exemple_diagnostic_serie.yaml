@@ -19,12 +19,6 @@ sortie: out/diagnostic_exemple.mp4
 accroche:
   texte: "Cette série a un problème"
 
-# Couverture (image fixe) : optionnelle. Sans ce bloc, le titre de
-# l'accroche ci-dessus est repris tel quel pour la couverture.
-couverture:
-  texte: "Cette série a un problème"
-  temps_capture_s: 0.5   # instant de la vidéo utilisé comme fond (visage visible idéalement)
-
 sequences:
   # rush : chemin vers le fichier vidéo brut (relatif à content-studio/, ou absolu)
   # debut_s/fin_s : découpe du rush (fin_s omis = jusqu'à la fin du fichier)
@@ -42,8 +36,9 @@ sequences:
     fin_s: 35.0
     sous_titres: auto
 
-# Audio de l'épisode (optionnel — sans ce bloc : musique piochée automatiquement
-# selon `audio.mood_musique` de la série, et pas de sfx)
+# Audio de l'épisode (optionnel — sans ce bloc : pas de musique du tout,
+# juste la voix). Pour ajouter de la musique à CETTE vidéo :
 audio:
-  musique: null    # ex: "sounds/music/energique_02.mp3" pour forcer une piste précise
+  musique: null        # ex: "sounds/music/energique_02.mp3" pour forcer une piste précise
+  mood_musique: null   # ex: "energique" pour piocher dans sounds/index.yaml
   sfx: []

@@ -24,7 +24,6 @@ def test_build_ass_from_groups_contains_style_and_events():
     cfg = SousTitresConfig()
     ass = build_ass_from_groups(_sample_segments(), cfg, VIDEO_CFG)
     assert "[V4+ Styles]" in ass
-    assert "BorderStyle=3" not in ass  # c'est un champ positionnel, pas nommé, dans le Format ASS
     assert "Première phrase" in ass
     assert "Deuxième phrase, plus longue" in ass
     assert ass.count("Dialogue:") == 2
@@ -51,14 +50,18 @@ def test_build_ass_groupes_mots_mode():
     assert ass.count("Dialogue:") == 2
 
 
-def test_backdrop_style_uses_border_style_3():
-    cfg = SousTitresConfig()
+def test_style_uses_outline_no_backdrop():
+    cfg = SousTitresConfig(epaisseur_contour=4)
     ass = build_ass_from_groups(_sample_segments(), cfg, VIDEO_CFG)
     style_line = next(line for line in ass.splitlines() if line.startswith("Style:"))
     fields = style_line[len("Style:"):].split(",")
     # Format: ...,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
-    border_style_idx = 15  # cf. l'ordre déclaré dans le header [V4+ Styles]
-    assert fields[border_style_idx] == "3"
+    border_style_idx = 15
+    outline_idx = 16
+    shadow_idx = 17
+    assert fields[border_style_idx] == "1"  # contour, pas de boîte de fond
+    assert fields[outline_idx] == "4"
+    assert fields[shadow_idx] == "0"
 
 
 def test_burn_subtitles_end_to_end(tmp_path):

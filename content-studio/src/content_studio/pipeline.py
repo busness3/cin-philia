@@ -3,16 +3,16 @@
 
 v2 — aligné sur le document de DA globale « petit boucan » : plus de carton
 d'intro séparé, le titre est incrusté sur le plan d'ouverture (bandeau
-crème + bloc accent, même gabarit que la couverture) ; sortie optionnelle
-avec le même bandeau + CTA de la série ; musique qui démarre après le
-premier mot détecté par la transcription ; génération de la couverture PNG
-en plus de la vidéo.
+crème + bloc accent) ; sortie optionnelle avec le même bandeau + CTA de la
+série ; musique opt-in par épisode (pas de musique par défaut), qui démarre
+après le premier mot détecté par la transcription quand elle est présente.
+Pas de génération automatique de couverture (Cléa s'en charge elle-même).
 
 Étapes, par séquence : normalisation (recadrage/format proxy) -> sous-titres
 (auto/SRT fourni/aucun) -> overlays texte ponctuels. Puis assemblage des
 séquences avec transitions, bandeau d'ouverture, bandeau de sortie (si
-activé), mixage audio (musique de la bibliothèque + SFX), et couverture.
-Le tout dans un dossier de travail temporaire, nettoyé à la fin sauf si
+activé et demandé), mixage audio (voix + musique optionnelle + SFX). Le
+tout dans un dossier de travail temporaire, nettoyé à la fin sauf si
 `keep_intermediates=True`.
 """
 from __future__ import annotations
@@ -24,7 +24,6 @@ from typing import Optional
 
 from . import audio as audio_mod
 from . import band as band_mod
-from . import cover as cover_mod
 from . import ffmpeg_utils as ff
 from . import overlays as overlays_mod
 from . import subtitles as subtitles_mod
@@ -189,12 +188,15 @@ def render_episode(
 
     duration_s = ff.probe(current).duration
 
+    # Musique opt-in : pas de musique par défaut (toutes les vidéos n'en ont
+    # pas besoin). Ajoutée uniquement si l'épisode la demande explicitement
+    # (chemin précis, ou mood pioché dans la bibliothèque pour CETTE vidéo).
     music_path = None
     if episode.audio.musique:
         music_path = _resolve_rush_path(episode.audio.musique)
-    elif resolved.serie.audio.mood_musique:
+    elif episode.audio.mood_musique:
         try:
-            music_path = pick_music(resolved.serie.audio.mood_musique, SOUNDS_DIR)
+            music_path = pick_music(episode.audio.mood_musique, SOUNDS_DIR)
         except SoundLibraryError as e:
             _log(f"pas de musique : {e}")
 
@@ -229,21 +231,8 @@ def render_episode(
     shutil.copy2(final, sortie)
     _log(f"terminé : {sortie}")
 
-    couverture_texte = None
-    if episode.couverture and episode.couverture.texte:
-        couverture_texte = episode.couverture.texte
-    elif episode.accroche:
-        couverture_texte = episode.accroche.texte
-    if couverture_texte:
-        temps_capture = episode.couverture.temps_capture_s if episode.couverture else 0.5
-        cover_path = sortie.with_name(sortie.stem + "_couverture.png")
-        _log("génération de la couverture")
-        cover_mod.generate_cover(
-            assembled, cover_path, resolved.global_.couverture, resolved.serie.accent,
-            titre_font_path, resolved.global_.fonts.titre.taille_px, couverture_texte,
-            video_cfg, temps_capture, work_dir,
-        )
-        _log(f"couverture : {cover_path}")
+    # Pas de génération automatique de couverture : Cléa s'en occupe
+    # elle-même (cf. cover.py, dispo si un usage manuel/futur le demande).
 
     if not keep_intermediates:
         shutil.rmtree(work_dir, ignore_errors=True)

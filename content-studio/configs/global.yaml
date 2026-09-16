@@ -47,12 +47,8 @@ sous_titres:
   police: Archivo-Medium
   taille_px: 64
   couleur_texte: "#4A3328"
-  backdrop:
-    couleur: "#F5EFE6"
-    opacite: 0.85
-    rayon_px: 12    # non appliqué techniquement (rendu = rectangle net, cf. README)
-    padding_x_px: 24
-    padding_y_px: 16
+  couleur_contour: "#F5EFE6"   # contour crème : lisibilité directement sur l'image, pas de fond
+  epaisseur_contour: 3
   baseline_y_px: 1250
   max_lignes: 2
   mode_groupement: segments   # phrases naturelles (whisper) — pas de légendes punchy

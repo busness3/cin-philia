@@ -35,7 +35,7 @@ def _setup_project(tmp_path, monkeypatch, series_yaml: str = "nom: Test Serie\na
     monkeypatch.setattr(pipeline, "ASSETS_DIR", tmp_path / "assets")
 
 
-def test_render_episode_end_to_end_with_opening_band_and_cover(tmp_path, monkeypatch):
+def test_render_episode_end_to_end_with_opening_band(tmp_path, monkeypatch):
     _setup_project(tmp_path, monkeypatch)
     rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=2.0)
 
@@ -62,8 +62,64 @@ def test_render_episode_end_to_end_with_opening_band_and_cover(tmp_path, monkeyp
     assert 1.7 < info.duration < 2.3
     # dossier de travail nettoyé
     assert not (tmp_path / "out" / ".tmp_test_final").exists()
-    # couverture générée à côté de la vidéo (reprend le texte de l'accroche)
-    assert (tmp_path / "out" / "test_final_couverture.png").exists()
+    # pas de couverture générée automatiquement (Cléa s'en charge elle-même)
+    assert not (tmp_path / "out" / "test_final_couverture.png").exists()
+
+
+def test_render_episode_no_music_by_default(tmp_path, monkeypatch):
+    # série avec un mood par défaut, mais l'épisode ne demande pas de
+    # musique -> pas de musique ajoutée (pas de pioche dans la bibliothèque).
+    _setup_project(tmp_path, monkeypatch)
+    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=1.5)
+
+    calls = []
+
+    def _fail_if_called(*a, **k):
+        calls.append(a)
+        raise AssertionError("pick_music ne devrait pas être appelé sans demande explicite")
+
+    monkeypatch.setattr(pipeline, "pick_music", _fail_if_called)
+
+    episode_path = tmp_path / "ep_no_music.yaml"
+    episode_path.write_text(
+        "serie: test_serie\n"
+        "titre_episode: Sans musique\n"
+        "sortie: out/no_music.mp4\n"
+        "sequences:\n"
+        f"  - rush: \"{rush}\"\n"
+        "    sous_titres: aucun\n",
+        encoding="utf-8",
+    )
+    out = pipeline.render_episode(episode_path, keep_intermediates=False)
+    assert out.exists()
+    assert calls == []
+
+
+def test_render_episode_music_when_explicitly_requested(tmp_path, monkeypatch):
+    _setup_project(tmp_path, monkeypatch)
+    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=1.5)
+
+    sounds_dir = tmp_path / "sounds"
+    (sounds_dir / "music").mkdir(parents=True)
+    music_file = sounds_dir / "music" / "test.mp3"
+    from .helpers import make_synthetic_audio
+    make_synthetic_audio(music_file, duration=2.0, frequency=220)
+    (sounds_dir / "index.yaml").write_text("musique:\n  energique:\n    - music/test.mp3\n", encoding="utf-8")
+
+    episode_path = tmp_path / "ep_with_music.yaml"
+    episode_path.write_text(
+        "serie: test_serie\n"
+        "titre_episode: Avec musique\n"
+        "sortie: out/with_music.mp4\n"
+        "sequences:\n"
+        f"  - rush: \"{rush}\"\n"
+        "    sous_titres: aucun\n"
+        "audio:\n"
+        "  mood_musique: energique\n",
+        encoding="utf-8",
+    )
+    out = pipeline.render_episode(episode_path, keep_intermediates=False)
+    assert out.exists()
 
 
 def test_render_episode_two_sequences_with_transition(tmp_path, monkeypatch):
