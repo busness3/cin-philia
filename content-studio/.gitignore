@@ -5,15 +5,9 @@ out/
 *.mov
 *.mkv
 
-# Exception : boîte de réception "a_monter/" — Cléa (iPad, pas d'accès
-# terminal) y dépose ses rushs via l'upload web GitHub, faute de pouvoir
-# les transmettre autrement. Fichiers supprimés du repo une fois montés
-# (cf. a_monter/README.md), pour ne pas alourdir l'historique indéfiniment.
-!a_monter/
-!a_monter/*.mp4
-!a_monter/*.mov
-!a_monter/*.mkv
-!a_monter/README.md
+# (La boîte de réception des rushs de Cléa n'est plus ici : cin-philia est
+# public, donc ce n'était pas adapté. Elle dépose désormais ses rushs dans
+# le repo privé dédié busness3/rushs-a-monter.)
 
 # Bibliothèque de sons fournie par Cléa : structure gardée (index.yaml),
 # fichiers audio eux-mêmes non commités (trop lourds pour git).
