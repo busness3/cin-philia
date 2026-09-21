@@ -42,13 +42,13 @@ sequences:
         debut_s: 50.0
         fin_s: 52.2
         position: haut_gauche
-      - texte: "Le prix ? Aucune idée 😅"
+      - texte: "Le prix ? Aucune idée..."
         debut_s: 50.0
         fin_s: 53.5
         position: bas_centre
 
       # Verdict, juste avant le bandeau de sortie (CTA "le nom du resto est en légende")
-      - texte: "ON VALIDE ✅"
+      - texte: "ON VALIDE"
         debut_s: 54.5
         fin_s: 57.2
         position: centre
