@@ -1,10 +1,14 @@
 # =============================================================================
 # Tests Restos — In-N-Out Burger, Las Vegas
 # Rush unique déjà cutée par Cléa, déposée sur rushs-a-monter (repo privé).
-# Pas de transcription auto disponible dans cette session (huggingface.co
-# bloqué par la politique réseau) -> sous_titres: aucun sur cette séquence.
-# Verdict/texte construits à partir de : l'inventaire visuel des plans +
-# les infos données par Cléa en chat (Las Vegas, burgers, prix oublié).
+#
+# Pas de transcription auto possible dans cette session (huggingface.co
+# bloqué par la politique réseau) -> sous-titres construits à partir d'un
+# script écrit (tests_restos_innout_lasvegas.srt), pas d'une transcription
+# de la voix réelle. C'est un texte de narration proposé, PAS ce que Cléa dit
+# mot pour mot dans le rush -> à corriger par elle si besoin.
+#
+# v2 : plus de badges C'EST BEAU/BON/BOF (jugés inutiles par Cléa) -> retirés.
 # =============================================================================
 
 serie: tests_restos
@@ -17,41 +21,7 @@ accroche:
 sequences:
   - rush: "/home/user/rushs-a-monter/In out Las Vegas .mp4"
     debut_s: 0.0
-    sous_titres: aucun
-    overlay_texte:
-      # Contexte / ville — doit apparaître tôt (règle du skill série)
-      - texte: "LAS VEGAS, USA"
-        debut_s: 2.6
-        fin_s: 4.8
-        position: haut_centre
-
-      # Badge "c'est beau" — plan d'ambiance / intérieur (t=3-9s)
-      - texte: "C'EST BEAU"
-        debut_s: 3.0
-        fin_s: 5.2
-        position: haut_gauche
-
-      # Badge "c'est bon" — début de la dégustation (t=9s)
-      - texte: "C'EST BON"
-        debut_s: 9.0
-        fin_s: 11.2
-        position: haut_gauche
-
-      # Badge + texte "c'est bof" — le seul bémol qu'on ait : le prix oublié
-      - texte: "C'EST BOF"
-        debut_s: 50.0
-        fin_s: 52.2
-        position: haut_gauche
-      - texte: "Le prix ? Aucune idée..."
-        debut_s: 50.0
-        fin_s: 53.5
-        position: bas_centre
-
-      # Verdict, juste avant le bandeau de sortie (CTA "le nom du resto est en légende")
-      - texte: "ON VALIDE"
-        debut_s: 54.5
-        fin_s: 57.2
-        position: centre
+    sous_titres: episodes/tests_restos_innout_lasvegas.srt
 
 # Pas de musique par défaut sur cet épisode (rien demandé) — silence + son
 # d'ambiance/réactions de Cléa seuls.
