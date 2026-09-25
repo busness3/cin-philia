@@ -2,11 +2,13 @@
 # Tests Restos — In-N-Out Burger, Las Vegas
 # Rush unique déjà cutée par Cléa, déposée sur rushs-a-monter (repo privé).
 #
-# Pas de transcription auto possible dans cette session (huggingface.co
-# bloqué par la politique réseau) -> sous-titres construits à partir d'un
-# script écrit (tests_restos_innout_lasvegas.srt), pas d'une transcription
-# de la voix réelle. C'est un texte de narration proposé, PAS ce que Cléa dit
-# mot pour mot dans le rush -> à corriger par elle si besoin.
+# v3 : vraie transcription (ElevenLabs Scribe, via le connecteur MCP —
+# l'upload passe par googleapis.com, atteignable depuis cette session
+# contrairement à huggingface.co/api.openai.com/api.elevenlabs.io en accès
+# direct). Sous-titres découpés à partir du texte réel de Cléa
+# (tests_restos_innout_lasvegas.srt), timecodes replacés à la main sur les
+# plans du rush (pas de timestamps mot-à-mot renvoyés par ce connecteur) —
+# à ajuster si un décalage se voit à l'écran.
 #
 # v2 : plus de badges C'EST BEAU/BON/BOF (jugés inutiles par Cléa) -> retirés.
 # =============================================================================

@@ -1,59 +1,79 @@
 1
-00:00:02,600 --> 00:00:05,000
-Las Vegas, direction In-N-Out
+00:00:02,600 --> 00:00:04,500
+In-N-Out.
 
 2
-00:00:05,000 --> 00:00:08,500
-L'enseigne culte, le passage obligé
+00:00:06,000 --> 00:00:08,500
+J'ai pris un cheeseburger.
 
 3
-00:00:08,500 --> 00:00:11,500
-Les burgers commandés direct
+00:00:08,500 --> 00:00:11,000
+J'aurais dû prendre un double.
 
 4
-00:00:11,500 --> 00:00:15,000
-Premier bite... et grand silence
+00:00:12,000 --> 00:00:13,800
+Donc voilà.
 
 5
-00:00:15,000 --> 00:00:18,500
-Le pain moelleux, le steak fondant
+00:00:13,800 --> 00:00:16,500
+Trois types de burgers.
 
 6
-00:00:18,500 --> 00:00:22,000
-Gros plan sur la texture
+00:00:16,500 --> 00:00:19,500
+Hamburger, cheeseburger, double.
 
 7
-00:00:22,000 --> 00:00:26,000
-Le verdict se lit sur son visage
+00:00:19,500 --> 00:00:23,000
+Donc du moins y a pas le double.
 
 8
-00:00:26,000 --> 00:00:30,000
-On enchaîne les bouchées
+00:00:23,000 --> 00:00:25,000
+C'est bon.
 
 9
-00:00:30,000 --> 00:00:34,000
-Les frites, presque oubliées à côté
+00:00:25,000 --> 00:00:28,000
+Super croustillant dehors.
 
 10
-00:00:34,000 --> 00:00:38,000
-Elle raconte, la bouche encore pleine
+00:00:28,000 --> 00:00:31,500
+J'aime bien, et super salé, ouah.
 
 11
-00:00:38,000 --> 00:00:42,000
-Petite pause, grande réflexion
+00:00:31,500 --> 00:00:34,000
+Et après, vous voyez.
 
 12
-00:00:42,000 --> 00:00:46,000
-Un milkshake pour faire descendre tout ça
+00:00:34,000 --> 00:00:36,000
+Moi, j'aime bien.
 
 13
-00:00:46,000 --> 00:00:49,500
-Ça glisse tout seul
+00:00:36,500 --> 00:00:40,000
+Ça fait un peu une sauce cocktail,
 
 14
-00:00:49,500 --> 00:00:53,000
-Un dernier geste gourmand avant la fin
+00:00:40,000 --> 00:00:42,500
+mais une burger. C'est bon.
 
 15
-00:00:53,000 --> 00:00:57,000
-Le prix ? Complètement oublié
+00:00:43,000 --> 00:00:45,500
+Le milkshake à la vanille.
+
+16
+00:00:45,500 --> 00:00:48,500
+Le milkshake est tellement épais.
+
+17
+00:00:49,000 --> 00:00:51,500
+Il est tellement bon, c'est super bon.
+
+18
+00:00:51,500 --> 00:00:53,000
+C'est super bon.
+
+19
+00:00:53,000 --> 00:00:54,000
+Mmm.
+
+20
+00:00:54,300 --> 00:00:57,200
+Donc, In-N-Out, c'est beau et c'est bon.

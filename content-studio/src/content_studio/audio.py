@@ -1,5 +1,9 @@
 """Brique 5 : mixage musique + SFX (bibliothèque) avec la voix des rushs.
 
+- La voix brute du rush passe d'abord par un nettoyage (coupe-bas 90Hz pour
+  le bruit de manipulation/vent, débruiteur FFT léger pour le bruit de fond
+  de salle) avant tout le reste — utile pour des rushs tournés au téléphone
+  dans un lieu bruyant (restaurant, rue).
 - La musique est bouclée/coupée à la durée de la vidéo, jouée en dessous du
   volume réglé par la série, avec ducking (baisse automatique le temps que la
   voix parle) via `sidechaincompress` piloté par la piste voix.
@@ -27,6 +31,7 @@ def build_audio_filter(
     loudness_lufs: float,
     apply_ducking: bool = True,
     music_delay_s: float = 0.0,
+    clean_voice: bool = True,
 ) -> str:
     """Construit le filter_complex audio. Entrées attendues, dans l'ordre :
     0 = voix (piste audio de la vidéo normalisée), 1 = musique (si présente),
@@ -35,10 +40,16 @@ def build_audio_filter(
     parts: list[str] = []
     labels: list[str] = []
 
+    # Nettoyage de la voix brute : coupe-bas (bruit de manipulation/vent) +
+    # débruiteur FFT léger (bruit de fond ambiant, ex. salle de restaurant).
+    # Réglages volontairement doux pour ne pas abîmer la voix.
+    voice_src = "[0:a]highpass=f=90,afftdn=nf=-25[voice_clean];" if clean_voice else ""
+    voice_in = "[voice_clean]" if clean_voice else "[0:a]"
+
     if do_duck:
-        parts.append("[0:a]asplit=2[voice_dry][voice_sc]")
+        parts.append(f"{voice_src}{voice_in}asplit=2[voice_dry][voice_sc]")
     else:
-        parts.append("[0:a]anull[voice_dry]")
+        parts.append(f"{voice_src}{voice_in}anull[voice_dry]")
     labels.append("voice_dry")
 
     if has_music:
@@ -88,6 +99,7 @@ def mix_audio(
     loudness_lufs: float,
     apply_ducking: bool = True,
     music_delay_s: float = 0.0,
+    clean_voice: bool = True,
 ) -> Path:
     ff.check_ffmpeg_available()
     video_path, output_path = Path(video_path), Path(output_path)
@@ -108,6 +120,7 @@ def mix_audio(
         loudness_lufs=loudness_lufs,
         apply_ducking=apply_ducking,
         music_delay_s=music_delay_s,
+        clean_voice=clean_voice,
     )
 
     cmd += [
