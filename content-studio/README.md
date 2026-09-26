@@ -193,3 +193,23 @@ musique/sfx (juste un message dans les logs) — rien ne bloque le pipeline.
   `transitions.py`) — `pipeline.py` les enchaîne. `cover.py` (génération de
   couverture PNG) existe toujours dans le code mais n'est plus branché au
   pipeline par défaut — disponible si un usage manuel/futur le demande.
+
+## Habillages animés (titres/badges avec mouvement)
+
+Pour des animations plus riches que le bandeau statique de `band.py`
+(lignes qui arrivent l'une après l'autre, rebond, etc.), on utilise
+[HyperFrames](https://hyperframes.heygen.com) (HTML/CSS → clip vidéo,
+rendu 100% local via Chrome headless). Composition rendue en clip
+transparent, puis incrustée sur la vidéo via `overlays.py`/ffmpeg comme le
+reste des overlays.
+
+Pas installé par défaut (outillage ~28 Mo, non commité, cf. `.gitignore`) :
+
+```bash
+npx skills add heygen-com/hyperframes --full-depth
+```
+
+À relancer si `.agents/skills/hyperframes` est absent (nouvelle session,
+nouveau clone). Toujours utiliser le runtime **CSS keyframes** dans les
+compositions (pas GSAP, qui charge sa librairie depuis un CDN bloqué par
+la politique réseau de cet environnement).

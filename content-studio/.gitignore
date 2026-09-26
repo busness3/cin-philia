@@ -34,3 +34,9 @@ assets/logo/*
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Outillage HyperFrames (habillages animés) : installé via `npx skills add`,
+# comparable à node_modules — pas commité, réinstallable à la demande.
+.agents/
+.claude/
+skills-lock.json
