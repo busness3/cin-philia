@@ -362,6 +362,11 @@ class EpisodeConfig(BaseModel):
     titre_episode: str
     sortie: str
     accroche: Optional[Accroche] = None
+    # Surcharge par épisode du bandeau de sortie global (`timing.sortie_activee`) :
+    # None = hérite du réglage global ; False = pas de bandeau de sortie sur
+    # CET épisode précis, même si la série a un cta_sortie et que le réglage
+    # global l'active.
+    sortie_activee: Optional[bool] = None
     couverture: Optional[CoverEpisodeConfig] = None
     sequences: list[Sequence]
     audio: AudioEpisodeConfig = Field(default_factory=AudioEpisodeConfig)

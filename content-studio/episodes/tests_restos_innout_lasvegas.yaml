@@ -7,24 +7,28 @@
 # contrairement à huggingface.co/api.openai.com/api.elevenlabs.io en accès
 # direct). Sous-titres découpés à partir du texte réel de Cléa
 # (tests_restos_innout_lasvegas.srt), timecodes replacés à la main sur les
-# plans du rush (pas de timestamps mot-à-mot renvoyés par ce connecteur) —
-# à ajuster si un décalage se voit à l'écran.
+# plans du rush.
 #
 # v2 : plus de badges C'EST BEAU/BON/BOF (jugés inutiles par Cléa) -> retirés.
 #
-# v4 : carton titre d'ouverture animé (HyperFrames — lignes qui arrivent en
-# wipe, décalées) à la place du bandeau statique. Clip pré-rendu dans
-# assets/overlays/, généré depuis videos/tests-restos-titre/ (projet
-# HyperFrames, non commité). Voir README § Habillages animés.
+# v4 : carton titre d'ouverture animé (HyperFrames), retiré en v6.
+#
+# v6 : retour de Cléa (commentaire sur la page de suivi) —
+# - plus de bandeau d'ouverture du tout (ni le clip animé, ni le sous-titre
+#   "In-N-Out.") -> bloc `accroche` supprimé.
+# - plus de bandeau de sortie sur CET épisode -> sortie_activee: false
+#   (l'épisode passe outre le réglage global/série, qui restent inchangés
+#   pour les futurs épisodes de la série).
+# - sous-titres corrigés : timecodes, texte mal transcrit ("mon cousin a
+#   pris le double" et non "donc du moins y'a pas le double"), une réplique
+#   manquante ajoutée ("c'est pas grave"), deux répliques du passage friture
+#   remplacées par ce que Cléa dit vraiment à 25s/30s.
 # =============================================================================
 
 serie: tests_restos
 titre_episode: "In-N-Out Burger — Las Vegas"
 sortie: out/tests_restos_innout_lasvegas.mp4
-
-accroche:
-  texte: "IN-N-OUT\nLAS VEGAS"
-  clip_anime: assets/overlays/tests_restos_innout_lasvegas_titre.mp4
+sortie_activee: false
 
 sequences:
   - rush: "/home/user/rushs-a-monter/In out Las Vegas .mp4"

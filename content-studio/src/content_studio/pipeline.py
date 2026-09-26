@@ -176,7 +176,8 @@ def render_episode(
             work_dir=work_dir, label_prefix="ouverture",
         )
 
-    if timing.sortie_activee and resolved.serie.cta_sortie:
+    sortie_activee = episode.sortie_activee if episode.sortie_activee is not None else timing.sortie_activee
+    if sortie_activee and resolved.serie.cta_sortie:
         total_duration = ff.probe(current).duration
         outro_start = max(total_duration - timing.sortie_duree_s, 0.0)
         _log("incrustation du bandeau de sortie (CTA)")

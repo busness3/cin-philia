@@ -179,6 +179,33 @@ def test_render_episode_overlay_and_outro_band(tmp_path, monkeypatch):
     assert 4.7 < info.duration < 5.3
 
 
+def test_render_episode_outro_suppressed_per_episode(tmp_path, monkeypatch):
+    # la série a un cta_sortie (donc le bandeau serait actif par défaut),
+    # mais CET épisode le désactive explicitement -> pas de plantage, pas de
+    # bandeau de sortie pour cette vidéo précise seulement.
+    series_yaml = (
+        "nom: Test Serie\n"
+        "accent: \"#AA3300\"\n"
+        "cta_sortie: \"Dites-moi tout\"\n"
+    )
+    _setup_project(tmp_path, monkeypatch, series_yaml=series_yaml)
+    rush = make_synthetic_clip(tmp_path / "rush1.mp4", width=640, height=360, duration=3.0)
+
+    episode_path = tmp_path / "ep6.yaml"
+    episode_path.write_text(
+        "serie: test_serie\n"
+        "titre_episode: Test 6\n"
+        "sortie: out/test6_final.mp4\n"
+        "sortie_activee: false\n"
+        "sequences:\n"
+        f"  - rush: \"{rush}\"\n"
+        "    sous_titres: aucun\n",
+        encoding="utf-8",
+    )
+    out = pipeline.render_episode(episode_path, keep_intermediates=False)
+    assert out.exists()
+
+
 def test_render_episode_no_outro_when_cta_absent(tmp_path, monkeypatch):
     # sans cta_sortie défini par la série, pas de bandeau de sortie -> ne
     # doit pas planter, juste être ignoré.

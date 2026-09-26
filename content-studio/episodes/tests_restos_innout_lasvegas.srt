@@ -1,79 +1,59 @@
 1
-00:00:02,600 --> 00:00:04,500
-In-N-Out.
-
-2
-00:00:06,000 --> 00:00:08,500
+00:00:08,000 --> 00:00:10,500
 J'ai pris un cheeseburger.
 
-3
-00:00:08,500 --> 00:00:11,000
+2
+00:00:10,500 --> 00:00:13,000
 J'aurais dû prendre un double.
 
-4
-00:00:12,000 --> 00:00:13,800
-Donc voilà.
+3
+00:00:13,000 --> 00:00:15,000
+C'est pas grave.
 
-5
-00:00:13,800 --> 00:00:16,500
+4
+00:00:15,000 --> 00:00:17,500
 Trois types de burgers.
 
-6
-00:00:16,500 --> 00:00:19,500
+5
+00:00:17,500 --> 00:00:20,500
 Hamburger, cheeseburger, double.
 
-7
-00:00:19,500 --> 00:00:23,000
-Donc du moins y a pas le double.
+6
+00:00:20,500 --> 00:00:23,000
+Mon cousin a pris le double.
 
-8
+7
 00:00:23,000 --> 00:00:25,000
 C'est bon.
 
-9
+8
 00:00:25,000 --> 00:00:28,000
-Super croustillant dehors.
+Je goûte la frite nature.
+
+9
+00:00:30,000 --> 00:00:33,000
+Je goûte avec la sauce.
 
 10
-00:00:28,000 --> 00:00:31,500
-J'aime bien, et super salé, ouah.
-
-11
-00:00:31,500 --> 00:00:34,000
-Et après, vous voyez.
-
-12
-00:00:34,000 --> 00:00:36,000
-Moi, j'aime bien.
-
-13
-00:00:36,500 --> 00:00:40,000
-Ça fait un peu une sauce cocktail,
-
-14
-00:00:40,000 --> 00:00:42,500
-mais une burger. C'est bon.
-
-15
 00:00:43,000 --> 00:00:45,500
 Le milkshake à la vanille.
 
-16
+11
 00:00:45,500 --> 00:00:48,500
 Le milkshake est tellement épais.
 
-17
+12
 00:00:49,000 --> 00:00:51,500
 Il est tellement bon, c'est super bon.
 
-18
+13
 00:00:51,500 --> 00:00:53,000
 C'est super bon.
 
-19
+14
 00:00:53,000 --> 00:00:54,000
 Mmm.
 
-20
+15
 00:00:54,300 --> 00:00:57,200
 Donc, In-N-Out, c'est beau et c'est bon.
