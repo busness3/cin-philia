@@ -1,5 +1,5 @@
 from content_studio import ffmpeg_utils as ff
-from content_studio.band import apply_band_to_video, band_filters, split_title_lines
+from content_studio.band import apply_animated_band_to_video, apply_band_to_video, band_filters, split_title_lines
 from content_studio.models import GabaritCouverture, VideoConfig
 
 from .helpers import make_synthetic_clip
@@ -58,3 +58,38 @@ def test_apply_band_to_video_timing(tmp_path):
     info = ff.probe(out)
     assert abs(info.duration - 3.0) < 0.3
     assert out.exists()
+
+
+def test_apply_animated_band_to_video_timing(tmp_path):
+    src = make_synthetic_clip(tmp_path / "src.mp4", width=480, height=854, duration=3.0, with_audio=True)
+    gabarit = GabaritCouverture(
+        bandeau={"x": 0, "y": 500, "largeur": 480, "hauteur": 150, "couleur_fond": "#F5EFE6"},
+    )
+    # clip d'habillage : bloc rouge uni, taille exacte du bandeau (480x150)
+    clip_anime = tmp_path / "titre.mp4"
+    ff.run([
+        "ffmpeg", "-y", "-f", "lavfi", "-i", "color=c=red:s=480x150:d=1:r=24",
+        "-c:v", "libx264", "-pix_fmt", "yuv420p", str(clip_anime),
+    ])
+
+    out = apply_animated_band_to_video(
+        src, tmp_path / "out.mp4", gabarit, VIDEO_CFG, clip_anime,
+        start_s=0.5, duration_s=1.0,
+    )
+    info = ff.probe(out)
+    assert out.exists()
+    assert info.has_audio
+    assert abs(info.duration - 3.0) < 0.3
+
+    # avant/après la fenêtre : pas de rouge dans la zone du bandeau ;
+    # pendant : rouge.
+    def _extract_pixel(t: float) -> str:
+        frame = tmp_path / f"frame_{t}.png"
+        ff.run(["ffmpeg", "-y", "-ss", str(t), "-i", str(out), "-frames:v", "1", str(frame)])
+        return frame.read_bytes()
+
+    before = _extract_pixel(0.1)
+    during = _extract_pixel(0.9)
+    after = _extract_pixel(2.5)
+    assert before != during
+    assert after != during

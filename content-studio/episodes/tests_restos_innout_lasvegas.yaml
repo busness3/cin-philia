@@ -11,6 +11,11 @@
 # à ajuster si un décalage se voit à l'écran.
 #
 # v2 : plus de badges C'EST BEAU/BON/BOF (jugés inutiles par Cléa) -> retirés.
+#
+# v4 : carton titre d'ouverture animé (HyperFrames — lignes qui arrivent en
+# wipe, décalées) à la place du bandeau statique. Clip pré-rendu dans
+# assets/overlays/, généré depuis videos/tests-restos-titre/ (projet
+# HyperFrames, non commité). Voir README § Habillages animés.
 # =============================================================================
 
 serie: tests_restos
@@ -19,6 +24,7 @@ sortie: out/tests_restos_innout_lasvegas.mp4
 
 accroche:
   texte: "IN-N-OUT\nLAS VEGAS"
+  clip_anime: assets/overlays/tests_restos_innout_lasvegas_titre.mp4
 
 sequences:
   - rush: "/home/user/rushs-a-monter/In out Las Vegas .mp4"

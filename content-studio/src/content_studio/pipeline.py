@@ -158,7 +158,15 @@ def render_episode(
     )
     current = assembled
 
-    if episode.accroche and episode.accroche.texte:
+    if episode.accroche and episode.accroche.clip_anime:
+        _log("incrustation du titre d'ouverture (habillage animé)")
+        clip_anime_path = _resolve_rush_path(episode.accroche.clip_anime)
+        current = band_mod.apply_animated_band_to_video(
+            current, work_dir / "with_open_band.mp4", resolved.global_.couverture,
+            video_cfg, clip_anime_path,
+            start_s=timing.titre_apparition_s, duration_s=timing.titre_duree_s,
+        )
+    elif episode.accroche and episode.accroche.texte:
         _log("incrustation du titre d'ouverture (bandeau)")
         current = band_mod.apply_band_to_video(
             current, work_dir / "with_open_band.mp4", resolved.global_.couverture,

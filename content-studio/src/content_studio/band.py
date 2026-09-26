@@ -92,6 +92,48 @@ def band_filters(
     return filters
 
 
+def apply_animated_band_to_video(
+    video_path: str | Path,
+    output_path: str | Path,
+    gabarit: GabaritCouverture,
+    video_cfg: VideoConfig,
+    clip_anime_path: str | Path,
+    start_s: float,
+    duration_s: float,
+) -> Path:
+    """Incruste un bandeau **animé** (clip vidéo pré-rendu, ex: HyperFrames)
+    à la place du bandeau statique (`band_filters`). Le clip doit déjà faire
+    la taille exacte du bandeau (`gabarit.bandeau.largeur` x `hauteur`,
+    fond opaque -- pas de transparence nécessaire) : il est simplement posé
+    à la position du bandeau, actif entre `start_s` et `start_s + duration_s`.
+    """
+    ff.check_ffmpeg_available()
+    video_path, output_path = Path(video_path), Path(output_path)
+    clip_anime_path = Path(clip_anime_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    bandeau = gabarit.bandeau
+    end_s = start_s + duration_s
+    enable_expr = f"between(t\\,{start_s}\\,{end_s})"
+    filter_complex = (
+        f"[0:v][1:v]overlay=x={bandeau.x}:y={bandeau.y}:"
+        f"enable='{enable_expr}':eof_action=pass[vout]"
+    )
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(video_path),
+        "-itsoffset", str(start_s), "-i", str(clip_anime_path),
+        "-filter_complex", filter_complex,
+        "-map", "[vout]", "-map", "0:a",
+        "-c:v", video_cfg.codec_video, "-crf", str(video_cfg.crf), "-preset", video_cfg.preset,
+        "-c:a", "copy",
+        str(output_path),
+    ]
+    ff.run(cmd)
+    return output_path
+
+
 def apply_band_to_video(
     video_path: str | Path,
     output_path: str | Path,

@@ -307,6 +307,11 @@ class Accroche(BaseModel):
     durée/l'instant d'apparition sont fixés globalement (`timing`)."""
 
     texte: str
+    # Optionnel : chemin vers un clip vidéo pré-rendu (habillage animé, ex.
+    # HyperFrames) à poser à la place du bandeau statique. Le clip doit déjà
+    # faire la taille du bandeau (`couverture.bandeau`), fond opaque. Si
+    # absent, comportement inchangé (bandeau statique texte/accent).
+    clip_anime: Optional[str] = None
 
 
 class CoverEpisodeConfig(BaseModel):

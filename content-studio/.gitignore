@@ -31,6 +31,16 @@ assets/fonts/*
 assets/logo/*
 !assets/logo/.gitkeep
 
+# Clips d'habillage animés pré-rendus (HyperFrames) : petits fichiers,
+# réutilisés par le pipeline (band.py), donc commités malgré la règle
+# générale *.mp4 ci-dessus.
+!assets/overlays/*.mp4
+
+# Projets HyperFrames (source des habillages animés) : dossier de travail,
+# régénérable via le CLI hyperframes -- seul le clip rendu (assets/overlays/)
+# est commité.
+videos/
+
 __pycache__/
 *.pyc
 .pytest_cache/
