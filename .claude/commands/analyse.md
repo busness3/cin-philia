@@ -11,7 +11,7 @@ Sans fichier d'export réel, **ne lance pas l'analyste** : demande les
 exports (LinkedIn, Instagram, TikTok, YouTube, store, site). Aucune analyse
 sans données.
 
-Client : `client:` dans la demande, sinon `reveal-you`.
+Client : `client:` dans la demande, sinon `perso`.
 
 Délègue au sous-agent `analyste` avec : chemins des exports, période,
 client, date du jour.

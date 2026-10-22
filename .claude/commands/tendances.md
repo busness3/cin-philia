@@ -7,7 +7,7 @@ Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Sans plateforme
+Client : `client:` dans la demande, sinon `perso`. Sans plateforme
 précisée : TikTok, Instagram Reels, YouTube Shorts.
 
 Délègue au sous-agent `veilleur` avec : thème, plateformes, client, date du

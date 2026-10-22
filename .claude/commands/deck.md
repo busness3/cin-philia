@@ -7,7 +7,7 @@ Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Rassemble les
+Client : `client:` dans la demande, sinon `perso`. Rassemble les
 livrables sources : ceux cités, sinon les plus récents de la même campagne
 dans `briefs/`, `content/`, `prompts-images/`, `analytics/`. Si l'audience
 n'est pas précisée, déduis-la (interne, prospect, partenaire) et dis-le.

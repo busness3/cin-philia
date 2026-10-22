@@ -7,7 +7,7 @@ Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
 Demande : $ARGUMENTS
 
-Client : celui précisé par `client:` dans la demande, sinon `reveal-you`.
+Client : celui précisé par `client:` dans la demande, sinon `perso`.
 S'il n'existe pas de `marketing/clients/{client}/brand.md`, arrête-toi et
 demande les règles de marque avant de lancer quoi que ce soit.
 

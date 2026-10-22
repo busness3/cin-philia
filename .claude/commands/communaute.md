@@ -7,7 +7,7 @@ Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Retrouve le brief
+Client : `client:` dans la demande, sinon `perso`. Retrouve le brief
 de la campagne dans `marketing/briefs/` et la dernière veille dans
 `marketing/tendances/`.
 

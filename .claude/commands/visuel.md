@@ -7,7 +7,7 @@ Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Si la demande cite
+Client : `client:` dans la demande, sinon `perso`. Si la demande cite
 un livrable (contenu, brief, deck), passe son chemin ; sinon, cherche les
 contenus récents de la même campagne dans `marketing/content/`.
 

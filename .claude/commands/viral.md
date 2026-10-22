@@ -8,7 +8,7 @@ Tu routes et enchaînes, tu ne produis aucun livrable toi-même.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Nombre de pièces :
+Client : `client:` dans la demande, sinon `perso`. Nombre de pièces :
 celui demandé, sinon 5. Formats : Reel, TikTok, YouTube Short.
 
 1. **Veilleur** → si aucune veille de moins de 7 jours n'existe dans

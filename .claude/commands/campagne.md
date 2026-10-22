@@ -9,7 +9,7 @@ toi-même.
 
 Demande : $ARGUMENTS
 
-Client : `client:` dans la demande, sinon `reveal-you`. Date : aujourd'hui.
+Client : `client:` dans la demande, sinon `perso`. Date : aujourd'hui.
 
 Déroule la chaîne **séquentiellement** (chaque étape lit les livrables de la
 précédente) :

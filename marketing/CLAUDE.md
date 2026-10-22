@@ -58,8 +58,14 @@ frontmatter YAML.
 | `/viral <thème> [N]` | veilleur → createur → critique | Série de N contenus courts (défaut 5) |
 | `/campagne <objectif>` | chaîne complète | veilleur → stratege → createur → critique → designer → presentateur → communaute |
 
-Client par défaut : `reveal-you`. Pour un autre client, le préciser dans
+Client par défaut : **`perso`** — les réseaux sociaux personnels de
+l'utilisatrice. `reveal-you` reste disponible (`client: reveal-you`) pour
+les contenus qui parlent de l'app. Pour un autre client, le préciser dans
 l'argument (`client: <slug>`) et créer `clients/<slug>/`.
+
+Si un champ de `clients/{client}/brand.md` est encore marqué
+**[à remplir]**, l'agent ne l'invente pas : il le signale à
+l'orchestrateur, qui pose la question à l'utilisatrice.
 
 ## Arborescence
 
@@ -90,14 +96,14 @@ Chaque livrable commence par ce frontmatter (voir `_templates/frontmatter.md`) :
 
 ```yaml
 ---
-client: reveal-you
+client: perso
 campagne: lancement-v1
 agent: createur
 date: 2026-10-22
 version: 1
 statut: brouillon   # brouillon | a-valider | valide | publie
 sources:            # livrables lus pour produire celui-ci
-  - briefs/2026-10-22-reveal-you-lancement-v1.md
+  - briefs/2026-10-22-perso-lancement-v1.md
 ---
 ```
 
