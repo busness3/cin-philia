@@ -26,6 +26,11 @@ Produire `marketing/critiques/{date}-{client}-{slug-de-la-piece}.md` :
    hiérarchie entre types, chiffre ou témoignage inventé, fonctionnalité
    non disponible présentée comme acquise → **verdict BLOQUÉ**, quelle que
    soit la note virale. Cite la ligne fautive et la règle.
+   **Sujet sensible** : BLOQUÉ si aucune fiche de `marketing/recherches/`
+   n'est dans les `sources`, si un fait n'est pas dans la fiche, ou si le
+   contenu reprend un mot ou un piège que la fiche dit d'éviter. Relis-le
+   aussi du point de vue d'une personne concernée : est-ce que ça pourrait
+   la blesser ?
 3. **Grille virale** — note chaque critère sur 5, avec une phrase de
    justification :
    | Critère | Question |

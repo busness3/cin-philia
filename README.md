@@ -30,10 +30,11 @@ build mobile installable sur téléphone).
 
 ## Marketing multi-agent
 
-Une équipe marketing de 8 agents Claude Code (Stratège, Créateur, Designer,
-Analyste, Présentateur + Veilleur, Critique, Community manager pour la
+Une équipe marketing de 9 agents Claude Code (Stratège, Créateur, Designer,
+Analyste, Présentateur + Veilleur, Chercheur, Critique, Community manager pour la
 viralité), pilotée par slash commands : `/brief`, `/post`, `/visuel`,
-`/analyse`, `/deck`, `/tendances`, `/critique`, `/communaute`, `/viral`,
+`/analyse`, `/deck`, `/tendances`, `/recherche`, `/idee`, `/critique`,
+`/communaute`, `/viral`,
 `/campagne`. Contrat et conventions dans
 [`marketing/CLAUDE.md`](marketing/CLAUDE.md), règles de marque dans
 [`marketing/clients/reveal-you/brand.md`](marketing/clients/reveal-you/brand.md).

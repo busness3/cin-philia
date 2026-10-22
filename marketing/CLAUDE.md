@@ -21,8 +21,8 @@ sont dans `clients/{client}/brand.md`.
    └──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┘
        briefs/       content/     prompts-images/     decks/       analytics/
 
-   Viralité :  veilleur (sonnet)   critique (opus)   communaute (sonnet)
-                 tendances/          critiques/         communaute/
+   Viralité :  veilleur (sonnet)   critique (opus)   communaute (sonnet)   chercheur (opus)
+                 tendances/          critiques/         communaute/           recherches/
 ```
 
 **Principe directeur** : l'orchestrateur n'écrit jamais le livrable lui-même.
@@ -41,6 +41,7 @@ frontmatter YAML.
 | `analyste` | Opus | Rapport de performance + plan d'optimisation 30 jours, à partir d'exports réels. | `analytics/` |
 | `veilleur` | Sonnet | Tendances (formats, sons, hooks) de la semaine, sourcées et filtrées par compatibilité marque. | `tendances/` |
 | `critique` | Opus | Note virale /35 + conformité marque d'un contenu avant publication. Verdict PUBLIER / RETRAVAILLER / BLOQUÉ. | `critiques/` |
+| `chercheur` | Opus | Fiche sourcée sur un sujet avant d'en parler : faits, idées reçues, vocabulaire, ressources d'aide. Obligatoire pour un sujet sensible. | `recherches/` |
 | `communaute` | Sonnet | Défi de marque, incitations UGC, réponses types aux commentaires, créateurs à contacter. | `communaute/` |
 
 ## Slash commands
@@ -55,7 +56,9 @@ frontmatter YAML.
 | `/tendances [thème]` | veilleur | Veille de la semaine |
 | `/critique <contenu>` | critique | Note virale + conformité avant publication |
 | `/communaute <campagne>` | communaute | Faire circuler une campagne |
-| `/viral <thème> [N]` | veilleur → createur → critique | Série de N contenus courts (défaut 5) |
+| `/idee <idée>` | — | Ajoute une idée à `clients/{client}/idees.md` |
+| `/recherche <sujet>` | chercheur | Fiche de recherche sourcée |
+| `/viral [thème] [N]` | veilleur → chercheur → createur → critique | Série de N contenus courts (défaut 5) |
 | `/campagne <objectif>` | chaîne complète | veilleur → stratege → createur → critique → designer → presentateur → communaute |
 
 Client par défaut : **`perso`** — les réseaux sociaux personnels de
@@ -84,7 +87,8 @@ marketing/
 ├── analytics/           ← rapport-{client}-{période}.md · plan-optim-30j-{client}-{date}.md
 ├── tendances/           ← {date}-{client}-veille.md
 ├── critiques/           ← {date}-{client}-{slug-de-la-piece}.md
-└── communaute/          ← {date}-{client}-{campagne}.md
+├── communaute/          ← {date}-{client}-{campagne}.md
+└── recherches/          ← {date}-{client}-{sujet}.md
 ```
 
 `{date}` = `AAAA-MM-JJ`. `{slug}`, `{campagne}`, `{sujet}` en kebab-case sans
@@ -132,5 +136,10 @@ incrémente `version` dans le même fichier ; on ne crée pas de doublon.
 7. **Viralité honnête.** Pas de faux comptes, d'achat d'abonnés ou de vues,
    de groupes d'engagement, de faux avis, de concours sans vrai règlement,
    ni de partenariat non signalé. Aucun agent ne promet un nombre de vues.
-8. **Français** pour tous les livrables, sauf les prompts d'images (anglais,
+8. **Sujet sensible = recherche d'abord.** Tout contenu sur un sujet
+   sensible ou tabou cite une fiche de `recherches/` dans ses `sources`.
+   Sans fiche, le Créateur ne l'écrit pas et le Critique le bloque. Tout
+   fait affirmé dans un contenu doit figurer dans une fiche ou une source
+   citée.
+9. **Français** pour tous les livrables, sauf les prompts d'images (anglais,
    meilleur rendu des modèles) accompagnés d'une note en français.

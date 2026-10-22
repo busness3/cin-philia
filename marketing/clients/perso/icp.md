@@ -1,10 +1,13 @@
 # Mes réseaux perso — audience visée
 
-⚠️ **À remplir.** Sans réponse, le Stratège pose ses hypothèses et les
-marque comme telles.
+- **Les gens de mon âge.** Âge : **[à remplir]** — à préciser pour que le
+  Veilleur et le Créateur visent les bonnes références et le bon langage.
+- Ce qu'ils/elles viennent chercher : à découvrir. Hypothèse de départ :
+  des sujets qui leur parlent, traités sérieusement mais simplement, par
+  quelqu'un qui leur ressemble.
+- Audience actuelle : **[à remplir]** (nombre d'abonnés TikTok, si je veux
+  le partager — sert de baseline à l'Analyste).
 
-- Qui je veux toucher (âge, centres d'intérêt, situation) : **[à remplir]**
-- Ce qu'ils/elles viennent chercher chez moi : **[à remplir]**
-- Audience actuelle (abonnés par plateforme, si je veux la partager) :
-  **[à remplir]**
-- Créateurs que mon audience suit aussi : **[à remplir]**
+L'audience se précisera avec les statistiques TikTok : l'Analyste mettra
+ce fichier à jour à partir des vraies données (âge, pays, heures
+d'activité des abonnés).

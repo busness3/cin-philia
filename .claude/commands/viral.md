@@ -1,5 +1,5 @@
 ---
-description: Série de contenus courts pensés pour la viralité — Veilleur → Créateur → Critique
+description: Série de contenus courts pensés pour la viralité — Veilleur → Chercheur → Créateur → Critique
 argument-hint: <thème> [nombre de pièces, défaut 5] [client: <slug>]
 ---
 
@@ -9,11 +9,22 @@ Tu routes et enchaînes, tu ne produis aucun livrable toi-même.
 Demande : $ARGUMENTS
 
 Client : `client:` dans la demande, sinon `perso`. Nombre de pièces :
-celui demandé, sinon 5. Formats : Reel, TikTok, YouTube Short.
+celui demandé, sinon 5. Formats : ceux prioritaires dans `brand.md` du
+client (TikTok pour `perso`), sinon Reel, TikTok, YouTube Short.
+
+Sans thème, pioche dans `marketing/clients/{client}/idees.md` (statut 💡
+ou 🔎) en priorité, et mets à jour les statuts au fil de l'eau.
+
+Si `brand.md` définit des styles à tester (A, B, C…), répartis-les entre
+les pièces pour que l'Analyste puisse comparer.
 
 1. **Veilleur** → si aucune veille de moins de 7 jours n'existe dans
    `marketing/tendances/`, lance `veilleur` sur le thème. Sinon réutilise
    la plus récente.
+
+1 bis. **Chercheur** → pour chaque pièce dont le sujet est sensible (liste
+   dans `brand.md`), lance `chercheur` si aucune fiche n'existe dans
+   `marketing/recherches/`. Pas de fiche → pas de pièce sur ce sujet.
 
 2. **Créateur** → lance `createur` pour N pièces courtes, chacune bâtie sur
    une tendance ✅ ou ⚠️ adaptable de la veille (cite-la dans `sources`).
