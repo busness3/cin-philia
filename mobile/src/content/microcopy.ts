@@ -116,4 +116,19 @@ export const microcopy = {
       reactions_aux_produits: "Les réactions aux produits",
     },
   },
+  share: {
+    // Carte de résultat à partager — voir components/ShareResultCard.tsx.
+    // Les textes DE la carte sont à la 1re personne (c'est l'utilisatrice
+    // qui parle) ; l'invitation s'adresse à ses proches.
+    brand: "REVEAL YOU",
+    colorimetrieEyebrow: "Ma saison colorielle",
+    cheveuxEyebrow: "Ma nature de cheveux",
+    tagline: "Ce qui me révèle, déjà.",
+    invite: "Et toi ? Découvre la tienne sur Reveal You — diagnostic complet gratuit.",
+    cta: "Partager ma carte",
+    privacyNote: "Ta carte ne contient ni photo ni prénom — seulement ton résultat. Tu choisis où la partager.",
+    dialogTitle: "Partager ma carte Reveal You",
+    unavailable: "Le partage n'est pas disponible sur cet appareil.",
+    error: "La carte n'a pas pu être créée — réessaie dans un instant.",
+  },
 } as const;

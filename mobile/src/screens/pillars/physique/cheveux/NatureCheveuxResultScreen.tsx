@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { ShareResultCard } from "../../../../components/ShareResultCard";
 import { microcopy } from "../../../../content/microcopy";
 import { useDiagnosticStore } from "../../../../store/useDiagnosticStore";
 import { colors, radii, spacing, typography } from "../../../../theme/tokens";
@@ -32,8 +33,21 @@ export function NatureCheveuxResultScreen() {
           ))}
         </View>
       ) : null}
+
+      <ShareResultCard
+        eyebrow={microcopy.share.cheveuxEyebrow}
+        headline={result.type_texture}
+        detail={sousTypeLabel(result.type_texture)}
+      />
     </ScrollView>
   );
+}
+
+// Libellé court du sous-type pour la carte (ex. "Boucles plus serrées,
+// ressort marqué.") — la description complète est trop longue pour une
+// image partagée.
+function sousTypeLabel(typeTexture: string): string | undefined {
+  return (microcopy.cheveux.sousTypes as Record<string, string>)[typeTexture];
 }
 
 const styles = StyleSheet.create({

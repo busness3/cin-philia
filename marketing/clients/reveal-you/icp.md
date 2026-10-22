@@ -25,7 +25,7 @@ apps qui leur pointent des défauts.
   vêtements « en connaissance de soi ».
 - Frein probable : méfiance envers les apps photo (confidentialité),
   expérience passée d'apps payantes déceptives.
-- Message probable : « Découvrez ce qui vous ressemble déjà. Gratuitement,
+- Message probable : « Découvre ce qui te ressemble déjà. Gratuitement,
   vraiment. »
 
 **Segment secondaire (H2)** — personnes qui ont déjà fait (ou envisagé)

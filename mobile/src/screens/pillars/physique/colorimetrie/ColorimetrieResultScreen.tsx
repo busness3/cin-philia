@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { ShareResultCard } from "../../../../components/ShareResultCard";
 import { microcopy } from "../../../../content/microcopy";
 import { useDiagnosticStore } from "../../../../store/useDiagnosticStore";
 import { colors, radii, spacing, typography } from "../../../../theme/tokens";
@@ -43,6 +44,13 @@ export function ColorimetrieResultScreen() {
           ))}
         </View>
       ) : null}
+
+      <ShareResultCard
+        eyebrow={microcopy.share.colorimetrieEyebrow}
+        headline={result.saison}
+        detail={result.sous_saison ?? undefined}
+        swatches={result.palette}
+      />
     </ScrollView>
   );
 }

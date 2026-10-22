@@ -23,7 +23,7 @@ Un livrable qui viole une de ces règles n'est pas livré.
   dissimuler, flatter, avantager, amincir, affiner (la silhouette),
   rattraper, réparer, complexe (au sens de complexé·e), problème (de peau,
   de cheveux), « glow up », transformation, relooking, « la meilleure
-  version de vous-même ».
+  version de toi-même ».
 - ❌ **Aucune hiérarchie entre types.** Aucune silhouette, forme de visage,
   saison ou texture n'est présentée comme plus désirable qu'une autre.
 - ❌ **Aucun chiffre ou témoignage inventé.**
@@ -35,17 +35,17 @@ Un livrable qui viole une de ces règles n'est pas livré.
 ## Vocabulaire à privilégier
 
 révéler · mettre en lumière · explorer · découvrir · reconnaître ·
-s'approprier · ce qui vous ressemble · vos couleurs · votre lecture ·
+s'approprier · ce qui te ressemble · tes couleurs · ta lecture ·
 accompagner · prendre soin
 
 Remplacements types :
 
 | ❌ À éviter | ✅ À utiliser |
 |---|---|
-| les couleurs qui vous avantagent | les couleurs qui vous révèlent |
-| cacher vos hanches | mettre en valeur votre silhouette telle qu'elle est |
-| corriger un visage rond | jouer avec les courbes de votre visage |
-| votre problème de peau | les besoins de votre peau |
+| les couleurs qui t'avantagent | les couleurs qui te révèlent |
+| cacher tes hanches | mettre en valeur ta silhouette telle qu'elle est |
+| corriger un visage rond | jouer avec les courbes de ton visage |
+| ton problème de peau | les besoins de ta peau |
 
 ## Ton
 
@@ -55,10 +55,13 @@ Remplacements types :
   grand public (« Claude vision », « structured outputs » → non).
 - Écriture inclusive avec point médian quand c'est nécessaire
   (utilisateur·rice), sans alourdir.
-- Adresse : **vouvoiement** par défaut. **[à valider par Clea]**
+- Adresse : **tutoiement**, comme dans l'app (`mobile/src/content/microcopy.ts`).
 
 ## Arguments autorisés (ce qui est vrai aujourd'hui)
 
+- **Carte de résultat à partager** (saison colorielle, nature de cheveux)
+  dans l'app : aucune photo ni prénom, partage à l'initiative de
+  l'utilisatrice. Support idéal pour les défis et l'UGC.
 - **Diagnostic complet gratuit** : le tier gratuit n'est pas un teaser.
   C'est un différenciateur de valeurs, à porter avec sincérité.
 - Freemium à prix bas (~2–5 €/mois). **[prix exact à confirmer avant
