@@ -20,6 +20,9 @@ sont dans `clients/{client}/brand.md`.
    │ opus         │ sonnet       │ sonnet       │ sonnet       │ opus         │
    └──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┘
        briefs/       content/     prompts-images/     decks/       analytics/
+
+   Viralité :  veilleur (sonnet)   critique (opus)   communaute (sonnet)
+                 tendances/          critiques/         communaute/
 ```
 
 **Principe directeur** : l'orchestrateur n'écrit jamais le livrable lui-même.
@@ -36,6 +39,9 @@ frontmatter YAML.
 | `designer` | Sonnet | Prompts d'images prêts à l'emploi (Midjourney, Gemini/Imagen, Ideogram), déclinés par format. | `prompts-images/` |
 | `presentateur` | Sonnet | Decks slide-par-slide auto-portants (markdown). | `decks/` |
 | `analyste` | Opus | Rapport de performance + plan d'optimisation 30 jours, à partir d'exports réels. | `analytics/` |
+| `veilleur` | Sonnet | Tendances (formats, sons, hooks) de la semaine, sourcées et filtrées par compatibilité marque. | `tendances/` |
+| `critique` | Opus | Note virale /35 + conformité marque d'un contenu avant publication. Verdict PUBLIER / RETRAVAILLER / BLOQUÉ. | `critiques/` |
+| `communaute` | Sonnet | Défi de marque, incitations UGC, réponses types aux commentaires, créateurs à contacter. | `communaute/` |
 
 ## Slash commands
 
@@ -46,7 +52,11 @@ frontmatter YAML.
 | `/visuel <livrable ou sujet>` | designer | Pack de prompts images |
 | `/analyse <fichier d'export>` | analyste | Rapport + plan 30j |
 | `/deck <livrable ou sujet>` | presentateur | Deck |
-| `/campagne <objectif>` | chaîne complète | stratege → createur → designer → presentateur |
+| `/tendances [thème]` | veilleur | Veille de la semaine |
+| `/critique <contenu>` | critique | Note virale + conformité avant publication |
+| `/communaute <campagne>` | communaute | Faire circuler une campagne |
+| `/viral <thème> [N]` | veilleur → createur → critique | Série de N contenus courts (défaut 5) |
+| `/campagne <objectif>` | chaîne complète | veilleur → stratege → createur → critique → designer → presentateur → communaute |
 
 Client par défaut : `reveal-you`. Pour un autre client, le préciser dans
 l'argument (`client: <slug>`) et créer `clients/<slug>/`.
@@ -65,7 +75,10 @@ marketing/
 ├── content/             ← {date}-{client}-{format}-{slug}.md
 ├── prompts-images/      ← {date}-{client}-{campagne}.md
 ├── decks/               ← {date}-{client}-{sujet}.md
-└── analytics/           ← rapport-{client}-{période}.md · plan-optim-30j-{client}-{date}.md
+├── analytics/           ← rapport-{client}-{période}.md · plan-optim-30j-{client}-{date}.md
+├── tendances/           ← {date}-{client}-veille.md
+├── critiques/           ← {date}-{client}-{slug-de-la-piece}.md
+└── communaute/          ← {date}-{client}-{campagne}.md
 ```
 
 `{date}` = `AAAA-MM-JJ`. `{slug}`, `{campagne}`, `{sujet}` en kebab-case sans
@@ -110,5 +123,8 @@ incrémente `version` dans le même fichier ; on ne crée pas de doublon.
 6. **Séquentiel, pas parallèle.** Chaque étape d'une campagne dépend de la
    précédente : un agent à la fois, validation utilisatrice aux étapes
    critiques (après le brief, avant le deck).
-7. **Français** pour tous les livrables, sauf les prompts d'images (anglais,
+7. **Viralité honnête.** Pas de faux comptes, d'achat d'abonnés ou de vues,
+   de groupes d'engagement, de faux avis, de concours sans vrai règlement,
+   ni de partenariat non signalé. Aucun agent ne promet un nombre de vues.
+8. **Français** pour tous les livrables, sauf les prompts d'images (anglais,
    meilleur rendu des modèles) accompagnés d'une note en français.

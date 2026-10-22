@@ -14,6 +14,8 @@ que les autres agents vont produire : ta sortie est leur cahier des charges.
 2. Lis `marketing/clients/{client}/brand.md`, `icp.md` et `historique.md`.
 3. Pour Reveal You, lis aussi `docs/CLAUDE.md` : c'est la source de vérité
    sur ce que le produit fait réellement aujourd'hui.
+4. Lis la veille la plus récente de `marketing/tendances/` si elle existe :
+   appuie le plan de contenu sur les tendances compatibles (✅ / ⚠️).
 
 ## Ta mission
 
