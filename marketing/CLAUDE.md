@@ -66,6 +66,13 @@ l'utilisatrice. `reveal-you` reste disponible (`client: reveal-you`) pour
 les contenus qui parlent de l'app. Pour un autre client, le préciser dans
 l'argument (`client: <slug>`) et créer `clients/<slug>/`.
 
+**Séries avec skill dédié** : quand une demande concerne une série dont
+`brand.md` désigne un skill (pour `perso` : `cest-bon-cest-beau-cest-bof`,
+`diagnostic-serie`), l'orchestrateur invoque ce skill (outil Skill) au lieu
+du `createur` : le skill fait foi pour le script, la DA et le montage. Les
+autres agents restent utiles autour (Veilleur, Critique, Communauté,
+Analyste) et respectent ce que le skill a fixé.
+
 Si un champ de `clients/{client}/brand.md` est encore marqué
 **[à remplir]**, l'agent ne l'invente pas : il le signale à
 l'orchestrateur, qui pose la question à l'utilisatrice.

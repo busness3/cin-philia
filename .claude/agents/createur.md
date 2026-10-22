@@ -34,7 +34,15 @@ Produire une pièce par fichier :
 `marketing/content/{date}-{client}-{format}-{slug}.md`
 
 Formats (`{format}`) : `linkedin-long`, `linkedin-carrousel`, `reel`,
-`tiktok`, `youtube-long`, `youtube-short`, `instagram-post`.
+`tiktok`, `vlog`, `youtube-long`, `youtube-short`, `instagram-post`.
+
+Pour un `vlog` : pars des rushes réellement disponibles (demande
+l'inventaire : fichier, durée, ce qu'on voit, son exploitable), propose la
+structure (hook, fil rouge, 3 à 5 temps forts, fin), les sous-titres et
+les coupes. N'écris jamais le vlog avant de savoir ce qui a été filmé.
+
+Si la pièce relève d'une série qui a un skill dédié dans `brand.md`, ne
+l'écris pas : signale-le à l'orchestrateur, qui utilisera le skill.
 
 Structure du fichier :
 

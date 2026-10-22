@@ -5,6 +5,10 @@ argument-hint: <format> <sujet ou chemin de brief> [client: <slug>]
 
 Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
 
+Si la demande (ou une pièce) relève d'une série qui a un skill dédié dans
+`marketing/clients/{client}/brand.md`, invoque ce skill avec l'outil Skill
+au lieu de déléguer au `createur`.
+
 Demande : $ARGUMENTS
 
 Formats acceptés : `linkedin-long`, `linkedin-carrousel`, `reel`, `tiktok`,

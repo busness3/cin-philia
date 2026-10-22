@@ -5,6 +5,7 @@ agent: stratege              # stratege | createur | designer | presentateur | a
 date: AAAA-MM-JJ
 version: 1                   # incrémenter à chaque itération du même fichier
 statut: brouillon            # brouillon | a-valider | valide | publie
+serie: nom-de-serie          # optionnel — série du compte (voir brand.md du client)
 sources:                     # livrables lus pour produire celui-ci (chemins relatifs à marketing/)
   - clients/perso/brand.md
 ---

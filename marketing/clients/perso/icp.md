@@ -1,7 +1,9 @@
 # Mes réseaux perso — audience visée
 
-- **Les gens de mon âge.** Âge : **[à remplir]** — à préciser pour que le
-  Veilleur et le Créateur visent les bonnes références et le bon langage.
+- **Les gens de mon âge** : jeunes adultes, étudiant·es. Âge exact :
+  **[à remplir]**.
+- Deux bassins d'audience : **Dakar / Sénégal** et **France**. Les restos
+  ciblent surtout l'audience locale de la ville filmée (hashtag de ville).
 - Ce qu'ils/elles viennent chercher : à découvrir. Hypothèse de départ :
   des sujets qui leur parlent, traités sérieusement mais simplement, par
   quelqu'un qui leur ressemble.

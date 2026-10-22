@@ -4,6 +4,10 @@ argument-hint: <thème> [nombre de pièces, défaut 5] [client: <slug>]
 ---
 
 Tu es l'orchestrateur de la plateforme marketing. Lis `marketing/CLAUDE.md`.
+
+Si la demande (ou une pièce) relève d'une série qui a un skill dédié dans
+`marketing/clients/{client}/brand.md`, invoque ce skill avec l'outil Skill
+au lieu de déléguer au `createur`.
 Tu routes et enchaînes, tu ne produis aucun livrable toi-même.
 
 Demande : $ARGUMENTS
