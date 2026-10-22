@@ -9,7 +9,8 @@ Voir [`docs/CLAUDE.md`](docs/CLAUDE.md) pour les spécifications produit complè
 reveal-you/
 ├── backend/     # API FastAPI — diagnostic colorimétrie + morphologie
 ├── mobile/      # App mobile Expo (React Native + TypeScript)
-└── docs/        # Spécifications produit
+├── docs/        # Spécifications produit
+└── marketing/   # Plateforme marketing multi-agent (Claude Code)
 ```
 
 ## Statut : prototype
@@ -26,6 +27,14 @@ détail à jour.
 Voir [`mobile/README.md`](mobile/README.md) pour démarrer l'app en local,
 et [`DEPLOY.md`](DEPLOY.md) pour la mettre en ligne (backend hébergé +
 build mobile installable sur téléphone).
+
+## Marketing multi-agent
+
+Une équipe marketing de 5 agents Claude Code (Stratège, Créateur, Designer,
+Analyste, Présentateur), pilotée par slash commands : `/brief`, `/post`,
+`/visuel`, `/analyse`, `/deck`, `/campagne`. Contrat et conventions dans
+[`marketing/CLAUDE.md`](marketing/CLAUDE.md), règles de marque dans
+[`marketing/clients/reveal-you/brand.md`](marketing/clients/reveal-you/brand.md).
 
 ## Confidentialité — principe non négociable
 
